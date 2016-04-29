@@ -5,5 +5,16 @@
 
 #include "EngineMinimal.h"
 
+//General Log
+DECLARE_LOG_CATEGORY_EXTERN(Fournoid, Log, All);
+
+//Logging during game startup
+DECLARE_LOG_CATEGORY_EXTERN(FournoidInit, Log, All);
+
+//Logging for your AI system
+DECLARE_LOG_CATEGORY_EXTERN(FournoidAI, Log, All);
+
+//Logging for Critical Errors that must always be addressed
+DECLARE_LOG_CATEGORY_EXTERN(FournoidError, Log, All);
 
 #endif

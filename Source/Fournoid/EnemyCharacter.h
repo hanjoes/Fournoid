@@ -22,11 +22,11 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-    
-    /** Return the skeletal mesh of the enemy */
-    FORCEINLINE USkeletalMeshComponent* GetEnemyMesh() const { return EnemyMesh; }
-
-protected:
-    UPROPERTY(VisibleDefaultsOnly, Category = "Enemy")
-    USkeletalMeshComponent* EnemyMesh;
+//    
+//    /** Return the skeletal mesh of the enemy */
+//    FORCEINLINE USkeletalMeshComponent* GetEnemyMesh() const { return EnemyMesh; }
+//
+//protected:
+//    UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Enemy")
+//    USkeletalMeshComponent* EnemyMesh;
 };

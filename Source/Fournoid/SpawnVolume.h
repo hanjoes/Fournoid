@@ -24,11 +24,33 @@ public:
 	FORCEINLINE UBoxComponent* GetSpawnBox() const { return SpawnBox; }
 	
 	// Returns a random point in the volume
-	UFUNCTION(BluePrintPure, Category = "Enemy")
+	UFUNCTION(BluePrintPure, Category = "Spawning")
 	FVector GetRandomPointInVolume() const;
+	
+	// Spawn an enemy into the world
+	UFUNCTION(BluePrintCallable, Category = "Spawning")
+	void SpawnEnemy();
+	
+protected:
+	UPROPERTY(EditAnywhere, Category = "Spawing")
+	TSubclassOf<class AEnemyCharacter> EnemyToSpawn;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Spawning")
+	float SpawnIntervalRangeLo;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Spawning")
+	float SpawnIntervalRangeHi;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Spawning")
+	float SpawnInterval;
+	
+protected:
+	void registerTimer();
 	
 private:
 	// The place from where the enemy will be spawned.
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Enemy", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Spawning", meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent *SpawnBox;
+	
+	FTimerHandle SpawnTimer;
 };

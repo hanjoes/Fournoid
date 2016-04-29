@@ -10,11 +10,13 @@ AEnemyCharacter::AEnemyCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-    // Create the mesh component that is associated with enemy character.
-    EnemyMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("EnemyCharacter"));
-    EnemyMesh->SetOnlyOwnerSee(true);
-    EnemyMesh->bCastDynamicShadow = false;
-    EnemyMesh->CastShadow = false;
+//    // Create the mesh component that is associated with enemy character.
+//    EnemyMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("EnemyCharacter"));
+//    EnemyMesh->SetOnlyOwnerSee(true);
+//    EnemyMesh->bCastDynamicShadow = false;
+//    EnemyMesh->CastShadow = false;
+//
+//	RootComponent = EnemyMesh;
 }
 
 // Called when the game starts or when spawned

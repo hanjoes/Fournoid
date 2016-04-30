@@ -17,7 +17,6 @@ AEnemyCharacter::AEnemyCharacter()
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -27,13 +26,7 @@ void AEnemyCharacter::Tick( float DeltaTime )
 	
 }
 
-// Called to bind functionality to input
-void AEnemyCharacter::SetupPlayerInputComponent(class UInputComponent* InputComponent)
-{
-	Super::SetupPlayerInputComponent(InputComponent);
-	
-}
-
 void AEnemyCharacter::SetupCollisionBehavior()
 {
 }
+

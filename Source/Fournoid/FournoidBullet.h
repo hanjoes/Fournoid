@@ -32,6 +32,12 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category = "Bullet")
 	UStaticMeshComponent* BulletMeshComp;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Bullet")
+	float BulletImpulseStrength;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Bullet")
+	float BulletDamage;
 
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet", meta = (AllowPrivateAccess = "true"))

@@ -17,3 +17,9 @@ void AFournoidCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 }
+
+void AFournoidCharacter::ReceiveDamage(float Damage)
+{
+    Health -= Damage;
+    GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2, FColor::Red, FString::Printf(TEXT("%s received %f damage, %f health left."), *GetName(), Damage, Health));
+}

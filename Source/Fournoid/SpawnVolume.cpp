@@ -47,7 +47,6 @@ void ASpawnVolume::SpawnEnemy()
 			FVector SpawnLocation = GetRandomPointInVolume();
 			World->SpawnActor<AEnemyCharacter>(EnemyToSpawn, SpawnLocation, FRotator::ZeroRotator);
         	registerTimer();
-			UE_LOG(Fournoid, Log, TEXT("Spawned"));
 		}
 	}
 }

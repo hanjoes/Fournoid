@@ -2,11 +2,13 @@
 
 #include "Fournoid.h"
 #include "FournoidBullet.h"
+#include "EnemyCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 
 // Sets default values
 AFournoidBullet::AFournoidBullet()
+: BulletImpulseStrength(10.0f), BulletDamage(25.0f)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -61,10 +63,14 @@ void AFournoidBullet::Tick( float DeltaTime )
 void AFournoidBullet::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL) && OtherComp->IsSimulatingPhysics())
+	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+		OtherComp->AddImpulseAtLocation(GetVelocity() * BulletImpulseStrength, GetActorLocation());
+        IDamageable* DamageableObj = Cast<IDamageable>(OtherActor);
+		if (DamageableObj) {
+            DamageableObj->ReceiveDamage(BulletDamage);
+		}
 
-		Destroy();
+//		Destroy();
 	}
 }

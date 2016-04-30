@@ -20,6 +20,11 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
     
+    /////////////////////////////////////////////////
+    // IDamageable
+public:
+    void ReceiveDamage(float Damage) override;
+    
 private:
     void SetupCollisionBehavior();
 };

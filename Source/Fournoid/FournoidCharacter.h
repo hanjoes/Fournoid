@@ -18,9 +18,9 @@ public:
     
     FORCEINLINE float GetCharacterHealth() const { return Health; }
     
-public:
     /////////////////////////////////////////////////
     // IDamageable
+public:
     void ReceiveDamage(float Damage) override;
     
 protected:

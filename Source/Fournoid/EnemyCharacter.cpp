@@ -30,3 +30,13 @@ void AEnemyCharacter::SetupCollisionBehavior()
 {
 }
 
+void AEnemyCharacter::ReceiveDamage(float Damage)
+{
+    Super::ReceiveDamage(Damage);
+    
+    if (Health <= 0)
+    {
+        GetMesh()->SetSimulatePhysics(true);
+    }
+}
+

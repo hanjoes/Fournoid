@@ -2,31 +2,24 @@
 
 #pragma once
 
-#include "GameFramework/Character.h"
+#include "FournoidCharacter.h"
 #include "EnemyCharacter.generated.h"
 
 UCLASS()
-class FOURNOID_API AEnemyCharacter : public ACharacter
+class FOURNOID_API AEnemyCharacter : public AFournoidCharacter
 {
 	GENERATED_BODY()
-
+	
 public:
 	// Sets default values for this character's properties
 	AEnemyCharacter();
-
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
-
+	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-//    
-//    /** Return the skeletal mesh of the enemy */
-//    FORCEINLINE USkeletalMeshComponent* GetEnemyMesh() const { return EnemyMesh; }
-//
-//protected:
-//    UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Enemy")
-//    USkeletalMeshComponent* EnemyMesh;
 };

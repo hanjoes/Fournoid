@@ -16,7 +16,6 @@
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -193,9 +192,9 @@ void APlayerCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FV
 
 void APlayerCharacter::MoveForward(float Value)
 {
-	UE_LOG(Fournoid, Log, TEXT("Moving!"));
 	if (Value != 0.0f)
 	{
+        UE_LOG(Fournoid, Log, TEXT("Moving forward by %f"), Value);
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
 	}

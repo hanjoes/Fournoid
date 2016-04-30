@@ -14,5 +14,5 @@ AFournoidCharacter::AFournoidCharacter()
 
 void AFournoidCharacter::BeginPlay()
 {
-	
+	Super::BeginPlay();
 }

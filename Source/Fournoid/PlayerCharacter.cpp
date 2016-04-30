@@ -2,7 +2,7 @@
 
 #include "Fournoid.h"
 #include "PlayerCharacter.h"
-#include "FournoidProjectile.h"
+#include "FournoidBullet.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
 
@@ -59,9 +59,9 @@ APlayerCharacter::APlayerCharacter()
 
 
 	// Default offset from the character location for projectiles to spawn
-	GunOffset = FVector(100.0f, 30.0f, 10.0f);
+	SpawnOffset = FVector(100.0f, 30.0f, 10.0f);
 
-	// Note: The ProjectileClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
+	// Note: The BulletClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
@@ -97,17 +97,18 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 void APlayerCharacter::OnFire()
 { 
 	// try and fire a projectile
-	if (ProjectileClass != NULL)
+	if (BulletClass != NULL)
 	{
+		// Get the actors rotation caused by control in world space.
 		const FRotator SpawnRotation = GetControlRotation();
-		// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(GunOffset);
+		// Tarnsform the SpawnOffset from local space to world space.
+		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(SpawnOffset);
 
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{
 			// spawn the projectile at the muzzle
-			World->SpawnActor<AFournoidProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+			World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
 		}
 	}
 
@@ -194,7 +195,6 @@ void APlayerCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
 	{
-        UE_LOG(Fournoid, Log, TEXT("Moving forward by %f"), Value);
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
 	}

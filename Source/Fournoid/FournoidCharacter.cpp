@@ -9,6 +9,7 @@
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 AFournoidCharacter::AFournoidCharacter()
+: Health(100.0f)
 {
 }
 

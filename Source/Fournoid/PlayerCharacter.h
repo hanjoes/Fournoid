@@ -31,11 +31,11 @@ public:
 
 	/** Gun muzzle's offset from the characters location */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector GunOffset;
+	FVector SpawnOffset;
 
-	/** Projectile class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Projectile)
-	TSubclassOf<class AFournoidProjectile> ProjectileClass;
+	/** Bullet class to spawn */
+	UPROPERTY(EditDefaultsOnly, Category=Bullet)
+	TSubclassOf<class AFournoidBullet> BulletClass;
 
 	/** Sound to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
@@ -53,7 +53,7 @@ public:
 
 protected:
 	
-	/** Fires a projectile. */
+	/** Fires a bullet. */
 	void OnFire();
 
 	/** Handles moving forward/backward */
@@ -106,7 +106,7 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	class USkeletalMeshComponent* Mesh1P;
 
-	/** Gun mesh: 1st person view (seen only by self) */
+	/** mesh: 1st person view (seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
 	class USkeletalMeshComponent* FP_Gun;
 

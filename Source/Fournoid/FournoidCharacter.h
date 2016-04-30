@@ -13,5 +13,11 @@ public:
 	AFournoidCharacter();
 	
 	virtual void BeginPlay() override;
+    
+    FORCEINLINE float GetCharacterHealth() const { return Health; }
+    
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+    float Health;
 };
 

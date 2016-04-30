@@ -22,45 +22,45 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
+	
 }
 
 APlayerCharacter::APlayerCharacter()
 {
-    // Disable tick
-    PrimaryActorTick.bCanEverTick = false;
-    
+	// Disable tick
+	PrimaryActorTick.bCanEverTick = false;
+	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
+	
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
-
+	
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
 	FirstPersonCameraComponent->AttachParent = GetCapsuleComponent();
 	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 64.f); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
-
+	
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
 	Mesh1P->SetOnlyOwnerSee(true);
 	Mesh1P->AttachParent = FirstPersonCameraComponent;
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
-
+	
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
 	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
 	FP_Gun->bCastDynamicShadow = false;
 	FP_Gun->CastShadow = false;
 	FP_Gun->AttachTo(Mesh1P, TEXT("GripPoint"), EAttachLocation::SnapToTargetIncludingScale, true);
-
-
+	
+	
 	// Default offset from the character location for projectiles to spawn
 	SpawnOffset = FVector(100.0f, 30.0f, 10.0f);
-
+	
 	// Note: The BulletClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
 	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -72,7 +72,7 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 {
 	// set up gameplay key bindings
 	check(InputComponent);
-
+	
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	
@@ -103,7 +103,7 @@ void APlayerCharacter::OnFire()
 		const FRotator SpawnRotation = GetControlRotation();
 		// Tarnsform the SpawnOffset from local space to world space.
 		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(SpawnOffset);
-
+		
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{
@@ -111,13 +111,13 @@ void APlayerCharacter::OnFire()
 			World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
 		}
 	}
-
+	
 	// try and play the sound if specified
 	if (FireSound != NULL)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
-
+	
 	// try and play a firing animation if specified
 	if(FireAnimation != NULL)
 	{
@@ -128,7 +128,7 @@ void APlayerCharacter::OnFire()
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
-
+	
 }
 
 void APlayerCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)

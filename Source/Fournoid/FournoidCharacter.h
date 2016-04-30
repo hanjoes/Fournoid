@@ -15,16 +15,16 @@ public:
 	AFournoidCharacter();
 	
 	virtual void BeginPlay() override;
-    
-    FORCEINLINE float GetCharacterHealth() const { return Health; }
-    
-    /////////////////////////////////////////////////
-    // IDamageable
+	
+	FORCEINLINE float GetCharacterHealth() const { return Health; }
+	
+	/////////////////////////////////////////////////
+	// IDamageable
 public:
-    void ReceiveDamage(float Damage) override;
-    
+	void ReceiveDamage(float Damage) override;
+	
 protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
-    float Health;
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	float Health;
 };
 

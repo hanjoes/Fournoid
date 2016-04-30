@@ -10,7 +10,7 @@
 AFournoidBullet::AFournoidBullet()
 : BulletImpulseStrength(10.0f), BulletDamage(25.0f)
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
 	// Initialize bullet capsule component.
@@ -40,7 +40,7 @@ AFournoidBullet::AFournoidBullet()
 	BulletMovementComp->MaxSpeed = 3000.f;
 	BulletMovementComp->bRotationFollowsVelocity = true;
 	BulletMovementComp->bShouldBounce = false;
-
+	
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
 }
@@ -56,7 +56,7 @@ void AFournoidBullet::BeginPlay()
 void AFournoidBullet::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
+	
 }
 
 
@@ -66,11 +66,11 @@ void AFournoidBullet::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * BulletImpulseStrength, GetActorLocation());
-        IDamageable* DamageableObj = Cast<IDamageable>(OtherActor);
+		IDamageable* DamageableObj = Cast<IDamageable>(OtherActor);
 		if (DamageableObj) {
-            DamageableObj->ReceiveDamage(BulletDamage);
+			DamageableObj->ReceiveDamage(BulletDamage);
 		}
-
-//		Destroy();
+		
+		//		Destroy();
 	}
 }

@@ -7,7 +7,7 @@ UCLASS(minimalapi)
 class AFournoidGameMode : public AGameMode
 {
 	GENERATED_BODY()
-
+	
 public:
 	AFournoidGameMode();
 };

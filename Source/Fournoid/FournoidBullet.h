@@ -13,7 +13,7 @@ class FOURNOID_API AFournoidBullet : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AFournoidBullet();
-
+	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
@@ -21,11 +21,11 @@ public:
 	virtual void Tick( float DeltaSeconds ) override;
 	
 	FORCEINLINE USphereComponent* GetSphereComponent() const { return BulletSphereComp; }
-
+	
 	/** called when projectile hits something */
 	UFUNCTION()
 	void OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
+	
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Bullet")
 	USphereComponent* BulletSphereComp;
@@ -38,7 +38,7 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, Category = "Bullet")
 	float BulletDamage;
-
+	
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet", meta = (AllowPrivateAccess = "true"))
 	class UProjectileMovementComponent* BulletMovementComp;

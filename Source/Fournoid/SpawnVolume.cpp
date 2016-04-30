@@ -46,7 +46,7 @@ void ASpawnVolume::SpawnEnemy()
 		if (World) {
 			FVector SpawnLocation = GetRandomPointInVolume();
 			World->SpawnActor<AEnemyCharacter>(EnemyToSpawn, SpawnLocation, FRotator::ZeroRotator);
-        	registerTimer();
+			registerTimer();
 		}
 	}
 }

@@ -36,10 +36,14 @@ AFournoidBullet::AFournoidBullet()
 	// Use a ProjectileMovementComponent to govern this projectile's movement
 	BulletMovementComp = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("BulletMovementComp"));
 	BulletMovementComp->UpdatedComponent = BulletSphereComp;
-	BulletMovementComp->InitialSpeed = 3000.f;
-	BulletMovementComp->MaxSpeed = 3000.f;
+	BulletMovementComp->InitialSpeed = 3000.0f;
+	BulletMovementComp->MaxSpeed = 3000.0f;
 	BulletMovementComp->bRotationFollowsVelocity = true;
 	BulletMovementComp->bShouldBounce = false;
+	
+	// Setup a particle system component associated with the bullet.
+	BulletParticleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BulletParticleSystem"));
+	BulletParticleComp->AttachParent = BulletSphereComp;
 	
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
@@ -71,6 +75,6 @@ void AFournoidBullet::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 			DamageableObj->ReceiveDamage(BulletDamage);
 		}
 		
-		//		Destroy();
+		Destroy();
 	}
 }

@@ -42,4 +42,8 @@ protected:
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet", meta = (AllowPrivateAccess = "true"))
 	class UProjectileMovementComponent* BulletMovementComp;
+	
+	/** The pariticle system associated with the bullet */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet", meta = (AllowPrivateAccess = "true"))
+	class UParticleSystemComponent* BulletParticleComp;
 };

@@ -76,6 +76,9 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	
+	InputComponent->BindAction("Run", IE_Pressed, this, &AFournoidCharacter::StartRunning);
+	InputComponent->BindAction("Run", IE_Released, this, &AFournoidCharacter::StopRunning);
+	
 	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &APlayerCharacter::TouchStarted);
 	if( EnableTouchscreenMovement(InputComponent) == false )
 	{

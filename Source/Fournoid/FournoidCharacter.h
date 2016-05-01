@@ -18,13 +18,30 @@ public:
 	
 	FORCEINLINE float GetCharacterHealth() const { return Health; }
 	
-	/////////////////////////////////////////////////
-	// IDamageable
-public:
-	void ReceiveDamage(float Damage) override;
+	FORCEINLINE float GetCharacterStamina() const { return Stamina; }
+	
+	FORCEINLINE float GetSpeedScale() const { return Stamina; }
+	
+	UFUNCTION(BlueprintCallable, Category = "Character")
+	void SetSpeedBoostScale(float SpeedBoostScale);
+	
+	void StartRunning();
+	
+	void StopRunning();
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
 	float Health;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	float Stamina;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	float SpeedBoostScale;
+	
+	/////////////////////////////////////////////////
+	// IDamageable
+public:
+	void ReceiveDamage(float Damage) override;
 };
 

@@ -22,13 +22,12 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	
 }
 
 APlayerCharacter::APlayerCharacter()
 {
 	// Disable tick
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);

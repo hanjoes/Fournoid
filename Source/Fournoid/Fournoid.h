@@ -4,6 +4,7 @@
 #define __FOURNOID_H__
 
 #include "Engine.h"
+#include "FournoidUtils.h"
 
 //General Log
 DECLARE_LOG_CATEGORY_EXTERN(Fournoid, Log, All);

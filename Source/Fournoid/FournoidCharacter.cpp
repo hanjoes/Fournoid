@@ -9,7 +9,7 @@
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 AFournoidCharacter::AFournoidCharacter()
-: Health(100.0f), SpeedBoostScale(1.5f)
+: Health(100.0f), Stamina(100.0f), StaminaRegenRate(15.f), StaminaConsumeRate(30.f), SpeedBoostScale(1.5f), bCharacterIsRunning(false)
 {
 }
 
@@ -21,7 +21,6 @@ void AFournoidCharacter::BeginPlay()
 void AFournoidCharacter::ReceiveDamage(float Damage)
 {
 	Health -= Damage;
-	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2, FColor::Red, FString::Printf(TEXT("%s received %f damage, %f health left."), *GetName(), Damage, Health));
 }
 
 void AFournoidCharacter::SetSpeedBoostScale(float NewScale)
@@ -32,10 +31,35 @@ void AFournoidCharacter::SetSpeedBoostScale(float NewScale)
 void AFournoidCharacter::StartRunning()
 {
 	GetCharacterMovement()->MaxWalkSpeed *= SpeedBoostScale;
-	
+	bCharacterIsRunning = true;
 }
 
 void AFournoidCharacter::StopRunning()
 {
-	GetCharacterMovement()->MaxWalkSpeed /= SpeedBoostScale;
+	// Lower movement speed if character is running.
+	if (bCharacterIsRunning) {
+    	GetCharacterMovement()->MaxWalkSpeed /= SpeedBoostScale;
+    	bCharacterIsRunning = false;
+	}
+}
+
+void AFournoidCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+    if (bCharacterIsRunning && (GetVelocity() != FVector::ZeroVector)) {
+		Stamina -= DeltaTime * StaminaConsumeRate;
+		
+		// If stamina is equal or below zero, stop running.
+		if (Stamina <= 0.0f) {
+			StopRunning();
+		}
+	}
+	else {
+		// regen only if stamina is not full
+		if (Stamina < 100.f) {
+    		Stamina += DeltaTime * StaminaRegenRate;
+			Stamina = FMath::Min(Stamina, 100.f);
+		}
+	}
 }

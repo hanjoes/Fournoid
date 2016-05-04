@@ -16,11 +16,19 @@ public:
 	
 	virtual void BeginPlay() override;
 	
+	virtual void Tick(float DeltaTime) override;
+	
 	FORCEINLINE float GetCharacterHealth() const { return Health; }
 	
 	FORCEINLINE float GetCharacterStamina() const { return Stamina; }
 	
+	FORCEINLINE float GetStaminaRegenRate() const { return StaminaRegenRate; }
+	
+	FORCEINLINE float GetStaminaConsumeRate() const { return StaminaConsumeRate; }
+	
 	FORCEINLINE float GetSpeedScale() const { return Stamina; }
+	
+	FORCEINLINE bool CharacterIsRunning() const { return bCharacterIsRunning; }
 	
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	void SetSpeedBoostScale(float SpeedBoostScale);
@@ -37,7 +45,16 @@ protected:
 	float Stamina;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	float StaminaRegenRate;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	float StaminaConsumeRate;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
 	float SpeedBoostScale;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	bool bCharacterIsRunning;
 	
 	/////////////////////////////////////////////////
 	// IDamageable

@@ -56,6 +56,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
 	bool bCharacterIsRunning;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+    class AFournoidAssist* Assist;
+	
 	/////////////////////////////////////////////////
 	// IDamageable
 public:

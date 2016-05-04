@@ -2,6 +2,7 @@
 
 #include "Fournoid.h"
 #include "FournoidCharacter.h"
+#include "Assists/FournoidAssist.h"
 #include "FournoidProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
@@ -11,6 +12,8 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 AFournoidCharacter::AFournoidCharacter()
 : Health(100.0f), Stamina(100.0f), StaminaRegenRate(15.f), StaminaConsumeRate(30.f), SpeedBoostScale(1.5f), bCharacterIsRunning(false)
 {
+    Assist = CreateDefaultSubobject<AFournoidAssist>("StartAssist");
+    Assist->AttachRootComponentTo(RootComponent);
 }
 
 void AFournoidCharacter::BeginPlay()

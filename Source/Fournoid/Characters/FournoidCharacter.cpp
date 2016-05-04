@@ -3,7 +3,6 @@
 #include "Fournoid.h"
 #include "FournoidCharacter.h"
 //#include "Assists/FournoidAssist.h"
-#include "FournoidProjectile.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
 

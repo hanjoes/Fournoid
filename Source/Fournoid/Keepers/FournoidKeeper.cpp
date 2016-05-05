@@ -8,7 +8,7 @@
 
 // Sets default values
 AFournoidKeeper::AFournoidKeeper()
-: KeeperStickDistance(500.0f), KeeperPropelDistance(100.0f), KeeperMovementSpeed(1000.0f), KeeperHoverFalloff(20.f)
+: KeeperStickDistance(500.0f), KeeperPropelDistance(100.0f), KeeperMovementSpeed(1000.0f), KeeperHoverFalloff(10.f)
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -68,17 +68,16 @@ void AFournoidKeeper::FollowMaster(float DeltaTime)
 	// Make sure the keeper's distance to master is within KeeperFollowDistance
 	if (MasterCharacter)
 	{
-		auto MyLocaiton = GetActorLocation();
-		auto MasterLocation = MasterCharacter->GetActorLocation();
+		auto MyLocaiton = StaticMeshComp->GetComponentLocation();
+		auto MasterLocation = MasterCharacter->GetRootComponent()->GetComponentLocation();
 		auto DirectionVector = MasterLocation - MyLocaiton;
 		
 		// Get direction and distance from this keeper to the master.
 		FVector Direction;
 		float Distance;
-		// minD -> 0
-		// maxD -> 1
 		DirectionVector.ToDirectionAndLength(Direction, Distance);
-		float Velocity = UKismetMathLibrary::Lerp(.0f, KeeperMovementSpeed, ((Distance - KeeperPropelDistance) / KeeperStickDistance));
+		// Lerp velocity and move keeper towards character
+		float Velocity = UKismetMathLibrary::Lerp(.0f, KeeperMovementSpeed, FMath::Abs(((Distance - KeeperPropelDistance) / KeeperStickDistance)));
 		KeeperMovement->MoveUpdatedComponent(Direction * Velocity * DeltaTime, FQuat(), false);
 	}
 }

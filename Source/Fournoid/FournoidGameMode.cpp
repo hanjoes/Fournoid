@@ -3,7 +3,6 @@
 #include "Fournoid.h"
 #include "FournoidGameMode.h"
 #include "FournoidHUD.h"
-#include "FournoidCharacter.h"
 
 AFournoidGameMode::AFournoidGameMode()
 	: Super()

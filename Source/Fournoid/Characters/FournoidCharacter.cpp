@@ -1,7 +1,7 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
 #include "Fournoid.h"
-#include "FournoidCharacter.h"
+#include "Characters/FournoidCharacter.h"
 //#include "Assists/FournoidAssist.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"

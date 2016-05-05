@@ -87,8 +87,12 @@ protected:
 	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
 	TouchData	TouchItem;
 	
+	void SpawnKeeper() override;
+	
 protected:
-	// APawn interface
+	/////////////////////////////////////////////////
+	// APawn
+	
 	virtual void SetupPlayerInputComponent(UInputComponent* InputComponent) override;
 	// End of APawn interface
 	

@@ -55,9 +55,13 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
 	bool bCharacterIsRunning;
-//	
-//	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
-//    class AFournoidAssist* Assist;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Keeper)
+	TSubclassOf<class AFournoidKeeper> KeeperClass;
+	
+protected:
+	
+	virtual void SpawnKeeper();
 	
 	/////////////////////////////////////////////////
 	// IDamageable

@@ -16,7 +16,6 @@ AFournoidBullet::AFournoidBullet()
 	// Initialize bullet capsule component.
 	BulletSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	BulletSphereComp->BodyInstance.SetCollisionProfileName("Projectile");
-	BulletSphereComp->AttachParent = BulletMeshComp;
 	// Setup notification.
 	BulletSphereComp->OnComponentHit.AddDynamic(this, &AFournoidBullet::OnHit);
 	

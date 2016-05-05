@@ -3,6 +3,7 @@
 #include "Fournoid.h"
 #include "PlayerCharacter.h"
 #include "Bullets/FournoidBullet.h"
+#include "Keepers/FournoidKeeper.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
 
@@ -59,9 +60,6 @@ APlayerCharacter::APlayerCharacter()
 	
 	// Default offset from the character location for projectiles to spawn
 	SpawnOffset = FVector(100.0f, 30.0f, 10.0f);
-	
-	// Note: The BulletClass and the skeletal mesh/anim blueprints for Mesh1P are set in the
-	// derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -234,4 +232,26 @@ bool APlayerCharacter::EnableTouchscreenMovement(class UInputComponent* InputCom
 		InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &APlayerCharacter::TouchUpdate);
 	}
 	return bResult;
+}
+
+void APlayerCharacter::SpawnKeeper()
+{
+	// try and fire a projectile
+	if (KeeperClass)
+	{
+		FournoidUtils::BlueMessage(TEXT("Spwaning Keeper"));
+		// Get the actors rotation caused by control in world space.
+		const FRotator SpawnRotation = GetControlRotation();
+		// Tarnsform the SpawnOffset from local space to world space.
+		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(SpawnOffset);
+		
+		UWorld* const World = GetWorld();
+		if (World)
+		{
+			FournoidUtils::BlueMessage(TEXT("Spwaning..."));
+			// spawn the projectile at the muzzle
+			auto SpawnedKeeper = World->SpawnActor<AFournoidKeeper>(KeeperClass, SpawnLocation, SpawnRotation);
+			SpawnedKeeper->SetKeeperMaster(this);
+		}
+	}
 }

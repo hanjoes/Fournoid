@@ -20,6 +20,10 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 	
+	//Behavior Tree
+	UPROPERTY(EditAnywhere, Category= Behavior)
+	class UBehaviorTree *BotBehavior;
+	
 	/////////////////////////////////////////////////
 	// IDamageable
 public:

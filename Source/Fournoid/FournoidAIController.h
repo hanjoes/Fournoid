@@ -13,7 +13,18 @@ class FOURNOID_API AFournoidAIController : public AAIController
 {
 	GENERATED_BODY()
 	
+	UPROPERTY(transient)
+	class UBlackboardComponent *BlackboardComp;
 	
+	UPROPERTY(transient)
+	class UBehaviorTreeComponent *BehaviorComp;
 	
+public:
+	
+	AFournoidAIController();
+	
+	virtual void Possess(APawn *InPawn) override;
+	
+	uint8 EnemyKeyID;
 	
 };

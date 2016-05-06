@@ -2,7 +2,7 @@
 
 #include "Fournoid.h"
 #include "SpawnVolume.h"
-#include "EnemyCharacter.h"
+#include "Characters/EnemyCharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 
 

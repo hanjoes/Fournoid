@@ -1,17 +1,16 @@
-// Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
+// Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
 
 #include "Fournoid.h"
 #include "FournoidGameMode.h"
 #include "FournoidHUD.h"
-#include "FournoidCharacter.h"
 
 AFournoidGameMode::AFournoidGameMode()
-: Super()
+	: Super()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/Blueprints/PlayerCharacter_BP"));
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FournoidAssets/Blueprints/PlayerCharacter_BP"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
-	
+
 	// use our custom HUD class
 	HUDClass = AFournoidHUD::StaticClass();
 }

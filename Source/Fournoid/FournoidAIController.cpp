@@ -5,7 +5,7 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyAllTypes.h"
-#include "EnemyCharacter.h"
+#include "Characters/EnemyCharacter.h"
 #include "FournoidAIController.h"
 
 AFournoidAIController::AFournoidAIController(){

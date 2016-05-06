@@ -6,8 +6,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyAllTypes.h"
 #include "FournoidAIController.h"
-#include "FournoidCharacter.h"
-#include "EnemyCharacter.h"
+#include "Characters/FournoidCharacter.h"
+#include "Characters/EnemyCharacter.h"
 #include "BTTask_MoveToPlayer.h"
 
 EBTNodeResult::Type

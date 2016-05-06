@@ -5,9 +5,9 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyAllTypes.h"
-#include "FournoidCharacter.h"
+#include "Characters/FournoidCharacter.h"
 #include "FournoidAIController.h"
-#include "EnemyCharacter.h"
+#include "Characters/EnemyCharacter.h"
 #include "BTService_CheckForPlayer.h"
 
 UBTService_CheckForPlayer::UBTService_CheckForPlayer(){

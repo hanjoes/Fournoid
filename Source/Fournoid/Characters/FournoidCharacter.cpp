@@ -23,10 +23,10 @@ void AFournoidCharacter::BeginPlay()
 void AFournoidCharacter::ReceiveDamage(float Damage)
 {
 	Health -= Damage;
-    if (Health <= 0.0f)
-    {
-        bIsDead = true;
-    }
+	if (Health <= 0.0f)
+	{
+		bIsDead = true;
+	}
 }
 
 void AFournoidCharacter::SetSpeedBoostScale(float NewScale)
@@ -44,8 +44,8 @@ void AFournoidCharacter::StopRunning()
 {
 	// Lower movement speed if character is running.
 	if (bCharacterIsRunning) {
-    	GetCharacterMovement()->MaxWalkSpeed /= SpeedBoostScale;
-    	bCharacterIsRunning = false;
+		GetCharacterMovement()->MaxWalkSpeed /= SpeedBoostScale;
+		bCharacterIsRunning = false;
 	}
 }
 
@@ -53,7 +53,7 @@ void AFournoidCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-    if (bCharacterIsRunning && (GetVelocity() != FVector::ZeroVector)) {
+	if (bCharacterIsRunning && (GetVelocity() != FVector::ZeroVector)) {
 		Stamina -= DeltaTime * StaminaConsumeRate;
 		
 		// If stamina is equal or below zero, stop running.
@@ -64,7 +64,7 @@ void AFournoidCharacter::Tick(float DeltaTime)
 	else {
 		// regen only if stamina is not full
 		if (Stamina < 100.f) {
-    		Stamina += DeltaTime * StaminaRegenRate;
+			Stamina += DeltaTime * StaminaRegenRate;
 			Stamina = FMath::Min(Stamina, 100.f);
 		}
 	}

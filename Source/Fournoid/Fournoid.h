@@ -16,7 +16,10 @@ DECLARE_LOG_CATEGORY_EXTERN(FournoidInit, Log, All);
 DECLARE_LOG_CATEGORY_EXTERN(FournoidAI, Log, All);
 
 //Logging for Critical Errors that must always be addressed
-DECLARE_LOG_CATEGORY_EXTERN(FournoidError, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(FournoidError, Error, All);
+
+//Logging for Debug
+DECLARE_LOG_CATEGORY_EXTERN(FournoidDebug, Warning, All);
 
 /** when you modify this, please note that this information can be saved with instances
  * also DefaultEngine.ini [/Script/Engine.CollisionProfile] should match with this list **/

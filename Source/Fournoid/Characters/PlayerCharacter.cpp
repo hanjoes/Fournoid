@@ -64,7 +64,7 @@ APlayerCharacter::APlayerCharacter()
 	GetMesh()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Block);
 	GetMesh()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
-
+	
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
@@ -255,6 +255,11 @@ bool APlayerCharacter::EnableTouchscreenMovement(class UInputComponent* InputCom
 
 void APlayerCharacter::SpawnKeeper()
 {
+	if (Role < ROLE_Authority)
+	{
+		return;
+	}
+	
 	// try and fire a projectile
 	if (KeeperClass)
 	{

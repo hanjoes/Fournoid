@@ -17,8 +17,8 @@ UBTTask_MoveToPlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 	AFournoidCharacter *Enemy = Cast<AFournoidCharacter>(OwnerComp.GetBlackboardComponent()->GetValue<UBlackboardKeyType_Object>(EnemyPC->EnemyKeyID));
 	
 	if(Enemy){
-//		EnemyPC->MoveToActor(Enemy,5.f,true,true,true, 0,true);
-//		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Moving to player");
+		//		EnemyPC->MoveToActor(Enemy,5.f,true,true,true, 0,true);
+		//		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Moving to player");
 		return EBTNodeResult::Succeeded;
 	}
 	

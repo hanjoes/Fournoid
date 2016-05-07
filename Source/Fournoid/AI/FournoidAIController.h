@@ -6,7 +6,7 @@
 #include "FournoidAIController.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class FOURNOID_API AFournoidAIController : public AAIController

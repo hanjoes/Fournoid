@@ -45,10 +45,29 @@ APlayerCharacter::APlayerCharacter()
 	
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
-	Mesh1P->SetOnlyOwnerSee(true);
 	Mesh1P->AttachParent = FirstPersonCameraComponent;
+	Mesh1P->bOnlyOwnerSee = true;
+	Mesh1P->bOwnerNoSee = false;
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
+	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
+	Mesh1P->PrimaryComponentTick.TickGroup = TG_PrePhysics;
+	Mesh1P->SetCollisionObjectType(ECC_Pawn);
+	Mesh1P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Mesh1P->SetCollisionResponseToAllChannels(ECR_Ignore);
+	
+	GetMesh()->bOnlyOwnerSee = false;
+	GetMesh()->bOwnerNoSee = true;
+	GetMesh()->bReceivesDecals = false;
+	GetMesh()->SetCollisionObjectType(ECC_Pawn);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Block);
+	GetMesh()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 	
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));

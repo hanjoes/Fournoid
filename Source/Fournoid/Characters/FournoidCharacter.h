@@ -30,7 +30,10 @@ public:
 	
 	FORCEINLINE bool CharacterIsRunning() const { return bCharacterIsRunning; }
 	
-	UFUNCTION(BlueprintCallable, Category = "Character")
+	UFUNCTION(BlueprintPure, Category=Character)
+	bool IsDead() const;
+	
+	UFUNCTION(BlueprintCallable, Category=Character)
 	void SetSpeedBoostScale(float SpeedBoostScale);
 	
 	void StartRunning();
@@ -38,23 +41,26 @@ public:
 	void StopRunning();
 	
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Character)
 	float Health;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Character)
 	float Stamina;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Character)
 	float StaminaRegenRate;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Character)
 	float StaminaConsumeRate;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Character)
 	float SpeedBoostScale;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category = "Character")
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Character)
 	bool bCharacterIsRunning;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Character)
+	bool bIsDead;
 	
 	UPROPERTY(EditDefaultsOnly, Category=Keeper)
 	TSubclassOf<class AFournoidKeeper> KeeperClass;

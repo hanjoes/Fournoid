@@ -69,3 +69,8 @@ void AFournoidCharacter::Tick(float DeltaTime)
 void AFournoidCharacter::SpawnKeeper()
 {
 }
+
+bool AFournoidCharacter::IsDead() const
+{
+	return bIsDead;
+}

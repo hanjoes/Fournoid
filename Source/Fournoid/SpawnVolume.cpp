@@ -44,9 +44,20 @@ void ASpawnVolume::SpawnEnemy()
 	if (EnemyToSpawn) {
 		UWorld* const World = GetWorld();
 		if (World) {
-			FVector SpawnLocation = GetRandomPointInVolume();
-			World->SpawnActor<AEnemyCharacter>(EnemyToSpawn, SpawnLocation, FRotator::ZeroRotator);
-			registerTimer();
+			//find out all enemies and limit the number
+			TArray<AActor*> Enemies;
+			for (TActorIterator<AEnemyCharacter> ActorItr(World); ActorItr; ++ActorItr)
+			{
+				AEnemyCharacter *EnemyChar = *ActorItr;
+				Enemies.Add(EnemyChar);
+				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, FString::FromInt(Enemies.Num()));
+			}
+			
+			if(Enemies.Num()<MaxEnenyNum){
+				FVector SpawnLocation = GetRandomPointInVolume();
+				World->SpawnActor<AEnemyCharacter>(EnemyToSpawn, SpawnLocation, FRotator::ZeroRotator);
+				registerTimer();
+			}
 		}
 	}
 }

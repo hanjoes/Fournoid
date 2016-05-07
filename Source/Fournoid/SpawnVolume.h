@@ -35,6 +35,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Spawing")
 	TSubclassOf<class AEnemyCharacter> EnemyToSpawn;
 	
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+	int MaxEnenyNum;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category = "Spawning")
 	float SpawnIntervalRangeLo;
 	

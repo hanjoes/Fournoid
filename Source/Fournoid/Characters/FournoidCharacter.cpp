@@ -78,3 +78,8 @@ bool AFournoidCharacter::IsDead() const
 {
 	return bIsDead;
 }
+
+void AFournoidCharacter::PossessedBy(class AController *InController)
+{
+	Super::PossessedBy(InController);
+}

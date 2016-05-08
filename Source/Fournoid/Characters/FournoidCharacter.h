@@ -11,12 +11,15 @@ UCLASS(config=Game)
 class AFournoidCharacter : public ACharacter, public IDamageable
 {
 	GENERATED_BODY()
+	
 public:
 	AFournoidCharacter();
 	
 	virtual void BeginPlay() override;
 	
 	virtual void Tick(float DeltaTime) override;
+	
+	virtual void PossessedBy(class AController *InController) override;
 	
 	FORCEINLINE float GetCharacterHealth() const { return Health; }
 	
@@ -69,9 +72,9 @@ protected:
 	
 	virtual void SpawnKeeper();
 	
+public:
 	/////////////////////////////////////////////////
 	// IDamageable
-public:
 	void ReceiveDamage(float Damage) override;
 };
 

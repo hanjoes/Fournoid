@@ -11,7 +11,7 @@ DEFINE_LOG_CATEGORY(FournoidAI);
 
 DEFINE_LOG_CATEGORY(FournoidError);
 
-DEFINE_LOG_CATEGORY(FournoidDebug);
+DEFINE_LOG_CATEGORY(FournoidNetwork);
 
 
 IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, Fournoid, "Fournoid" );

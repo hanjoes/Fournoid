@@ -73,10 +73,10 @@ protected:
 	
 	FORCEINLINE bool IsDead() const { return bIsDead; }
 	
+public:
 	//////////////////////////////////////////////////////////////////////////
 	// Inventory/Weapon
-public:
-	FORCEINLINE FName GetWeaponAttachPoint() const { return WeaponAttachPoint; }
+	FName GetWeaponAttachPoint() const;
 	
 protected:
 	void SpawnInventory();
@@ -93,8 +93,8 @@ protected:
 	UPROPERTY(Transient, Replicated)
 	TArray<class AFournoidWeapon*> Inventory;
 	
-	UPROPERTY(EditDefaultsOnly, Category=Weapon)
-	FName WeaponAttachPoint;
+	UPROPERTY(VisibleAnywhere, Category=Weapon)
+	FName WeaponSocketName;
 	
 	class AFournoidWeapon* CurrentWeapon;
 	

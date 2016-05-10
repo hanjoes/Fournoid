@@ -186,3 +186,8 @@ USkeletalMeshComponent* AFournoidCharacter::GetPawnMesh(bool IsFirstPerson) cons
 {
 	return IsFirstPerson ? Mesh1P : GetMesh();
 }
+
+FName AFournoidCharacter::GetWeaponAttachPoint() const
+{
+	return WeaponSocketName;
+}

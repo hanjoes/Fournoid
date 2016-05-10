@@ -16,7 +16,7 @@ AFournoidWeapon::AFournoidWeapon()
 	Mesh1P->SetCollisionResponseToAllChannels(ECR_Ignore);
 	RootComponent = Mesh1P;
 	
-	Mesh3P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh1P"));
+	Mesh3P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh3P"));
 	Mesh3P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
 	Mesh3P->bReceivesDecals = false;
 	Mesh3P->CastShadow = false;

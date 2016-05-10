@@ -5,7 +5,7 @@
 #include "GameFramework/Actor.h"
 #include "FournoidWeapon.generated.h"
 
-UCLASS()
+UCLASS(Abstract, BluePrintable)
 class FOURNOID_API AFournoidWeapon : public AActor
 {
 	GENERATED_BODY()

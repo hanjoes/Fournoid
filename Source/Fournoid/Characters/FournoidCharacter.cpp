@@ -191,3 +191,8 @@ FName AFournoidCharacter::GetWeaponAttachPoint() const
 {
 	return WeaponSocketName;
 }
+
+bool AFournoidCharacter::IsDead() const
+{
+	return bIsDead;
+}

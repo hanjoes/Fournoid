@@ -34,13 +34,7 @@ APlayerCharacter::APlayerCharacter()
 	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 64.f); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 	
-	// Create a gun mesh component
-	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
-	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
-	FP_Gun->bCastDynamicShadow = false;
-	FP_Gun->CastShadow = false;
-	FP_Gun->AttachTo(Mesh1P, TEXT("GripPoint"), EAttachLocation::SnapToTargetIncludingScale, true);
-	
+	Mesh1P->AttachParent = FirstPersonCameraComponent;
 	
 	// Default offset from the character location for projectiles to spawn
 	SpawnOffset = FVector(100.0f, 30.0f, 10.0f);

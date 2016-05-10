@@ -105,10 +105,6 @@ protected:
 	
 protected:
 	
-	/** mesh: 1st person view (seen only by self) */
-	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
-	class USkeletalMeshComponent* FP_Gun;
-	
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowProtectedAccess = "true"))
 	class UCameraComponent* FirstPersonCameraComponent;

@@ -36,6 +36,10 @@ protected:
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Status
+public:
+	
+	UFUNCTION(BlueprintPure, Category=Stats)
+	bool IsDead() const;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
@@ -71,8 +75,6 @@ protected:
 	
 	FORCEINLINE bool CharacterIsRunning() const { return bCharacterIsRunning; }
 	
-	FORCEINLINE bool IsDead() const { return bIsDead; }
-	
 public:
 	//////////////////////////////////////////////////////////////////////////
 	// Inventory/Weapon
@@ -93,7 +95,7 @@ protected:
 	UPROPERTY(Transient, Replicated)
 	TArray<class AFournoidWeapon*> Inventory;
 	
-	UPROPERTY(VisibleAnywhere, Category=Weapon)
+	UPROPERTY(EditDefaultsOnly, Category=Weapon)
 	FName WeaponSocketName;
 	
 	class AFournoidWeapon* CurrentWeapon;

@@ -11,6 +11,8 @@ AFournoidWeapon::AFournoidWeapon()
 	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
 	Mesh1P->bReceivesDecals = false;
 	Mesh1P->CastShadow = false;
+	Mesh1P->bOwnerNoSee = false;
+	Mesh1P->bOnlyOwnerSee = true;
 	Mesh1P->SetCollisionObjectType(ECC_WorldDynamic);
 	Mesh1P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Mesh1P->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -20,6 +22,8 @@ AFournoidWeapon::AFournoidWeapon()
 	Mesh3P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
 	Mesh3P->bReceivesDecals = false;
 	Mesh3P->CastShadow = false;
+	Mesh1P->bOwnerNoSee = true;
+	Mesh1P->bOnlyOwnerSee = false;
 	Mesh3P->SetCollisionObjectType(ECC_WorldDynamic);
 	Mesh3P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Mesh3P->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -56,7 +60,8 @@ void AFournoidWeapon::SetOwningPawn(AFournoidCharacter* OwningChara)
 		Instigator = OwningChara;
 		MyPawn = OwningChara;
 		
-		SetOwner(MyPawn);
+		UE_LOG(Fournoid, Warning, TEXT("Setting Owner"));
+		SetOwner(OwningChara);
 	}
 }
 
@@ -84,18 +89,23 @@ void AFournoidWeapon::AttachWeaponToPawn()
 	{
 		DetachWeaponFromPawn();
 		
-		// Let bOnlyOwnerSee, bOwnerNoSee determine visibility.
 		auto AttachPoint = MyPawn->GetWeaponAttachPoint();
 		
-		// set 1st person mesh
-		auto PawnMesh1P = MyPawn->GetPawnMesh(true);
-		Mesh1P->SetHiddenInGame(false);
-		Mesh1P->AttachTo(PawnMesh1P, AttachPoint);
+		// Let bOnlyOwnerSee, bOwnerNoSee determine visibility.
 		
-		// set 3st person mesh
+		auto PawnMesh1P = MyPawn->GetPawnMesh(true);
+		if (Mesh1P && PawnMesh1P)
+		{
+			Mesh1P->SetHiddenInGame(false);
+			Mesh1P->AttachTo(PawnMesh1P, AttachPoint);
+		}
+		
 		auto PawnMesh3P = MyPawn->GetPawnMesh(false);
-		Mesh3P->SetHiddenInGame(false);
-		Mesh3P->AttachTo(PawnMesh3P, AttachPoint);
+		if (Mesh3P && PawnMesh3P)
+		{
+			Mesh3P->SetHiddenInGame(false);
+			Mesh3P->AttachTo(PawnMesh3P, AttachPoint);
+		}
 	}
 }
 

@@ -7,12 +7,6 @@
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
 
-
-
-//////////////////////////////////////////////////////////////////////////
-// APlayerCharacter
-// Sets default values
-
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
@@ -27,9 +21,6 @@ void APlayerCharacter::Tick( float DeltaTime )
 
 APlayerCharacter::APlayerCharacter()
 {
-	// Disable tick
-	PrimaryActorTick.bCanEverTick = true;
-	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	
@@ -43,32 +34,6 @@ APlayerCharacter::APlayerCharacter()
 	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 64.f); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 	
-	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
-	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
-	Mesh1P->AttachParent = FirstPersonCameraComponent;
-	Mesh1P->bOnlyOwnerSee = true;
-	Mesh1P->bOwnerNoSee = false;
-	Mesh1P->bCastDynamicShadow = false;
-	Mesh1P->CastShadow = false;
-	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
-	Mesh1P->PrimaryComponentTick.TickGroup = TG_PrePhysics;
-	Mesh1P->SetCollisionObjectType(ECC_Pawn);
-	Mesh1P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	Mesh1P->SetCollisionResponseToAllChannels(ECR_Ignore);
-	
-	GetMesh()->bOnlyOwnerSee = false;
-	GetMesh()->bOwnerNoSee = true;
-	GetMesh()->bReceivesDecals = false;
-	GetMesh()->SetCollisionObjectType(ECC_Pawn);
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	GetMesh()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Block);
-	GetMesh()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
-	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
-	
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
-	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
-	
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
 	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
@@ -79,6 +44,7 @@ APlayerCharacter::APlayerCharacter()
 	
 	// Default offset from the character location for projectiles to spawn
 	SpawnOffset = FVector(100.0f, 30.0f, 10.0f);
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -24,11 +24,6 @@ public:
 	UPROPERTY(EditAnywhere, Category= Behavior)
 	class UBehaviorTree *BotBehavior;
 	
-	/////////////////////////////////////////////////
-	// IDamageable
-public:
-	void ReceiveDamage(float Damage) override;
-	
 private:
 	void SetupCollisionBehavior();
 };

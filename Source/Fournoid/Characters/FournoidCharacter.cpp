@@ -2,6 +2,7 @@
 
 #include "Fournoid.h"
 #include "Characters/FournoidCharacter.h"
+#include "Weapons/FournoidWeapon.h"
 #include "Keepers/FournoidKeeper.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
@@ -9,8 +10,40 @@
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 AFournoidCharacter::AFournoidCharacter()
-: Health(100.0f), Stamina(100.0f), StaminaRegenRate(15.f), StaminaConsumeRate(30.f), SpeedBoostScale(1.5f), bCharacterIsRunning(false)
 {
+	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
+	Mesh1P->AttachParent = GetCapsuleComponent();
+	Mesh1P->bOnlyOwnerSee = true;
+	Mesh1P->bOwnerNoSee = false;
+	Mesh1P->bCastDynamicShadow = false;
+	Mesh1P->CastShadow = false;
+	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
+	Mesh1P->PrimaryComponentTick.TickGroup = TG_PrePhysics;
+	Mesh1P->SetCollisionObjectType(ECC_Pawn);
+	Mesh1P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Mesh1P->SetCollisionResponseToAllChannels(ECR_Ignore);
+	
+	GetMesh()->bOnlyOwnerSee = false;
+	GetMesh()->bOwnerNoSee = true;
+	GetMesh()->bReceivesDecals = false;
+	GetMesh()->SetCollisionObjectType(ECC_Pawn);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	GetMesh()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Block);
+	GetMesh()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
+	GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_PROJECTILE, ECR_Block);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
+	
+	bReplicates = true;
+	
+	Health = 100.f;
+	Stamina = 100.f;
+	StaminaRegenRate = 15.f;
+	StaminaConsumeRate = 30.f;
+	SpeedBoostScale = 1.5f;
+	bCharacterIsRunning = false;
 }
 
 void AFournoidCharacter::BeginPlay()
@@ -18,6 +51,7 @@ void AFournoidCharacter::BeginPlay()
 	Super::BeginPlay();
 	
 	SpawnKeeper();
+	SpawnInventory();
 }
 
 void AFournoidCharacter::ReceiveDamage(float Damage)
@@ -29,11 +63,6 @@ void AFournoidCharacter::ReceiveDamage(float Damage)
 	}
 }
 
-void AFournoidCharacter::SetSpeedBoostScale(float NewScale)
-{
-	SpeedBoostScale = NewScale;
-}
-
 void AFournoidCharacter::StartRunning()
 {
 	GetCharacterMovement()->MaxWalkSpeed *= SpeedBoostScale;
@@ -43,7 +72,8 @@ void AFournoidCharacter::StartRunning()
 void AFournoidCharacter::StopRunning()
 {
 	// Lower movement speed if character is running.
-	if (bCharacterIsRunning) {
+	if (bCharacterIsRunning)
+	{
 		GetCharacterMovement()->MaxWalkSpeed /= SpeedBoostScale;
 		bCharacterIsRunning = false;
 	}
@@ -53,17 +83,21 @@ void AFournoidCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if (bCharacterIsRunning && (GetVelocity() != FVector::ZeroVector)) {
+	if (bCharacterIsRunning && (GetVelocity() != FVector::ZeroVector))
+	{
 		Stamina -= DeltaTime * StaminaConsumeRate;
 		
 		// If stamina is equal or below zero, stop running.
-		if (Stamina <= 0.0f) {
+		if (Stamina <= 0.0f)
+		{
 			StopRunning();
 		}
 	}
-	else {
+	else
+	{
 		// regen only if stamina is not full
-		if (Stamina < 100.f) {
+		if (Stamina < 100.f)
+		{
 			Stamina += DeltaTime * StaminaRegenRate;
 			Stamina = FMath::Min(Stamina, 100.f);
 		}
@@ -74,12 +108,81 @@ void AFournoidCharacter::SpawnKeeper()
 {
 }
 
-bool AFournoidCharacter::IsDead() const
-{
-	return bIsDead;
-}
-
 void AFournoidCharacter::PossessedBy(class AController *InController)
 {
 	Super::PossessedBy(InController);
+}
+
+void AFournoidCharacter::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const
+{
+	Super::GetLifetimeReplicatedProps( OutLifetimeProps );
+	
+	// only to local owner: weapon change requests are locally instigated, other clients don't need it
+	DOREPLIFETIME_CONDITION( AFournoidCharacter, Inventory, COND_OwnerOnly );
+}
+
+void AFournoidCharacter::SpawnInventory()
+{
+	if (Role < ROLE_Authority)
+	{
+		return;
+	}
+	
+	int32 NumWeaponClasses = WeaponClasses.Num();
+	for (int32 i = 0; i < NumWeaponClasses; ++i)
+	{
+		if (WeaponClasses[i])
+		{
+			FActorSpawnParameters SpawnInfo;
+			SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+			auto NewWeapon = GetWorld()->SpawnActor<AFournoidWeapon>(WeaponClasses[i], SpawnInfo);
+			AddWeapon(NewWeapon);
+		}
+	}
+	
+	if (Inventory.Num() > 0)
+	{
+		EquipWeapon(Inventory[0]);
+	}
+	
+}
+
+void AFournoidCharacter::AddWeapon(AFournoidWeapon *NewWeapon)
+{
+	if (NewWeapon && Role == ROLE_Authority)
+	{
+		Inventory.AddUnique(NewWeapon);
+		NewWeapon->OnEnterInventory(this);
+	}
+}
+
+void AFournoidCharacter::EquipWeapon(AFournoidWeapon *Weapon)
+{
+	if (Weapon)
+	{
+		if (Role == ROLE_Authority)
+		{
+			SetCurrentWeapon(Weapon);
+		}
+		else
+		{
+		}
+	}
+}
+
+void AFournoidCharacter::SetCurrentWeapon(class AFournoidWeapon *Weapon)
+{
+	// Unequip the current weapon if already equipped.
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->OnUnEquip();
+	}
+	
+	Weapon->OnEquip();
+	CurrentWeapon = Weapon;
+}
+
+USkeletalMeshComponent* AFournoidCharacter::GetPawnMesh(bool IsFirstPerson) const
+{
+	return IsFirstPerson ? Mesh1P : GetMesh();
 }

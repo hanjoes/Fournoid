@@ -5,6 +5,8 @@
 
 #include "Engine.h"
 #include "FournoidUtils.h"
+#include "Net/UnrealNetwork.h"
+#include "Characters/FournoidCharacter.h"
 
 //General Log
 DECLARE_LOG_CATEGORY_EXTERN(Fournoid, Log, All);

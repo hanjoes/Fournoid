@@ -29,9 +29,3 @@ void AEnemyCharacter::Tick( float DeltaTime )
 void AEnemyCharacter::SetupCollisionBehavior()
 {
 }
-
-void AEnemyCharacter::ReceiveDamage(float Damage)
-{
-	Super::ReceiveDamage(Damage);
-}
-

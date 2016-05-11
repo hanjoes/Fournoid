@@ -12,6 +12,9 @@ class AFournoidCharacter : public ACharacter, public IDamageable
 {
 	GENERATED_BODY()
 	
+	//////////////////////////////////////////////////////////////////////////
+	// Basic Behavior
+	
 public:
 	AFournoidCharacter();
 	
@@ -25,8 +28,14 @@ public:
 	
 	void StopRunning();
 	
+	void Die();
+
+	/** Take damage, handle death */
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+	
 	//////////////////////////////////////////////////////////////////////////
 	// Keeper
+	
 protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category=Keeper)
@@ -36,6 +45,7 @@ protected:
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Status
+	
 public:
 	
 	UFUNCTION(BlueprintPure, Category=Stats)
@@ -60,7 +70,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
 	bool bCharacterIsRunning;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(Replicated)
 	bool bIsDead;
 	
 	FORCEINLINE float GetCharacterHealth() const { return Health; }
@@ -75,9 +85,10 @@ protected:
 	
 	FORCEINLINE bool CharacterIsRunning() const { return bCharacterIsRunning; }
 	
-public:
 	//////////////////////////////////////////////////////////////////////////
 	// Inventory/Weapon
+	
+public:
 	
 	FName GetWeaponAttachPoint() const;
 	
@@ -123,6 +134,12 @@ protected:
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	class USkeletalMeshComponent* Mesh1P;
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Weapon Fire
+	
+	// TODO:
+	
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Replicate

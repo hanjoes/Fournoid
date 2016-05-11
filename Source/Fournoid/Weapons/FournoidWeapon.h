@@ -39,7 +39,6 @@ public:
 	UPROPERTY(Transient, ReplicatedUsing=OnRep_MyPawn)
 	class AFournoidCharacter* MyPawn;
 	
-	
 private:
 	
 	/** Mesh for 1st person perspective */
@@ -49,6 +48,11 @@ private:
 	/** Mesh for 3st person perspective */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh3P;
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Fire
+	
+	// TODO:
 	
 	
 	//////////////////////////////////////////////////////////////////////////

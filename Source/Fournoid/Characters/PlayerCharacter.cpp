@@ -55,14 +55,10 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAction("Run", IE_Pressed, this, &AFournoidCharacter::StartRunning);
 	InputComponent->BindAction("Run", IE_Released, this, &AFournoidCharacter::StopRunning);
 	
-	//InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &APlayerCharacter::TouchStarted);
-	if( EnableTouchscreenMovement(InputComponent) == false )
-	{
-		InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::OnFire);
-	}
-	
 	InputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
+	
+	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::OnFire);
 	
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
@@ -110,66 +106,6 @@ void APlayerCharacter::OnFire()
 	
 }
 
-void APlayerCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if( TouchItem.bIsPressed == true )
-	{
-		return;
-	}
-	TouchItem.bIsPressed = true;
-	TouchItem.FingerIndex = FingerIndex;
-	TouchItem.Location = Location;
-	TouchItem.bMoved = false;
-}
-
-void APlayerCharacter::EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if (TouchItem.bIsPressed == false)
-	{
-		return;
-	}
-	if( ( FingerIndex == TouchItem.FingerIndex ) && (TouchItem.bMoved == false) )
-	{
-		OnFire();
-	}
-	TouchItem.bIsPressed = false;
-}
-
-void APlayerCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
-{
-	if ((TouchItem.bIsPressed == true) && ( TouchItem.FingerIndex==FingerIndex))
-	{
-		if (TouchItem.bIsPressed)
-		{
-			if (GetWorld() != nullptr)
-			{
-				UGameViewportClient* ViewportClient = GetWorld()->GetGameViewport();
-				if (ViewportClient != nullptr)
-				{
-					FVector MoveDelta = Location - TouchItem.Location;
-					FVector2D ScreenSize;
-					ViewportClient->GetViewportSize(ScreenSize);
-					FVector2D ScaledDelta = FVector2D( MoveDelta.X, MoveDelta.Y) / ScreenSize;									
-					if (ScaledDelta.X != 0.0f)
-					{
-						TouchItem.bMoved = true;
-						float Value = ScaledDelta.X * BaseTurnRate;
-						AddControllerYawInput(Value);
-					}
-					if (ScaledDelta.Y != 0.0f)
-					{
-						TouchItem.bMoved = true;
-						float Value = ScaledDelta.Y* BaseTurnRate;
-						AddControllerPitchInput(Value);
-					}
-					TouchItem.Location = Location;
-				}
-				TouchItem.Location = Location;
-			}
-		}
-	}
-}
-
 void APlayerCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
@@ -198,19 +134,6 @@ void APlayerCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
-}
-
-bool APlayerCharacter::EnableTouchscreenMovement(class UInputComponent* InputComponent)
-{
-	bool bResult = false;
-	if(FPlatformMisc::GetUseVirtualJoysticks() || GetDefault<UInputSettings>()->bUseMouseForTouch )
-	{
-		bResult = true;
-		InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &APlayerCharacter::BeginTouch);
-		InputComponent->BindTouch(EInputEvent::IE_Released, this, &APlayerCharacter::EndTouch);
-		InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &APlayerCharacter::TouchUpdate);
-	}
-	return bResult;
 }
 
 void APlayerCharacter::SpawnKeeper()

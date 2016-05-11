@@ -45,7 +45,7 @@ void AFournoidWeapon::BeginPlay()
 void AFournoidWeapon::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
+	
 }
 
 void AFournoidWeapon::SetOwningPawn(AFournoidCharacter* OwningChara)
@@ -59,9 +59,6 @@ void AFournoidWeapon::SetOwningPawn(AFournoidCharacter* OwningChara)
 		SetOwner(OwningChara);
 	}
 }
-
-//////////////////////////////////////////////////////////////////////////
-// Inventory/Weapon
 
 void AFournoidWeapon::OnEquip()
 {
@@ -108,8 +105,8 @@ void AFournoidWeapon::DetachWeaponFromPawn()
 {
 	if (Mesh1P)
 	{
-    	Mesh1P->DetachFromParent();
-    	Mesh1P->SetHiddenInGame(true);
+		Mesh1P->DetachFromParent();
+		Mesh1P->SetHiddenInGame(true);
 	}
 	if (Mesh3P)
 	{
@@ -117,9 +114,6 @@ void AFournoidWeapon::DetachWeaponFromPawn()
 		Mesh3P->SetHiddenInGame(true);
 	}
 }
-
-//////////////////////////////////////////////////////////////////////////
-// Replicate
 
 void AFournoidWeapon::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const
 {

@@ -24,6 +24,7 @@ public:
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Inventory
+	
 public:
 	virtual void OnEquip();
 	
@@ -35,10 +36,12 @@ public:
 	
 	void DetachWeaponFromPawn();
 	
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, ReplicatedUsing=OnRep_MyPawn)
 	class AFournoidCharacter* MyPawn;
 	
+	
 private:
+	
 	/** Mesh for 1st person perspective */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh1P;
@@ -46,5 +49,14 @@ private:
 	/** Mesh for 3st person perspective */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	USkeletalMeshComponent* Mesh3P;
+	
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Replicate
+	
+protected:
+	
+	UFUNCTION()
+	void OnRep_MyPawn();
 	
 };

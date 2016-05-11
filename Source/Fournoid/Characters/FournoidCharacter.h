@@ -78,6 +78,7 @@ protected:
 public:
 	//////////////////////////////////////////////////////////////////////////
 	// Inventory/Weapon
+	
 	FName GetWeaponAttachPoint() const;
 	
 protected:
@@ -89,6 +90,9 @@ protected:
 	
 	void SetCurrentWeapon(class AFournoidWeapon* Weapon);
 	
+	UFUNCTION(Reliable, WithValidation, Server)
+	void ServerEquipWeapon(class AFournoidWeapon* Weapon);
+	
 	UPROPERTY(EditDefaultsOnly, Category=Inventory)
 	TArray<TSubclassOf<class AFournoidWeapon>> WeaponClasses;
 	
@@ -98,15 +102,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Weapon)
 	FName WeaponSocketName;
 	
+	UPROPERTY(Transient, ReplicatedUsing=OnRep_CurrentWeapon)
 	class AFournoidWeapon* CurrentWeapon;
 	
-	/////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	// IDamageable
+	
 public:
 	void ReceiveDamage(float Damage) override;
 	
-	/////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	// Mesh
+	
 public:
 	
 	USkeletalMeshComponent* GetPawnMesh(bool IsFirstPerson) const;
@@ -116,5 +123,13 @@ protected:
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
 	class USkeletalMeshComponent* Mesh1P;
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Replicate
+	
+protected:
+	
+	UFUNCTION()
+	void OnRep_CurrentWeapon();
 	
 };

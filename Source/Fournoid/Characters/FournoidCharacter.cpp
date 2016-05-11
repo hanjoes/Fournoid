@@ -119,6 +119,9 @@ void AFournoidCharacter::GetLifetimeReplicatedProps( TArray< FLifetimeProperty >
 	
 	// only to local owner: weapon change requests are locally instigated, other clients don't need it
 	DOREPLIFETIME_CONDITION( AFournoidCharacter, Inventory, COND_OwnerOnly );
+	
+	// everyone
+	DOREPLIFETIME( AFournoidCharacter, CurrentWeapon );
 }
 
 void AFournoidCharacter::SpawnInventory()
@@ -166,8 +169,19 @@ void AFournoidCharacter::EquipWeapon(AFournoidWeapon *Weapon)
 		}
 		else
 		{
+			ServerEquipWeapon(Weapon);
 		}
 	}
+}
+
+bool AFournoidCharacter::ServerEquipWeapon_Validate(AFournoidWeapon *Weapon)
+{
+	return true;
+}
+
+void AFournoidCharacter::ServerEquipWeapon_Implementation(AFournoidWeapon *Weapon)
+{
+	EquipWeapon(Weapon);
 }
 
 void AFournoidCharacter::SetCurrentWeapon(class AFournoidWeapon *Weapon)
@@ -178,8 +192,12 @@ void AFournoidCharacter::SetCurrentWeapon(class AFournoidWeapon *Weapon)
 		CurrentWeapon->OnUnEquip();
 	}
 	
-	Weapon->OnEquip();
 	CurrentWeapon = Weapon;
+	
+	if (Weapon) {
+		Weapon->SetOwningPawn(this);
+    	Weapon->OnEquip();
+	}
 }
 
 USkeletalMeshComponent* AFournoidCharacter::GetPawnMesh(bool IsFirstPerson) const
@@ -195,4 +213,9 @@ FName AFournoidCharacter::GetWeaponAttachPoint() const
 bool AFournoidCharacter::IsDead() const
 {
 	return bIsDead;
+}
+
+void AFournoidCharacter::OnRep_CurrentWeapon()
+{
+	SetCurrentWeapon(CurrentWeapon);
 }

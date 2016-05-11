@@ -11,8 +11,6 @@ AFournoidWeapon::AFournoidWeapon()
 	Mesh1P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
 	Mesh1P->bReceivesDecals = false;
 	Mesh1P->CastShadow = false;
-	Mesh1P->bOwnerNoSee = false;
-	Mesh1P->bOnlyOwnerSee = true;
 	Mesh1P->SetCollisionObjectType(ECC_WorldDynamic);
 	Mesh1P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Mesh1P->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -22,8 +20,6 @@ AFournoidWeapon::AFournoidWeapon()
 	Mesh3P->MeshComponentUpdateFlag = EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered;
 	Mesh3P->bReceivesDecals = false;
 	Mesh3P->CastShadow = false;
-	Mesh1P->bOwnerNoSee = true;
-	Mesh1P->bOnlyOwnerSee = false;
 	Mesh3P->SetCollisionObjectType(ECC_WorldDynamic);
 	Mesh3P->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	Mesh3P->SetCollisionResponseToAllChannels(ECR_Ignore);
@@ -60,7 +56,6 @@ void AFournoidWeapon::SetOwningPawn(AFournoidCharacter* OwningChara)
 		Instigator = OwningChara;
 		MyPawn = OwningChara;
 		
-		UE_LOG(Fournoid, Warning, TEXT("Setting Owner"));
 		SetOwner(OwningChara);
 	}
 }
@@ -92,7 +87,6 @@ void AFournoidWeapon::AttachWeaponToPawn()
 		auto AttachPoint = MyPawn->GetWeaponAttachPoint();
 		
 		// Let bOnlyOwnerSee, bOwnerNoSee determine visibility.
-		
 		auto PawnMesh1P = MyPawn->GetPawnMesh(true);
 		if (Mesh1P && PawnMesh1P)
 		{
@@ -106,10 +100,38 @@ void AFournoidWeapon::AttachWeaponToPawn()
 			Mesh3P->SetHiddenInGame(false);
 			Mesh3P->AttachTo(PawnMesh3P, AttachPoint);
 		}
+		
 	}
 }
 
 void AFournoidWeapon::DetachWeaponFromPawn()
 {
+	if (Mesh1P)
+	{
+    	Mesh1P->DetachFromParent();
+    	Mesh1P->SetHiddenInGame(true);
+	}
+	if (Mesh3P)
+	{
+		Mesh3P->DetachFromParent();
+		Mesh3P->SetHiddenInGame(true);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////
+// Replicate
+
+void AFournoidWeapon::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const
+{
+	Super::GetLifetimeReplicatedProps( OutLifetimeProps );
 	
+	DOREPLIFETIME( AFournoidWeapon, MyPawn );
+}
+
+void AFournoidWeapon::OnRep_MyPawn()
+{
+	if (MyPawn)
+	{
+		OnEnterInventory(MyPawn);
+	}
 }

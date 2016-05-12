@@ -50,7 +50,7 @@ void ASpawnVolume::SpawnEnemy()
 			{
 				AEnemyCharacter *EnemyChar = *ActorItr;
 				Enemies.Add(EnemyChar);
-				GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, FString::FromInt(Enemies.Num()));
+				//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, FString::FromInt(Enemies.Num()));
 			}
 			
 			if(Enemies.Num()<MaxEnenyNum){

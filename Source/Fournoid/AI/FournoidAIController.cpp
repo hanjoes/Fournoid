@@ -26,10 +26,49 @@ void AFournoidAIController::Possess(APawn *InPawn){
 		EnemyKeyID = BlackboardComp->GetKeyID("Target");
 		
 		BehaviorComp ->StartTree(*Enemy->BotBehavior);
-		
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "Behavior");
 	}
 	
 }
 
+void AFournoidAIController::ShootEnemy(){
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Shooting!");
 
+}
+
+void AFournoidAIController::FindClosestEnemy(){
+	APawn* MyBot = GetPawn();
+	if (MyBot == NULL)
+	{
+		return;
+	}
+	
+	const FVector MyLoc = MyBot->GetActorLocation();
+	float BestDistSq = MAX_FLT;
+	AFournoidCharacter* BestPawn = NULL;
+	
+	for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
+	{
+		AFournoidCharacter* TestPawn = Cast<AFournoidCharacter>(*It);
+		if (TestPawn && !TestPawn->IsDead() && TestPawn->GetController()->IsA(APlayerController::StaticClass()))
+		{
+			const float DistSq = (TestPawn->GetActorLocation() - MyLoc).SizeSquared();
+			if (DistSq < BestDistSq)
+			{
+				BestDistSq = DistSq;
+				BestPawn = TestPawn;
+			}
+		}
+	}
+	
+	if (BestPawn)
+	{
+		SetEnemy(BestPawn);
+	}
+}
+
+void AFournoidAIController::SetEnemy(APawn *InPawn){
+	if(BlackboardComp){
+		BlackboardComp->SetValue<UBlackboardKeyType_Object>(EnemyKeyID, InPawn);
+//		SetFocus(InPawn);
+	}
+}

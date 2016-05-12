@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Fournoid.h"
+#include "Bullets/FournoidBullet.h"
 #include "EnemyCharacter.h"
 
 
@@ -11,6 +12,7 @@ AEnemyCharacter::AEnemyCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	SetupCollisionBehavior();
+	PatrolLocation = FVector(-1,-1,-1);
 }
 
 // Called when the game starts or when spawned
@@ -33,10 +35,45 @@ void AEnemyCharacter::SetupCollisionBehavior()
 void AEnemyCharacter::ReceiveDamage(float Damage)
 {
 	Super::ReceiveDamage(Damage);
-	
-	if (Health <= 0)
-	{
-		GetMesh()->SetSimulatePhysics(true);
+	if(IsDead()){
+		FTimerHandle UnusedHandle;
+		DetachFromControllerPendingDestroy();
+		SetLifeSpan(2.f);
 	}
 }
+
+//This can be a function for the base class, AFounoidCharacter, as well as related variables
+void AEnemyCharacter:: OnFire(){
+	FournoidUtils::RedMessage("Firing");
+	if (BulletClass != NULL)
+	{
+		// Get the actors rotation caused by control in world space.
+		const FRotator SpawnRotation = GetControlRotation();
+		// Tarnsform the SpawnOffset from local space to world space.
+		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(SpawnOffset);
+		
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			// spawn the projectile at the muzzle
+			World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
+		}
+	}
+}
+
+
+FVector AEnemyCharacter::GetPatrolLoc(){
+	return PatrolLocation;
+}
+
+TQueue<FVector>*
+AEnemyCharacter::GetEnemyLocs(){
+	return &EnemyLocations;
+}
+
+void
+AEnemyCharacter::SetPatrolLoc(FVector Location){
+	PatrolLocation = Location;
+}
+
 

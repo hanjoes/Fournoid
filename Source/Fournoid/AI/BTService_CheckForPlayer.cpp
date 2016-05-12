@@ -9,6 +9,7 @@
 #include "FournoidAIController.h"
 #include "Characters/EnemyCharacter.h"
 #include "BTService_CheckForPlayer.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UBTService_CheckForPlayer::UBTService_CheckForPlayer(){
 	bCreateNodeInstance = true;
@@ -16,16 +17,39 @@ UBTService_CheckForPlayer::UBTService_CheckForPlayer(){
 }
 
 void UBTService_CheckForPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds){
-	AFournoidAIController *EnemyPC = Cast<AFournoidAIController>(OwnerComp.GetAIOwner());
+	AFournoidAIController *CharPC = Cast<AFournoidAIController>(OwnerComp.GetAIOwner());
 	
-	if(EnemyPC){
-		AFournoidCharacter *Enemy = Cast<AFournoidCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	if(CharPC){
+		
+		CharPC->FindClosestEnemy();
+		AFournoidCharacter *Enemy =Cast<AFournoidCharacter>( OwnerComp.GetBlackboardComponent()->GetValue<UBlackboardKeyType_Object>(CharPC->EnemyKeyID)) ;
 		
 		if(Enemy){
-			OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Object>(EnemyPC->EnemyKeyID,Enemy);
+
+			FVector AILocation = CharPC->AActor::GetActorLocation();
+			FVector EnemyLocation = Enemy->GetActorLocation();
+			FVector Direction = UKismetMathLibrary::Normal(EnemyLocation-AILocation);
+			FVector CharForward = CharPC->GetActorForwardVector();
 			
-			EnemyPC->MoveToActor(Enemy,5.f,true,true,true,0,true);
-			//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, "I'm an Enemy");
+			float Angel = UKismetMathLibrary::DegAcos(UKismetMathLibrary::Dot_VectorVector(Direction, CharForward));
+			
+			float Distance =sqrt( (EnemyLocation-AILocation).SizeSquared());
+			float speed = Cast<AEnemyCharacter>(CharPC->GetCharacter())->GetCharacterMovement()->MaxWalkSpeed = 200;
+			FournoidUtils::GreenMessage(FString::SanitizeFloat(speed));
+			FournoidUtils::BlueMessage(FString::SanitizeFloat(Angel)+","+FString::SanitizeFloat(Distance));
+			
+			if( Angel<60 && Distance <2000){
+				
+				CharPC->SetFocus(Enemy);
+				OwnerComp.GetBlackboardComponent()->SetValueAsEnum("AIState", 1);
+				Cast<AEnemyCharacter>(CharPC->GetCharacter())->OnFire();
+				OwnerComp.GetBlackboardComponent()->SetValueAsObject("Target", NULL);
+				
+			}else{
+				CharPC->ClearFocus(EAIFocusPriority::Gameplay);
+
+				OwnerComp.GetBlackboardComponent()->SetValueAsEnum("AIState", 0);
+			}
 		}
 	}
 }

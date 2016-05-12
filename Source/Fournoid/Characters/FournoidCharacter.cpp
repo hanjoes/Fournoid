@@ -23,6 +23,10 @@ void AFournoidCharacter::BeginPlay()
 void AFournoidCharacter::ReceiveDamage(float Damage)
 {
 	Health -= Damage;
+    if (Health <= 0.0f)
+    {
+        bIsDead = true;
+    }
 }
 
 void AFournoidCharacter::SetSpeedBoostScale(float NewScale)
@@ -68,4 +72,9 @@ void AFournoidCharacter::Tick(float DeltaTime)
 
 void AFournoidCharacter::SpawnKeeper()
 {
+}
+
+bool AFournoidCharacter::IsDead() const
+{
+	return bIsDead;
 }

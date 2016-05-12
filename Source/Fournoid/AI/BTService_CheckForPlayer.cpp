@@ -40,10 +40,10 @@ void UBTService_CheckForPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 			
 			if( Angel<60 && Distance <2000){
 				
-				CharPC->SetFocus(Enemy);
+				
 				OwnerComp.GetBlackboardComponent()->SetValueAsEnum("AIState", 1);
-				Cast<AEnemyCharacter>(CharPC->GetCharacter())->OnFire();
-				OwnerComp.GetBlackboardComponent()->SetValueAsObject("Target", NULL);
+				
+				OwnerComp.GetBlackboardComponent()->SetValueAsObject("Target", Enemy);
 				
 			}else{
 				CharPC->ClearFocus(EAIFocusPriority::Gameplay);

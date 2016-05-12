@@ -12,11 +12,13 @@
 
 EBTNodeResult::Type
 UBTTask_MoveToPlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory){
-	AFournoidAIController *EnemyPC = Cast<AFournoidAIController>(OwnerComp.GetAIOwner());
+	AFournoidAIController *CharPC = Cast<AFournoidAIController>(OwnerComp.GetAIOwner());
 	
-	AFournoidCharacter *Enemy = Cast<AFournoidCharacter>(OwnerComp.GetBlackboardComponent()->GetValue<UBlackboardKeyType_Object>(EnemyPC->EnemyKeyID));
+	AFournoidCharacter *Enemy = Cast<AFournoidCharacter>(OwnerComp.GetBlackboardComponent()->GetValue<UBlackboardKeyType_Object>(CharPC->EnemyKeyID));
 	
 	if(Enemy){
+		CharPC->SetFocus(Enemy);
+		Cast<AEnemyCharacter>(CharPC->GetCharacter())->OnFire();
 		return EBTNodeResult::Succeeded;
 	}
 	

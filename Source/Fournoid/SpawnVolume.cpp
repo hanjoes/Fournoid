@@ -50,10 +50,11 @@ void ASpawnVolume::SpawnEnemy()
 			{
 				AEnemyCharacter *EnemyChar = *ActorItr;
 				Enemies.Add(EnemyChar);
-				//GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Orange, FString::FromInt(Enemies.Num()));
+				//FournoidUtils::YellowMessage(FString::FromInt(Enemies.Num()));
 			}
 			
 			if(Enemies.Num()<MaxEnenyNum){
+				//FournoidUtils::YellowMessage("Spawning....");
 				FVector SpawnLocation = GetRandomPointInVolume();
 				World->SpawnActor<AEnemyCharacter>(EnemyToSpawn, SpawnLocation, FRotator::ZeroRotator);
 				registerTimer();

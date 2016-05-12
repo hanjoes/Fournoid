@@ -228,42 +228,21 @@ float AFournoidCharacter::TakeDamage(float Damage, const struct FDamageEvent &Da
 
 void AFournoidCharacter::StartFire()
 {
-	// try and fire a projectile
-	if (BulletClass != NULL)
+	if ( CurrentWeapon )
 	{
-		// Get the actors rotation caused by control in world space.
-		const FRotator SpawnRotation = GetControlRotation();
-		// Tarnsform the SpawnOffset from local space to world space.
-		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(SpawnOffset);
-		
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			// spawn the projectile at the muzzle
-			World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
-		}
+		CurrentWeapon->StartFire();
 	}
-	
-	// try and play the sound if specified
-	if (FireSound != NULL)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
-	
-	// try and play a firing animation if specified
-	if (FireAnimation != NULL)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if (AnimInstance != NULL)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
-	
 }
 
 void AFournoidCharacter::StopFire()
 {
-	
+	if ( CurrentWeapon )
+	{
+		CurrentWeapon->StopFire();
+	}
+}
+
+bool AFournoidCharacter::IsFirstPerson() const
+{
+	return IsLocallyControlled();
 }

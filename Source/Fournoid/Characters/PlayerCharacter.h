@@ -50,9 +50,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 	
+	/////////////////////////////////////////////////
+	// Keeper
+	
 protected:
 	
 	void SpawnKeeper() override;
+	
+	// TODO: This is for keeper not bullet.
+	
+	/** Gun muzzle's offset from the characters location */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	FVector SpawnOffset;
 	
 	/////////////////////////////////////////////////
 	// APawn

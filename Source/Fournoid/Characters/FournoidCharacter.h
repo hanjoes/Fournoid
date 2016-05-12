@@ -29,6 +29,8 @@ public:
 	void StopRunning();
 	
 	void Die();
+	
+	bool IsFirstPerson() const;
 
 	/** Take damage, handle death */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
@@ -137,24 +139,6 @@ protected:
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Weapon Fire
-	
-	// TODO: Bullet related code should be moved into weapon.
-	
-	/** Gun muzzle's offset from the characters location */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector SpawnOffset;
-	
-	/** Bullet class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Bullet)
-	TSubclassOf<class AFournoidBullet> BulletClass;
-	
-	/** Sound to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	class USoundBase* FireSound;
-	
-	/** AnimMontage to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	class UAnimMontage* FireAnimation;
 	
 	virtual void StartFire();
 	

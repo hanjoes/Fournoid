@@ -36,8 +36,6 @@ APlayerCharacter::APlayerCharacter()
 	
 	Mesh1P->AttachParent = FirstPersonCameraComponent;
 	
-	// Default offset from the character location for projectiles to spawn
-	SpawnOffset = FVector(100.0f, 30.0f, 10.0f);
 	PrimaryActorTick.bCanEverTick = true;
 }
 

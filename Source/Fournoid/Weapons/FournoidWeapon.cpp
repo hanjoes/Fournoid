@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Fournoid.h"
+#include "Bullets/FournoidBullet.h"
 #include "FournoidWeapon.h"
 
 
@@ -32,6 +33,9 @@ AFournoidWeapon::AFournoidWeapon()
 	PrimaryActorTick.TickGroup = TG_PrePhysics;
 	bReplicates = true;
 	bNetUseOwnerRelevancy = true;
+	
+	CurrentState = WeaponState::WS_Idle;
+	FiringRate = .3f;
 }
 
 // Called when the game starts or when spawned
@@ -44,7 +48,7 @@ void AFournoidWeapon::BeginPlay()
 // Called every frame
 void AFournoidWeapon::Tick( float DeltaTime )
 {
-	Super::Tick( DeltaTime );
+	Super::Tick(DeltaTime);
 	
 }
 
@@ -52,7 +56,6 @@ void AFournoidWeapon::SetOwningPawn(AFournoidCharacter* OwningChara)
 {
 	if (MyPawn != OwningChara)
 	{
-		// TODO: Not sure what Instigator does...
 		Instigator = OwningChara;
 		MyPawn = OwningChara;
 		
@@ -118,7 +121,7 @@ void AFournoidWeapon::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & 
 {
 	Super::GetLifetimeReplicatedProps( OutLifetimeProps );
 	
-	DOREPLIFETIME( AFournoidWeapon, MyPawn );
+	DOREPLIFETIME(AFournoidWeapon, MyPawn);
 }
 
 void AFournoidWeapon::OnRep_MyPawn()
@@ -126,5 +129,97 @@ void AFournoidWeapon::OnRep_MyPawn()
 	if (MyPawn)
 	{
 		OnEnterInventory(MyPawn);
+	}
+}
+
+USkeletalMeshComponent* AFournoidWeapon::GetWeaponMesh() const
+{
+	return (MyPawn && MyPawn->IsFirstPerson()) ? Mesh1P : Mesh3P;
+}
+
+FVector AFournoidWeapon::GetMuzzleLocation() const
+{
+	auto UseMesh = GetWeaponMesh();
+	return UseMesh->GetSocketLocation(MuzzleSocketName);
+}
+
+void AFournoidWeapon::StartFire()
+{
+	SetWeaponState(WeaponState::WS_Firing);
+}
+
+void AFournoidWeapon::StopFire()
+{
+	SetWeaponState(WeaponState::WS_Idle);
+}
+
+void AFournoidWeapon::OnFireStarted()
+{
+	// Not checking last fire time for simplicity, so players can
+	// cheat if they have a finger that's quick enough...
+	FireBullet();
+}
+
+void AFournoidWeapon::OnFireStopped()
+{
+	GetWorldTimerManager().ClearTimer(TimerHandle_HandleFireBullet);
+}
+
+void AFournoidWeapon::FireBullet()
+{
+	if ( BulletClass )
+	{
+		if ( MyPawn )
+		{
+			const auto SpawnRotation = MyPawn->GetControlRotation();
+			const auto SpawnLocation = GetMuzzleLocation();
+			const auto World = GetWorld();
+			
+			if ( World )
+			{
+				World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
+				PlayFireSound();
+				PlayFireAnimation();
+				
+			}
+			GetWorldTimerManager().SetTimer(TimerHandle_HandleFireBullet, this, &AFournoidWeapon::FireBullet, FiringRate, false);
+		}
+	}
+}
+
+void AFournoidWeapon::PlayFireSound()
+{
+	if ( FireSound )
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+	}
+}
+
+void AFournoidWeapon::PlayFireAnimation()
+{
+	if ( FireAnimation )
+	{
+		auto AnimInstance = Mesh1P->GetAnimInstance();
+		if ( AnimInstance )
+		{
+			AnimInstance->Montage_Play(FireAnimation, 1.f);
+		}
+	}
+}
+
+void AFournoidWeapon::SetWeaponState(WeaponState NewState)
+{
+	const auto PrevState = CurrentState;
+	
+	if ( PrevState == WeaponState::WS_Firing && NewState != WeaponState::WS_Firing )
+	{
+		OnFireStopped();
+	}
+	
+	CurrentState = NewState;
+	
+	if ( CurrentState == WeaponState::WS_Firing )
+	{
+		OnFireStarted();
 	}
 }

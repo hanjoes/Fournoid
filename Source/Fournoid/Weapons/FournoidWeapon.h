@@ -81,10 +81,13 @@ public:
 	
 	/** Called by APawn to stop firing the weapon */
 	virtual void StopFire();
+//	
+//	/** Called by client to play sound FX for the weapon  */
+//	void PlayWeaponSound(USoundCue* WeaponSound);
 	
 protected:
 	
-	/** Fire bullets */
+	/** [local + server] Fire bullets */
 	virtual void FireBullet();
 	
 	/** Plays the fire montage */
@@ -142,5 +145,11 @@ protected:
 	/** MyPawn replication callback. */
 	UFUNCTION()
 	void OnRep_MyPawn();
+	
+	UFUNCTION(Reliable, Server, WithValidation)
+	void ServerStartFire();
+	
+	UFUNCTION(Reliable, Server, WithValidation)
+	void ServerStopFire();
 	
 };

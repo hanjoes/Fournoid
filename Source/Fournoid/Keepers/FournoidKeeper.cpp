@@ -28,13 +28,15 @@ AFournoidKeeper::AFournoidKeeper()
 	
 	KeeperMovement = CreateDefaultSubobject<UMovementComponent>(TEXT("KeeperMovement"));
 	KeeperMovement->UpdatedComponent = KeeperSphereComp;
+	
+	bReplicates = true;
+	bReplicateMovement = true;
 }
 
 // Called when the game starts or when spawned
 void AFournoidKeeper::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame

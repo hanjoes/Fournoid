@@ -145,11 +145,21 @@ FVector AFournoidWeapon::GetMuzzleLocation() const
 
 void AFournoidWeapon::StartFire()
 {
+	if ( Role < ROLE_Authority )
+	{
+		ServerStartFire();
+	}
+	
 	SetWeaponState(WeaponState::WS_Firing);
 }
 
 void AFournoidWeapon::StopFire()
 {
+	if ( Role < ROLE_Authority )
+	{
+		ServerStopFire();
+	}
+	
 	SetWeaponState(WeaponState::WS_Idle);
 }
 
@@ -158,6 +168,26 @@ void AFournoidWeapon::OnFireStarted()
 	// Not checking last fire time for simplicity, so players can
 	// cheat if they have a finger that's quick enough...
 	FireBullet();
+}
+
+bool AFournoidWeapon::ServerStartFire_Validate()
+{
+	return true;
+}
+
+void AFournoidWeapon::ServerStartFire_Implementation()
+{
+	StartFire();
+}
+
+bool AFournoidWeapon::ServerStopFire_Validate()
+{
+	return true;
+}
+
+void AFournoidWeapon::ServerStopFire_Implementation()
+{
+	StopFire();
 }
 
 void AFournoidWeapon::OnFireStopped()

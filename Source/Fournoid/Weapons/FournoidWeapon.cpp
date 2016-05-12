@@ -97,7 +97,6 @@ void AFournoidWeapon::AttachWeaponToPawn()
 			Mesh3P->SetHiddenInGame(false);
 			Mesh3P->AttachTo(PawnMesh3P, AttachPoint);
 		}
-		
 	}
 }
 

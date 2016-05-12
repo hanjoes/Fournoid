@@ -50,28 +50,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
 	
-	/////////////////////////////////////////////////
-	// Fire
-	
-	/** Fires a bullet. */
-	void OnFire();
-	
-	/** Gun muzzle's offset from the characters location */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	FVector SpawnOffset;
-	
-	/** Bullet class to spawn */
-	UPROPERTY(EditDefaultsOnly, Category=Bullet)
-	TSubclassOf<class AFournoidBullet> BulletClass;
-	
-	/** Sound to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	class USoundBase* FireSound;
-	
-	/** AnimMontage to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
-	class UAnimMontage* FireAnimation;
-	
 protected:
 	
 	void SpawnKeeper() override;

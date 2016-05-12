@@ -138,8 +138,27 @@ protected:
 	//////////////////////////////////////////////////////////////////////////
 	// Weapon Fire
 	
-	// TODO:
+	// TODO: Bullet related code should be moved into weapon.
 	
+	/** Gun muzzle's offset from the characters location */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	FVector SpawnOffset;
+	
+	/** Bullet class to spawn */
+	UPROPERTY(EditDefaultsOnly, Category=Bullet)
+	TSubclassOf<class AFournoidBullet> BulletClass;
+	
+	/** Sound to play each time we fire */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	class USoundBase* FireSound;
+	
+	/** AnimMontage to play each time we fire */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	class UAnimMontage* FireAnimation;
+	
+	virtual void StartFire();
+	
+	virtual void StopFire();
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Replicate

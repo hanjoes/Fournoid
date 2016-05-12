@@ -58,7 +58,8 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 	
-	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::OnFire);
+	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::StartFire);
+	InputComponent->BindAction("Fire", IE_Released, this, &APlayerCharacter::StopFire);
 	
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
@@ -67,43 +68,6 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAxis("TurnRate", this, &APlayerCharacter::TurnAtRate);
 	InputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	InputComponent->BindAxis("LookUpRate", this, &APlayerCharacter::LookUpAtRate);
-}
-
-void APlayerCharacter::OnFire()
-{
-	// try and fire a projectile
-	if (BulletClass != NULL)
-	{
-		// Get the actors rotation caused by control in world space.
-		const FRotator SpawnRotation = GetControlRotation();
-		// Tarnsform the SpawnOffset from local space to world space.
-		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(SpawnOffset);
-		
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			// spawn the projectile at the muzzle
-			World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
-		}
-	}
-	
-	// try and play the sound if specified
-	if (FireSound != NULL)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
-	
-	// try and play a firing animation if specified
-	if(FireAnimation != NULL)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if(AnimInstance != NULL)
-		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
-		}
-	}
-	
 }
 
 void APlayerCharacter::MoveForward(float Value)

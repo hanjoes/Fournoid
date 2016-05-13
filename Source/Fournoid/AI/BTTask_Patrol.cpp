@@ -29,12 +29,11 @@ UBTTask_Patrol::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 		const FVector Loc = UNavigationSystem::GetRandomPointInNavigableRadius(MyController, SearchOrigin, SearchRadius);
 		
 		float speed = Cast<AEnemyCharacter>(MyController->GetCharacter())->GetCharacterMovement()->MaxWalkSpeed = 300;
-		FournoidUtils::GreenMessage(FString::SanitizeFloat(speed));
+		//FournoidUtils::GreenMessage(FString::SanitizeFloat(speed));
 		if (Loc != FVector::ZeroVector)
 		{
 			OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Vector>(BlackboardKey.GetSelectedKeyID(), Loc);
 			
-			FournoidUtils::GreenMessage("Patroling");
 			return EBTNodeResult::Succeeded;
 		}
 		return EBTNodeResult::Failed;

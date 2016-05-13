@@ -54,6 +54,7 @@ void AFournoidAIController::FindClosestEnemy(){
 			const float DistSq = (TestPawn->GetActorLocation() - MyLoc).SizeSquared();
 			if (DistSq < BestDistSq)
 			{
+				//FournoidUtils::BlueMessage( FString::SanitizeFloat( sqrt(DistSq) ) );
 				BestDistSq = DistSq;
 				BestPawn = TestPawn;
 			}
@@ -69,8 +70,6 @@ void AFournoidAIController::FindClosestEnemy(){
 void AFournoidAIController::SetEnemy(APawn *InPawn){
 	if(BlackboardComp){
 		BlackboardComp->SetValueAsObject("Target", InPawn);
-		//BlackboardComp->SetValue<UBlackboardKeyType_Object>(EnemyKeyID, InPawn);
-		FournoidUtils::BlueMessage("Set");
-//		SetFocus(InPawn);
+		//FournoidUtils::BlueMessage("Set");
 	}
 }

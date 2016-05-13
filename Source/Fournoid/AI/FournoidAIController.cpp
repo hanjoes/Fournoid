@@ -68,7 +68,9 @@ void AFournoidAIController::FindClosestEnemy(){
 
 void AFournoidAIController::SetEnemy(APawn *InPawn){
 	if(BlackboardComp){
-		BlackboardComp->SetValue<UBlackboardKeyType_Object>(EnemyKeyID, InPawn);
+		BlackboardComp->SetValueAsObject("Target", InPawn);
+		//BlackboardComp->SetValue<UBlackboardKeyType_Object>(EnemyKeyID, InPawn);
+		FournoidUtils::BlueMessage("Set");
 //		SetFocus(InPawn);
 	}
 }

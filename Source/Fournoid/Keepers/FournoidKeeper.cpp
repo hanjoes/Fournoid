@@ -52,6 +52,7 @@ void AFournoidKeeper::Tick( float DeltaTime )
 	RunningTime += DeltaTime;
 	
 	//FollowMaster(DeltaTime);
+
 }
 
 // Called to bind functionality to input

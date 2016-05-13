@@ -16,7 +16,7 @@ class AFournoidCharacter : public ACharacter, public IDamageable
 	// Basic Behavior
 	
 public:
-	AFournoidCharacter();
+	AFournoidCharacter(const FObjectInitializer& ObjectInitializer);
 	
 	virtual void BeginPlay() override;
 	
@@ -53,7 +53,22 @@ public:
 	UFUNCTION(BlueprintPure, Category=Stats)
 	bool IsDead() const;
 	
+public:
+	
+	FORCEINLINE float GetCharacterHealth() const { return Health; }
+	
+	FORCEINLINE float GetCharacterStamina() const { return Stamina; }
+	
+	FORCEINLINE float GetStaminaRegenRate() const { return StaminaRegenRate; }
+	
+	FORCEINLINE float GetStaminaConsumeRate() const { return StaminaConsumeRate; }
+	
+	FORCEINLINE float GetSpeedScale() const { return SpeedBoostScale; }
+	
+	FORCEINLINE bool CharacterIsRunning() const { return bCharacterIsRunning; }
+	
 protected:
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
 	float Health;
 	
@@ -74,19 +89,6 @@ protected:
 	
 	UPROPERTY(Replicated)
 	bool bIsDead;
-	
-	FORCEINLINE float GetCharacterHealth() const { return Health; }
-	
-	FORCEINLINE float GetCharacterStamina() const { return Stamina; }
-	
-	FORCEINLINE float GetStaminaRegenRate() const { return StaminaRegenRate; }
-	
-	FORCEINLINE float GetStaminaConsumeRate() const { return StaminaConsumeRate; }
-	
-	FORCEINLINE float GetSpeedScale() const { return Stamina; }
-	
-	FORCEINLINE bool CharacterIsRunning() const { return bCharacterIsRunning; }
-	
 	//////////////////////////////////////////////////////////////////////////
 	// Inventory/Weapon
 	

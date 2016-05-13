@@ -16,6 +16,8 @@ ASpawnVolume::ASpawnVolume()
 	// Initialize the spawn component.
 	SpawnBox = CreateDefaultSubobject<UBoxComponent>(TEXT("WhereToSpawn"));
 	RootComponent = SpawnBox;
+	
+	EnemySpawned = 0;
 }
 
 // Called when the game starts or when spawned
@@ -44,20 +46,11 @@ void ASpawnVolume::SpawnEnemy()
 	if (EnemyToSpawn) {
 		UWorld* const World = GetWorld();
 		if (World) {
-			//find out all enemies and limit the number
-			TArray<AActor*> Enemies;
-			for (TActorIterator<AEnemyCharacter> ActorItr(World); ActorItr; ++ActorItr)
-			{
-				AEnemyCharacter *EnemyChar = *ActorItr;
-				Enemies.Add(EnemyChar);
-				//FournoidUtils::YellowMessage(FString::FromInt(Enemies.Num()));
-			}
-			
-			if(Enemies.Num()<MaxEnenyNum){
-				//FournoidUtils::YellowMessage("Spawning....");
+			if(EnemySpawned < MaxEnenyNum){
 				FVector SpawnLocation = GetRandomPointInVolume();
 				World->SpawnActor<AEnemyCharacter>(EnemyToSpawn, SpawnLocation, FRotator::ZeroRotator);
 				registerTimer();
+				EnemySpawned++;
 			}
 		}
 	}

@@ -15,6 +15,5 @@ float UFournoidMovementComponent::GetMaxSpeed() const
     		Speed *= Character->GetSpeedScale();
 		}
 	}
-	UE_LOG(Fournoid, Warning, TEXT("Max Speed: %f"), Speed);
 	return Speed;
 }

@@ -50,8 +50,13 @@ protected:
 	
 public:
 	
+	/** Returns whether the player is dead */
 	UFUNCTION(BlueprintPure, Category=Stats)
 	bool IsDead() const;
+	
+	/** Returns whether the player is alive */
+	UFUNCTION(BlueprintPure, Category=Stats)
+	bool IsAlive() const;
 	
 public:
 	
@@ -134,6 +139,8 @@ public:
 	USkeletalMeshComponent* GetPawnMesh(bool IsFirstPerson) const;
 	
 protected:
+	
+	void UpdatePawnMesh();
 	
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(VisibleDefaultsOnly, Category=Mesh)

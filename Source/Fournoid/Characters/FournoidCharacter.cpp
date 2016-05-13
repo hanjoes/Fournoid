@@ -63,7 +63,7 @@ void AFournoidCharacter::ReceiveDamage(float Damage)
 	Health -= Damage;
 	if (Health <= 0.0f)
 	{
-		bIsDead = true;
+		Die();
 	}
 }
 
@@ -213,6 +213,22 @@ bool AFournoidCharacter::IsDead() const
 	return bIsDead;
 }
 
+bool AFournoidCharacter::IsAlive() const
+{
+	return !bIsDead;
+}
+
+void AFournoidCharacter::UpdatePawnMesh()
+{
+	bool bFirstPerson = IsFirstPerson();
+
+	Mesh1P->MeshComponentUpdateFlag = !bFirstPerson ? EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered : EMeshComponentUpdateFlag::AlwaysTickPoseAndRefreshBones;
+	Mesh1P->SetOwnerNoSee(!bFirstPerson);
+
+	GetMesh()->MeshComponentUpdateFlag = bFirstPerson ? EMeshComponentUpdateFlag::OnlyTickPoseWhenRendered : EMeshComponentUpdateFlag::AlwaysTickPoseAndRefreshBones;
+	GetMesh()->SetOwnerNoSee(bFirstPerson);
+}
+
 void AFournoidCharacter::OnRep_CurrentWeapon()
 {
 	SetCurrentWeapon(CurrentWeapon);
@@ -241,5 +257,13 @@ void AFournoidCharacter::StopFire()
 
 bool AFournoidCharacter::IsFirstPerson() const
 {
-	return IsLocallyControlled();
+	return IsLocallyControlled() && IsAlive();
+}
+
+void AFournoidCharacter::Die()
+{
+	UE_LOG(Fournoid, Warning, TEXT("Player %s is dead."), *GetName());
+	bIsDead = true;
+	UpdatePawnMesh();
+	DetachFromControllerPendingDestroy();
 }

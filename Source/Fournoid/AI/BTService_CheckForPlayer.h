@@ -6,7 +6,7 @@
 #include "BTService_CheckForPlayer.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class FOURNOID_API UBTService_CheckForPlayer : public UBTService

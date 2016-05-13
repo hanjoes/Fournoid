@@ -6,7 +6,7 @@
 #include "BTTask_MoveToPlayer.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class FOURNOID_API UBTTask_MoveToPlayer : public UBTTask_BlackboardBase

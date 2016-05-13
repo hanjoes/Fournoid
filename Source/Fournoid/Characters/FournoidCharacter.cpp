@@ -11,6 +11,7 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
+
 AFournoidCharacter::AFournoidCharacter(const FObjectInitializer& ObjectInitializer)
 : Super(ObjectInitializer.SetDefaultSubobjectClass<UFournoidMovementComponent>(ACharacter::CharacterMovementComponentName))
 {

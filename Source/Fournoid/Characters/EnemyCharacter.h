@@ -24,6 +24,28 @@ public:
 	UPROPERTY(EditAnywhere, Category= Behavior)
 	class UBehaviorTree *BotBehavior;
 	
+	UPROPERTY(EditDefaultsOnly, Category=Bullet)
+	TSubclassOf<class AFournoidBullet> BulletClass;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
+	FVector SpawnOffset;
+	
+	/////////////////////////////////////////////////
+	// IDamageable
+public:
+	void SetPatrolLoc(FVector Location);
+	FVector GetPatrolLoc();
+	
+	TQueue<FVector> *GetEnemyLocs();
+	
+	void ReceiveDamage(float Damage) override;
+	
+	void OnFire();
+	
 private:
 	void SetupCollisionBehavior();
+	
+	TQueue<FVector> EnemyLocations;
+	
+	FVector PatrolLocation;
 };

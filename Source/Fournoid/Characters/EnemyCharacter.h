@@ -42,6 +42,7 @@ public:
 	
 	void OnFire();
 	
+
 private:
 	void SetupCollisionBehavior();
 	

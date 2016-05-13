@@ -19,7 +19,7 @@ AFournoidBullet::AFournoidBullet()
 	// Setup notification.
 	BulletSphereComp->OnComponentHit.AddDynamic(this, &AFournoidBullet::OnHit);
 	
-	// Player can't walk on it (for now...)
+	// Player can't walk on it
 	BulletSphereComp->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
 	BulletSphereComp->CanCharacterStepUpOn = ECB_No;
 	
@@ -44,6 +44,9 @@ AFournoidBullet::AFournoidBullet()
 	BulletParticleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BulletParticleSystem"));
 	BulletParticleComp->AttachParent = BulletSphereComp;
 	
+	bReplicates = true;
+	bReplicateMovement = true;
+	
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
 }
@@ -56,21 +59,21 @@ void AFournoidBullet::BeginPlay()
 }
 
 // Called every frame
-void AFournoidBullet::Tick( float DeltaTime )
+void AFournoidBullet::Tick(float DeltaTime)
 {
-	Super::Tick( DeltaTime );
+	Super::Tick(DeltaTime);
 }
 
 
 void AFournoidBullet::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	FournoidUtils::BlueMessage(TEXT("Bullet hit."));
 	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
+	if ( OtherActor && (OtherActor != this) && OtherComp )
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * BulletImpulseStrength, GetActorLocation());
 		IDamageable* DamageableObj = Cast<IDamageable>(OtherActor);
-		if (DamageableObj) {
+		if (DamageableObj)
+		{
 			DamageableObj->ReceiveDamage(BulletDamage);
 		}
 		

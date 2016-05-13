@@ -8,8 +8,8 @@ AFournoidGameMode::AFournoidGameMode()
 	: Super()
 {
 	// set default pawn class to our Blueprinted character
-	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FournoidAssets/Blueprints/PlayerCharacter_BP"));
-	DefaultPawnClass = PlayerPawnClassFinder.Class;
+	static ConstructorHelpers::FClassFinder<APawn> PlayerPawn(TEXT("/Game/FournoidAssets/Blueprints/PlayerCharacter_BP"));
+	DefaultPawnClass = PlayerPawn.Class;
 
 	// use our custom HUD class
 	HUDClass = AFournoidHUD::StaticClass();

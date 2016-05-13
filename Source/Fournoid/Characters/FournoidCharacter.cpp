@@ -262,6 +262,7 @@ bool AFournoidCharacter::IsFirstPerson() const
 
 void AFournoidCharacter::Die()
 {
+	UE_LOG(Fournoid, Warning, TEXT("Player %s is dead."), *GetName());
 	bIsDead = true;
 	UpdatePawnMesh();
 	DetachFromControllerPendingDestroy();

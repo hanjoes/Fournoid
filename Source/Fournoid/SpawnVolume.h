@@ -56,4 +56,6 @@ private:
 	class UBoxComponent *SpawnBox;
 	
 	FTimerHandle SpawnTimer;
+	
+	unsigned EnemySpawned;
 };

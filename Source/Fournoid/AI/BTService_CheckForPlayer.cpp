@@ -34,7 +34,7 @@ void UBTService_CheckForPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 			float Angel = UKismetMathLibrary::DegAcos(UKismetMathLibrary::Dot_VectorVector(Direction, CharForward));
 			
 			float Distance =sqrt( (EnemyLocation-AILocation).SizeSquared());
-			FournoidUtils::BlueMessage(FString::SanitizeFloat(Angel)+","+FString::SanitizeFloat(Distance));
+			//FournoidUtils::BlueMessage(FString::SanitizeFloat(Angel)+","+FString::SanitizeFloat(Distance));
 			
 			if( Angel<60 && Distance <2000){
 				OwnerComp.GetBlackboardComponent()->SetValueAsEnum("AIState", 1);

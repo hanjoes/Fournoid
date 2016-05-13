@@ -1,7 +1,8 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 
 #include "Fournoid.h"
-#include "Characters/FournoidCharacter.h"
+#include "FournoidCharacter.h"
+#include "FournoidMovementComponent.h"
 #include "Bullets/FournoidBullet.h"
 #include "Weapons/FournoidWeapon.h"
 #include "Keepers/FournoidKeeper.h"
@@ -10,7 +11,8 @@
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
-AFournoidCharacter::AFournoidCharacter()
+AFournoidCharacter::AFournoidCharacter(const FObjectInitializer& ObjectInitializer)
+: Super(ObjectInitializer.SetDefaultSubobjectClass<UFournoidMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
 	Mesh1P->AttachParent = GetCapsuleComponent();
@@ -66,18 +68,12 @@ void AFournoidCharacter::ReceiveDamage(float Damage)
 
 void AFournoidCharacter::StartRunning()
 {
-	GetCharacterMovement()->MaxWalkSpeed *= SpeedBoostScale;
 	bCharacterIsRunning = true;
 }
 
 void AFournoidCharacter::StopRunning()
 {
-	// Lower movement speed if character is running.
-	if (bCharacterIsRunning)
-	{
-		GetCharacterMovement()->MaxWalkSpeed /= SpeedBoostScale;
-		bCharacterIsRunning = false;
-	}
+	bCharacterIsRunning = false;
 }
 
 void AFournoidCharacter::Tick(float DeltaTime)

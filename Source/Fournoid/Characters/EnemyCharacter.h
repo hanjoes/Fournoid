@@ -12,13 +12,13 @@ class FOURNOID_API AEnemyCharacter : public AFournoidCharacter
 	
 public:
 	// Sets default values for this character's properties
-	AEnemyCharacter();
+	AEnemyCharacter(const FObjectInitializer& ObjectInitializer);
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
+	virtual void Tick(float DeltaSeconds) override;
 	
 	//Behavior Tree
 	UPROPERTY(EditAnywhere, Category= Behavior)

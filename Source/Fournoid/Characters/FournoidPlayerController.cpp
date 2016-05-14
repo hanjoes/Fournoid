@@ -29,3 +29,8 @@ void AFournoidPlayerController::ClientSetSpectatorCamera_Implementation(FVector 
 	SetInitialLocationAndRotation(CameraLocation, CameraRotation);
 	SetViewTarget(this);
 }
+
+void AFournoidPlayerController::UnFreeze()
+{
+	ServerRestartPlayer();
+}

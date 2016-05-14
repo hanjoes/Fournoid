@@ -85,6 +85,8 @@ public:
 //	/** Called by client to play sound FX for the weapon  */
 //	void PlayWeaponSound(USoundCue* WeaponSound);
 	
+	void NofityHit();
+	
 protected:
 	
 	/** [local + server] Fire bullets */

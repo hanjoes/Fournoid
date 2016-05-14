@@ -8,7 +8,6 @@
 
 // Sets default values
 AFournoidBullet::AFournoidBullet()
-: BulletImpulseStrength(10.0f), BulletDamage(25.0f)
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -16,27 +15,27 @@ AFournoidBullet::AFournoidBullet()
 	// Initialize bullet capsule component.
 	BulletSphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
 	BulletSphereComp->BodyInstance.SetCollisionProfileName("Projectile");
-	// Setup notification.
+	// Setup bullet hit
+	BulletSphereComp->SetNotifyRigidBodyCollision(true);
 	BulletSphereComp->OnComponentHit.AddDynamic(this, &AFournoidBullet::OnHit);
-	
 	// Player can't walk on it
 	BulletSphereComp->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
 	BulletSphereComp->CanCharacterStepUpOn = ECB_No;
-	
 	RootComponent = BulletSphereComp;
 	
 	// Create the bullet's static mesh component.
 	BulletMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BulletMesh"));
 	BulletMeshComp->AttachParent = BulletSphereComp;
-	// no point for the bullet to cast any shadow.
 	BulletMeshComp->bCastDynamicShadow = false;
 	BulletMeshComp->CastShadow = false;
+	BulletMeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	BulletMeshComp->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	
 	// Use a ProjectileMovementComponent to govern this projectile's movement
 	BulletMovementComp = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("BulletMovementComp"));
 	BulletMovementComp->UpdatedComponent = BulletSphereComp;
-	BulletMovementComp->InitialSpeed = 3000.0f;
-	BulletMovementComp->MaxSpeed = 3000.0f;
+	BulletMovementComp->InitialSpeed = 3000.f;
+	BulletMovementComp->MaxSpeed = 3000.f;
 	BulletMovementComp->bRotationFollowsVelocity = true;
 	BulletMovementComp->bShouldBounce = false;
 	
@@ -44,18 +43,20 @@ AFournoidBullet::AFournoidBullet()
 	BulletParticleComp = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BulletParticleSystem"));
 	BulletParticleComp->AttachParent = BulletSphereComp;
 	
+	
 	bReplicates = true;
 	bReplicateMovement = true;
 	
 	// Die after 3 seconds by default
-	InitialLifeSpan = 3.0f;
+	InitialLifeSpan = 3.f;
+	BulletImpulseStrength = 10.f;
+	BulletDamage = 25.f;
 }
 
 // Called when the game starts or when spawned
 void AFournoidBullet::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -64,13 +65,17 @@ void AFournoidBullet::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-
 void AFournoidBullet::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Only add impulse and destroy projectile if we hit a physics
 	if ( OtherActor && (OtherActor != this) && OtherComp )
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * BulletImpulseStrength, GetActorLocation());
+		// Check for Simulating Physics or there will be warning
+		if ( OtherComp->IsSimulatingPhysics() )
+		{
+    		OtherComp->AddImpulseAtLocation(GetVelocity() * BulletImpulseStrength, GetActorLocation());
+		}
+		
 		IDamageable* DamageableObj = Cast<IDamageable>(OtherActor);
 		if (DamageableObj)
 		{

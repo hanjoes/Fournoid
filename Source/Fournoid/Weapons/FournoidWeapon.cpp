@@ -49,7 +49,6 @@ void AFournoidWeapon::BeginPlay()
 void AFournoidWeapon::Tick( float DeltaTime )
 {
 	Super::Tick(DeltaTime);
-	
 }
 
 void AFournoidWeapon::SetOwningPawn(AFournoidCharacter* OwningChara)
@@ -207,7 +206,12 @@ void AFournoidWeapon::FireBullet()
 			
 			if ( World )
 			{
-				World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
+				if ( Role == ROLE_Authority )
+				{
+    				auto SpawnedBullet = World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
+    				SpawnedBullet->Instigator = Instigator;
+				}
+				
 				PlayFireSound();
 				PlayFireAnimation();
 				

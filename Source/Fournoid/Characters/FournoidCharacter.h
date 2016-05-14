@@ -30,9 +30,16 @@ public:
 	
 	void StopRunning();
 	
+	bool IsFirstPerson() const;
+	
 	void Die();
 	
-	bool IsFirstPerson() const;
+protected:
+	
+	UFUNCTION(Reliable, Server, WithValidation)
+	void ServerDie();
+	
+	void OnDeath();
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Keeper
@@ -96,7 +103,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
 	bool bCharacterIsRunning;
 	
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing=OnRep_bIsDead)
 	bool bIsDead;
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -169,5 +176,8 @@ protected:
 	
 	UFUNCTION()
 	void OnRep_CurrentWeapon();
+	
+	UFUNCTION()
+	void OnRep_bIsDead();
 	
 };

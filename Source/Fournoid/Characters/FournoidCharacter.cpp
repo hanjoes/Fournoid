@@ -265,11 +265,35 @@ bool AFournoidCharacter::IsFirstPerson() const
 
 void AFournoidCharacter::Die()
 {
+	if (Role == ROLE_Authority)
+	{
+		ServerDie();
+	}
+	OnDeath();
+}
+
+bool AFournoidCharacter::ServerDie_Validate()
+{
+	return true;
+}
+
+void AFournoidCharacter::ServerDie_Implementation()
+{
+	OnDeath();
+}
+
+void AFournoidCharacter::OnDeath()
+{
 	bIsDead = true;
 	UpdatePawnMesh();
 	DetachFromControllerPendingDestroy();
 	
 	SetLifeSpan(DestroyLifeSpan);
+}
+
+void AFournoidCharacter::OnRep_bIsDead()
+{
+	Die();
 }
 
 void AFournoidCharacter::DestroyInventory()

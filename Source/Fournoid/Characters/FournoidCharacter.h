@@ -1,7 +1,6 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 #pragma once
 
-#include "Damageable.h"
 #include "GameFramework/Character.h"
 #include "FournoidCharacter.generated.h"
 

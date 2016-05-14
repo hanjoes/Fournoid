@@ -2,7 +2,6 @@
 
 #include "Fournoid.h"
 #include "FournoidBullet.h"
-#include "Damageable.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 

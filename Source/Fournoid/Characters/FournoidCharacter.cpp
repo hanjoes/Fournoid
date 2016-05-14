@@ -242,11 +242,6 @@ void AFournoidCharacter::OnRep_CurrentWeapon()
 	SetCurrentWeapon(CurrentWeapon);
 }
 
-float AFournoidCharacter::TakeDamage(float Damage, const struct FDamageEvent &DamageEvent, class AController *EventInstigator, class AActor *DamageCauser)
-{
-	return .0f;
-}
-
 void AFournoidCharacter::StartFire()
 {
 	if ( CurrentWeapon )

@@ -33,9 +33,6 @@ public:
 	void Die();
 	
 	bool IsFirstPerson() const;
-
-	/** Take damage, handle death */
-	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Keeper

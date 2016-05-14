@@ -77,12 +77,26 @@ void AFournoidCharacter::ReceiveDamage(float Damage)
 
 void AFournoidCharacter::StartRunning()
 {
-	bCharacterIsRunning = true;
+	if ( Role < ROLE_Authority )
+	{
+		ServerStartRunning();
+	}
+	else
+	{
+    	bCharacterIsRunning = true;
+	}
 }
 
 void AFournoidCharacter::StopRunning()
 {
-	bCharacterIsRunning = false;
+	if ( Role < ROLE_Authority )
+	{
+		ServerStopRunning();
+	}
+	else
+	{
+    	bCharacterIsRunning = false;
+	}
 }
 
 void AFournoidCharacter::Tick(float DeltaTime)
@@ -303,4 +317,24 @@ void AFournoidCharacter::DestroyInventory()
 		Inventory[i]->Destroy();
 	}
 	Inventory.Empty();
+}
+
+bool AFournoidCharacter::ServerStartRunning_Validate()
+{
+	return true;
+}
+
+void AFournoidCharacter::ServerStartRunning_Implementation()
+{
+	StartRunning();
+}
+
+bool AFournoidCharacter::ServerStopRunning_Validate()
+{
+	return true;
+}
+
+void AFournoidCharacter::ServerStopRunning_Implementation()
+{
+	StopRunning();
 }

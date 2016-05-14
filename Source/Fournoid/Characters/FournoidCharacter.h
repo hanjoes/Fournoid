@@ -28,7 +28,13 @@ public:
 	
 	void StartRunning();
 	
+	UFUNCTION(Reliable, Server, WithValidation)
+	void ServerStartRunning();
+	
 	void StopRunning();
+	
+	UFUNCTION(Reliable, Server, WithValidation)
+	void ServerStopRunning();
 	
 	bool IsFirstPerson() const;
 	
@@ -82,25 +88,24 @@ public:
 	
 protected:
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
 	float Health;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
 	float Stamina;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
 	float StaminaRegenRate;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
 	float StaminaConsumeRate;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
 	float SpeedBoostScale;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
 	float DestroyLifeSpan;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
 	bool bCharacterIsRunning;
 	
 	UPROPERTY(ReplicatedUsing=OnRep_bIsDead)

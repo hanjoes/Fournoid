@@ -13,12 +13,14 @@ class AFournoidCharacter : public ACharacter, public IDamageable
 	GENERATED_BODY()
 	
 	//////////////////////////////////////////////////////////////////////////
-	// Basic Behavior
+	// Basic/Lifecycles
 	
 public:
 	AFournoidCharacter(const FObjectInitializer& ObjectInitializer);
 	
 	virtual void BeginPlay() override;
+	
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	virtual void Tick(float DeltaTime) override;
 	
@@ -70,6 +72,8 @@ public:
 	
 	FORCEINLINE float GetSpeedScale() const { return SpeedBoostScale; }
 	
+	FORCEINLINE float GetDestroyLifeSpan() const { return DestroyLifeSpan; }
+	
 	FORCEINLINE bool CharacterIsRunning() const { return bCharacterIsRunning; }
 	
 protected:
@@ -90,10 +94,14 @@ protected:
 	float SpeedBoostScale;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	float DestroyLifeSpan;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
 	bool bCharacterIsRunning;
 	
 	UPROPERTY(Replicated)
 	bool bIsDead;
+	
 	//////////////////////////////////////////////////////////////////////////
 	// Inventory/Weapon
 	
@@ -109,6 +117,8 @@ protected:
 	void EquipWeapon(class AFournoidWeapon* Weapon);
 	
 	void SetCurrentWeapon(class AFournoidWeapon* Weapon);
+	
+	void DestroyInventory();
 	
 	UFUNCTION(Reliable, WithValidation, Server)
 	void ServerEquipWeapon(class AFournoidWeapon* Weapon);

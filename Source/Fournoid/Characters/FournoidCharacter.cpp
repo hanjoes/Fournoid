@@ -42,11 +42,14 @@ AFournoidCharacter::AFournoidCharacter(const FObjectInitializer& ObjectInitializ
 	
 	bReplicates = true;
 	
+	// Default values
+	
 	Health = 100.f;
 	Stamina = 100.f;
 	StaminaRegenRate = 15.f;
 	StaminaConsumeRate = 30.f;
 	SpeedBoostScale = 1.5f;
+	DestroyLifeSpan = 10.f;
 	bCharacterIsRunning = false;
 }
 
@@ -56,6 +59,11 @@ void AFournoidCharacter::BeginPlay()
 	
 	SpawnKeeper();
 	SpawnInventory();
+}
+
+void AFournoidCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	DestroyInventory();
 }
 
 void AFournoidCharacter::ReceiveDamage(float Damage)
@@ -265,4 +273,15 @@ void AFournoidCharacter::Die()
 	bIsDead = true;
 	UpdatePawnMesh();
 	DetachFromControllerPendingDestroy();
+	
+	SetLifeSpan(DestroyLifeSpan);
+}
+
+void AFournoidCharacter::DestroyInventory()
+{
+	for (int32 i = 0; i < Inventory.Num(); ++i)
+	{
+		Inventory[i]->Destroy();
+	}
+	Inventory.Empty();
 }

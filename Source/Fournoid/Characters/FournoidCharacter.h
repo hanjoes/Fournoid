@@ -8,7 +8,7 @@
 class UInputComponent;
 
 UCLASS(Abstract)
-class AFournoidCharacter : public ACharacter, public IDamageable
+class AFournoidCharacter : public ACharacter
 {
 	GENERATED_BODY()
 	
@@ -39,6 +39,9 @@ public:
 	bool IsFirstPerson() const;
 	
 	void Die();
+
+	/** Take damage, handle death */
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
 	
 protected:
 	
@@ -143,12 +146,6 @@ protected:
 	
 	UPROPERTY(Transient, ReplicatedUsing=OnRep_CurrentWeapon)
 	class AFournoidWeapon* CurrentWeapon;
-	
-	//////////////////////////////////////////////////////////////////////////
-	// IDamageable
-	
-public:
-	void ReceiveDamage(float Damage) override;
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Mesh

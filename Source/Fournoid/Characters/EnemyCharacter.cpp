@@ -33,16 +33,6 @@ void AEnemyCharacter::SetupCollisionBehavior()
 {
 }
 
-void AEnemyCharacter::ReceiveDamage(float Damage)
-{
-	Super::ReceiveDamage(Damage);
-	if(IsDead()){
-		FTimerHandle UnusedHandle;
-		DetachFromControllerPendingDestroy();
-		SetLifeSpan(2.f);
-	}
-}
-
 //This can be a function for the base class, AFounoidCharacter, as well as related variables
 void AEnemyCharacter:: OnFire(){
 	FournoidUtils::RedMessage("Firing");

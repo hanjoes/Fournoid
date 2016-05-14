@@ -76,11 +76,13 @@ void AFournoidBullet::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
     		OtherComp->AddImpulseAtLocation(GetVelocity() * BulletImpulseStrength, GetActorLocation());
 		}
 		
-		IDamageable* DamageableObj = Cast<IDamageable>(OtherActor);
-		if (DamageableObj)
-		{
-			DamageableObj->ReceiveDamage(BulletDamage);
-		}
+    	FPointDamageEvent PointDmg;
+    	PointDmg.DamageTypeClass = UDamageType::StaticClass();
+    	PointDmg.HitInfo = Hit;
+		PointDmg.ShotDirection = FVector::ZeroVector;
+		PointDmg.Damage = BulletDamage;
+		
+		auto ActualTaken = OtherActor->TakeDamage(PointDmg.Damage, PointDmg, GetInstigatorController(), this);
 		
 		Destroy();
 	}

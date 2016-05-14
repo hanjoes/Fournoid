@@ -66,15 +66,6 @@ void AFournoidCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	DestroyInventory();
 }
 
-void AFournoidCharacter::ReceiveDamage(float Damage)
-{
-	Health -= Damage;
-	if (Health <= 0.0f)
-	{
-		Die();
-	}
-}
-
 void AFournoidCharacter::StartRunning()
 {
 	if ( Role < ROLE_Authority )
@@ -337,4 +328,14 @@ bool AFournoidCharacter::ServerStopRunning_Validate()
 void AFournoidCharacter::ServerStopRunning_Implementation()
 {
 	StopRunning();
+}
+
+float AFournoidCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
+{
+	Health -= Damage;
+	if (Health <= 0.0f)
+	{
+		Die();
+	}
+	return Damage;
 }

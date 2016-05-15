@@ -15,8 +15,12 @@ AFournoidGameMode::AFournoidGameMode()
 	PlayerControllerClass = AFournoidPlayerController::StaticClass();
 	GameStateClass = AFournoidGameState::StaticClass();
 
-	// use our custom HUD class
-	HUDClass = AFournoidHUD::StaticClass();
+	// HUD class
+	static ConstructorHelpers::FClassFinder<AHUD> TheHUDOb(TEXT("/Game/UserInterface/MyFournoidHUD.MyFournoidHUD_C"));
+	if (TheHUDOb.Class != NULL)
+	{
+		HUDClass = TheHUDOb.Class;
+	}
 	
 	// default values for FournoidGameMode
 	MinRespawnDelay = 4.f;

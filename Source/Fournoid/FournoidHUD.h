@@ -54,6 +54,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AFournoidHUD)
 		float GlobalHUDMult;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AFournoidHUD)
+		float InGameMenuXOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AFournoidHUD)
+		float InGameMenuYOffset;
+
 	// T2D 
 	/** Cursor */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = T2D)
@@ -67,17 +73,26 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = T2D)
 		UTexture2D* ButtonBackground;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = T2D)
+		float ButtonXOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = T2D)
+		float ButtonYIncrement;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = T2D)
+		float TextXOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = T2D)
+		float TextYOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = T2D)
+		float TextScale;
+
+
 	// Materials 
 	/** Events */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Materials)
 		UMaterialInterface* MaterialBackground;
-
-	//
-
-	/* Draw Hud? */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Options)
-		bool DontDrawHUD;
-
 
 	/* Health Bar Properties*/
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
@@ -159,12 +174,15 @@ public:
 	TArray<FButtonStruct> ButtonsConfirm;
 
 	//Cursor In buttons
-	/*void DrawHUD_CheckCursorInButtons();
+	FVector2D MouseLocation;
+	void DrawHUD_CheckCursorInButtons();
+	void DrawConfirm();
+	void DrawConfirmButtons();
 	void CheckCursorInButtonsMain();
-	void CheckCursorInButtonsConfirm();*/
+	void CheckCursorInButtonsConfirm();
 
 	const FButtonStruct* CurCheckButton;
-	//int32 CheckCursorInButton(const TArray<FButtonStruct>& ButtonArray);
+	int32 CheckCursorInButton(const TArray<FButtonStruct>& ButtonArray);
 	int32 ClickedButtonType;
 	//States
 	bool ConfirmDialogOpen;
@@ -218,6 +236,8 @@ public:
 
 	void DrawAmmoBar();
 
+	void PlayerInputCheckes();
+
 	FORCEINLINE void VDrawTile(UTexture2D* tex, float x, float y, float screenX, float screenY, const FColor& TheColor)
 	{
 		if (!Canvas) return;
@@ -237,6 +257,25 @@ public:
 			tex->GetSurfaceHeight(), //texture height from start
 			BLEND_Translucent
 			);
+	}
+
+	FORCEINLINE void FDrawRect(
+		float X, float Y,
+		float Width, float Height,
+		const FLinearColor& Color
+		)
+	{
+		if (!Canvas) return;
+		//
+
+		FCanvasTileItem RectItem(
+			FVector2D(X, Y),
+			FVector2D(Width, Height),
+			Color
+			);
+
+		RectItem.BlendMode = SE_BLEND_Translucent;
+		Canvas->DrawItem(RectItem);
 	}
 
 	//DrawText
@@ -272,9 +311,30 @@ public:
 		Canvas->DrawItem(NewText);
 	}
 
+	//Stop Camera From Moving With Mouse
+	FORCEINLINE void SetCursorMoveOnly(bool CursorOnly)
+	{
+		if (!ThePC) return;
+		//
+		ThePC->SetIgnoreLookInput(CursorOnly);
+
+	}
+
+	//Change Cursor State
+	FORCEINLINE void SwitchCursorState() {
+		ShowCursor = !ShowCursor;
+		ThePC->bShowMouseCursor = ShowCursor;
+		ThePC->bEnableClickEvents = ShowCursor;
+		ThePC->bEnableMouseOverEvents = ShowCursor;
+	}
+
 private:
 	/** Crosshair asset pointer */
 	class UTexture2D* CrosshairTex;
 	APlayerController *ThePC;
+	bool DrawInGameMenuFlag;
+	bool ShowCursor;
+	FLinearColor TextColor;
+	FLinearColor TextOuterColor;
 };
 

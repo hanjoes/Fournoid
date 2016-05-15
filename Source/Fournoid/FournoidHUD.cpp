@@ -42,11 +42,33 @@ AFournoidHUD::AFournoidHUD()
 	// Set the crosshair texture
 	static ConstructorHelpers::FObjectFinder<UTexture2D> CrosshiarTexObj(TEXT("/Game/FirstPerson/Textures/FirstPersonCrosshair"));
 	CrosshairTex = CrosshiarTexObj.Object;
+
+	DrawInGameMenuFlag = false;
+	ShowCursor = false;
+	ConfirmDialogOpen = false;
+
+	TextColor = LC_Black;
+	TextOuterColor = LC_Black;
 }
 
 
 void AFournoidHUD::DrawHUD()
 {
+	if (!ThePC)
+	{
+		//Attempt to Reacquire PC
+		ThePC = GetOwningPlayerController();
+
+		//Could Not Obtain PC
+		if (!ThePC) return;
+		//~~
+	}
+
+	//Multiplayer Safety Check
+	if (!ThePC->PlayerInput) return; //not valid for first seconds of a multiplayer client
+
+	PlayerInputCheckes();
+
 	Super::DrawHUD();
 
 	DrawCrossHair();
@@ -54,6 +76,14 @@ void AFournoidHUD::DrawHUD()
 	DrawInGameMenu();
 
 	DrawHealthBar();
+
+	//================
+	//Get New Mouse Position
+	//================
+	ThePC->GetMousePosition(MouseLocation.X, MouseLocation.Y);
+
+	//Cursor In Buttons
+	DrawHUD_CheckCursorInButtons();
 }
 
 void AFournoidHUD::PostInitializeComponents() {
@@ -80,17 +110,35 @@ void AFournoidHUD::DrawCrossHair() {
 }
 
 void AFournoidHUD::DrawInGameMenu() {
-	return;
+	if (!DrawInGameMenuFlag) {
+		return;
+	}
+
 	//Background
 	DrawMaterialSimple(
 		MaterialBackground,
-		10, 10,
+		Canvas->ClipX * InGameMenuXOffset, Canvas->ClipY * InGameMenuYOffset,
 		256,
 		512,
 		DefaultFontScale
 		);
 
 	DrawMainMenuButtons();
+
+	if (ConfirmDialogOpen) {
+		DrawConfirm();
+	}
+}
+
+void AFournoidHUD::DrawConfirm()
+{
+	//Blue rect with alpha 50%
+	FDrawRect(Canvas->SizeX / 2 - 100, Canvas->SizeY / 2 - 50, 200, 100, FLinearColor(0, 0, 1, 0.2333));
+
+	//Confirm Title
+
+	//Draw buttons
+	DrawConfirmButtons();
 }
 
 void AFournoidHUD::DrawHealthBar() {
@@ -154,17 +202,17 @@ void AFournoidHUD::DrawAmmoBar() {
 void AFournoidHUD::DrawMainMenuButtons()
 {
 	//Start Point
-	float xStart = 100;
-	float yStart = 110;
+	float xStart = Canvas->ClipX * InGameMenuXOffset + ButtonXOffset;
+	float yStart = Canvas->ClipY * InGameMenuYOffset + 15;
+	FColor buttonColor = FColor(255, 255, 255, 120);
 
 	//Background
-	VDrawTile(ButtonBackground, xStart, yStart, 150, 80, FColorBlue); //alpha 120/255
-
-																					  //Text
+	VDrawTile(ButtonBackground, xStart, yStart, 150, 80, buttonColor); //alpha 120/255
+	//Text
 	FDrawText(
-		VerdanaFont, "Restart", xStart + 30, yStart + 20,
-		LC_Black, DefaultFontScale,
-		true, LC_Red
+		VerdanaFont, "Restart", xStart + TextXOffset, yStart + TextYOffset,
+		TextColor, TextScale,
+		true, TextOuterColor
 		);
 
 	//Struct
@@ -185,17 +233,14 @@ void AFournoidHUD::DrawMainMenuButtons()
 		ButtonsMain.Add(newButton);
 	}
 
+	yStart += ButtonYIncrement;
 
-	xStart = 100;
-	yStart = 410;
-
-	VDrawTile(ButtonBackground, xStart, yStart, 150, 80, FColor(255, 255, 255, 120)); //alpha 120/255
-
+	VDrawTile(ButtonBackground, xStart, yStart, 150, 80, buttonColor); //alpha 120/255
 																					  //Text
 	FDrawText(
-		VerdanaFont, "Exit", xStart + 55, yStart + 20,
-		LC_Black, DefaultFontScale,
-		true, LC_Red
+		VerdanaFont, "Exit", xStart + TextXOffset, yStart + TextYOffset,
+		TextColor, TextScale,
+		true, TextOuterColor
 		);
 
 	if (ButtonsMain.Num() < 2)
@@ -211,4 +256,166 @@ void AFournoidHUD::DrawMainMenuButtons()
 		//Add to correct array
 		ButtonsMain.Add(newButton);
 	}
+}
+
+void AFournoidHUD::DrawConfirmButtons()
+{
+	float xStart = Canvas->SizeX / 2 - 100;
+	float yStart = Canvas->SizeY / 2 - 40;
+
+	//Highlighted?
+	if (ActiveButton_Type == BUTTONTYPE_CONFIRM_YES) ColorPtr = &LC_Pink;
+	else ColorPtr = &LC_Yellow;
+
+	//Text
+	FDrawText(
+		VerdanaFont, "Yes", xStart + 30, yStart + 20,
+		*ColorPtr, TextScale * 0.8,
+		true
+		);
+
+	if (ButtonsConfirm.Num() < 1)
+	{
+		FButtonStruct newButton = FButtonStruct();
+		newButton.type = BUTTONTYPE_CONFIRM_YES;
+		newButton.toolTip = "";
+		newButton.minX = xStart;
+		newButton.maxX = xStart + 75;
+		newButton.minY = yStart + 20;
+		newButton.maxY = yStart + 60;
+
+		//could use GetTextSize to streamline this
+
+		//Add to correct array
+		ButtonsConfirm.Add(newButton);
+	}
+
+	xStart = Canvas->SizeX / 2 + 20;
+	yStart = Canvas->SizeY / 2 - 40;
+
+	//Highlighted?
+	if (ActiveButton_Type == BUTTONTYPE_CONFIRM_NO) ColorPtr = &LC_Black;
+	else ColorPtr = &LC_Yellow;
+
+	//Text
+	FDrawText(
+		VerdanaFont, "No", xStart + 30, yStart + 20,
+		*ColorPtr, TextScale * 0.8,
+		true
+		);
+
+	if (ButtonsConfirm.Num() < 2)
+	{
+		FButtonStruct newButton = FButtonStruct();
+		newButton.type = BUTTONTYPE_CONFIRM_NO;
+		newButton.toolTip = "";
+		newButton.minX = xStart;
+		newButton.maxX = xStart + 75;
+		newButton.minY = yStart + 20;
+		newButton.maxY = yStart + 60;
+
+		//could use GetTextSize to streamline this
+
+		//Add to correct array
+		ButtonsConfirm.Add(newButton);
+	}
+}
+
+void AFournoidHUD::PlayerInputCheckes() {
+	if (ThePC->WasInputKeyJustPressed(EKeys::M))
+	{
+		DrawInGameMenuFlag = !DrawInGameMenuFlag;
+		SwitchCursorState();
+		SetCursorMoveOnly(!ThePC->IsLookInputIgnored());
+		return;
+	}
+}
+
+void AFournoidHUD::DrawHUD_CheckCursorInButtons()
+{
+	if (ConfirmDialogOpen)
+	{
+		CheckCursorInButtonsConfirm();
+
+		//Take Focus Away From All Other buttons
+		return;
+		//~
+	}
+
+	//Main
+	CheckCursorInButtonsMain();
+}
+
+//Check Buttons
+void AFournoidHUD::CheckCursorInButtonsMain()
+{
+	//Check Confirm Buttons
+	ClickedButtonType = CheckCursorInButton(ButtonsMain);
+
+	if (ClickedButtonType == BUTTONTYPE_MAIN_RESTART)
+	{
+		ThePC->ConsoleCommand("RestartLevel");
+		return;
+	}
+	if (ClickedButtonType == BUTTONTYPE_MAIN_EXIT)
+	{
+		ConfirmDialogOpen = true;
+		return;
+	}
+}
+
+//Check Confirm
+void AFournoidHUD::CheckCursorInButtonsConfirm()
+{
+	//Check Confirm Buttons
+	ClickedButtonType = CheckCursorInButton(ButtonsConfirm); //fills global ActiveButton_Type
+
+	if (ClickedButtonType == BUTTONTYPE_CONFIRM_YES)
+	{
+		ThePC->ConsoleCommand("Exit");
+		return;
+	}
+	if (ClickedButtonType == BUTTONTYPE_CONFIRM_NO)
+	{
+		ConfirmDialogOpen = false;
+		ButtonsConfirm.Empty(); //Buttons not needed anymore
+		return;
+	}
+}
+
+//===============
+// Cursor In Buttons
+//===============
+int32 AFournoidHUD::CheckCursorInButton(const TArray<FButtonStruct>& ButtonArray)
+{
+	for (int32 b = 0; b < ButtonArray.Num(); b++)
+	{
+		CurCheckButton = &ButtonArray[b];
+
+		//check cursor in bounds
+		if (CurCheckButton->minX <= MouseLocation.X && MouseLocation.X <= CurCheckButton->maxX &&
+			CurCheckButton->minY <= MouseLocation.Y && MouseLocation.Y <= CurCheckButton->maxY)
+		{
+
+			//Active Button Type
+			ActiveButton_Type = CurCheckButton->type;
+
+			//Tool Tip
+			ActiveButton_Tip = CurCheckButton->toolTip;
+
+			//Change Cursor
+			CursorHoveringInButton = true;
+
+			//Mouse Clicked?
+			if (ThePC->WasInputKeyJustPressed(EKeys::LeftMouseButton))
+			{
+				return ActiveButton_Type;
+				//~~
+				//no need to check rest of buttons
+			}
+		}
+	}
+
+	//No Click Occurred This Tick
+	return -1;
 }

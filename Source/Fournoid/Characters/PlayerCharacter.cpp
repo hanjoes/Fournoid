@@ -129,13 +129,7 @@ void APlayerCharacter::SpawnKeeper()
 
 void APlayerCharacter::PlayHitSound()
 {
-//	if ( Role == ROLE_Authority )
-//	{
-//		ClientPlayHitSound();
-//		return;
-//	}
-	
-	if ( HitSound )
+	if ( HitSound && IsLocallyControlled() )
 	{
 		UGameplayStatics::SpawnSoundAttached(HitSound, Mesh1P);
 	}

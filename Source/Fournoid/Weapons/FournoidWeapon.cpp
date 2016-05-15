@@ -147,6 +147,7 @@ void AFournoidWeapon::StartFire()
 	if ( Role < ROLE_Authority )
 	{
 		ServerStartFire();
+		return;
 	}
 	
 	SetWeaponState(WeaponState::WS_Firing);
@@ -210,9 +211,9 @@ void AFournoidWeapon::FireBullet()
 				{
     				auto SpawnedBullet = World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
     				SpawnedBullet->Instigator = Instigator;
+    				PlayShootingFX();
 				}
 				
-				PlayShootingFX();
 			}
 			GetWorldTimerManager().SetTimer(TimerHandle_HandleFireBullet, this, &AFournoidWeapon::FireBullet, FiringRate, false);
 		}
@@ -221,12 +222,6 @@ void AFournoidWeapon::FireBullet()
 
 void AFournoidWeapon::PlayFireSound()
 {
-	
-	if ( Role == ROLE_Authority )
-	{
-		
-	}
-	
 	if ( FireSound )
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());

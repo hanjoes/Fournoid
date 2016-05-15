@@ -212,9 +212,7 @@ void AFournoidWeapon::FireBullet()
     				SpawnedBullet->Instigator = Instigator;
 				}
 				
-				PlayFireSound();
-				PlayFireAnimation();
-				
+				PlayShootingFX();
 			}
 			GetWorldTimerManager().SetTimer(TimerHandle_HandleFireBullet, this, &AFournoidWeapon::FireBullet, FiringRate, false);
 		}
@@ -223,6 +221,12 @@ void AFournoidWeapon::FireBullet()
 
 void AFournoidWeapon::PlayFireSound()
 {
+	
+	if ( Role == ROLE_Authority )
+	{
+		
+	}
+	
 	if ( FireSound )
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
@@ -255,5 +259,14 @@ void AFournoidWeapon::SetWeaponState(WeaponState NewState)
 	if ( CurrentState == WeaponState::WS_Firing )
 	{
 		OnFireStarted();
+	}
+}
+
+void AFournoidWeapon::PlayShootingFX_Implementation()
+{
+	if ( GetNetMode() != NM_DedicatedServer )
+	{
+		PlayFireSound();
+		PlayFireAnimation();
 	}
 }

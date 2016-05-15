@@ -81,9 +81,10 @@ public:
 	
 	/** Called by APawn to stop firing the weapon */
 	virtual void StopFire();
-//	
-//	/** Called by client to play sound FX for the weapon  */
-//	void PlayWeaponSound(USoundCue* WeaponSound);
+	
+	/** Called by client to play FX for the weapon shooting */
+	UFUNCTION(Reliable, NetMulticast)
+	void PlayShootingFX();
 	
 	void NofityHit();
 	

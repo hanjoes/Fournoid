@@ -153,7 +153,7 @@ FVector AFournoidWeapon::GetMuzzleLocation() const
 
 void AFournoidWeapon::StartFire()
 {
-	if ( MyPawn->IsFirstPerson() && IsStoreEmpty() )
+	if ( MyPawn->IsFirstPerson() && (IsClipEmpty() && IsStoreEmpty()) )
 	{
 		PlayWeaponSound(EmptySound);
 		return;
@@ -240,10 +240,7 @@ void AFournoidWeapon::FireBullet()
 					}
 					else
 					{
-						if ( !IsStoreEmpty() )
-						{
-							StartReloading();
-						}
+						StartReloading();
 					}
 				}
 			}
@@ -316,8 +313,11 @@ void AFournoidWeapon::StartReloading()
 {
 	if ( CurrentState == WeaponState::WS_Idle || CurrentState == WeaponState::WS_Firing )
 	{
-		SetWeaponState(WeaponState::WS_Reloading);
-		GetWorldTimerManager().SetTimer(TimerHandle_HandleReloadWeapon, this, &AFournoidWeapon::OnReloadFinished, ReloadDuration, false);
+		if ( !IsStoreEmpty() )
+		{
+    		SetWeaponState(WeaponState::WS_Reloading);
+    		GetWorldTimerManager().SetTimer(TimerHandle_HandleReloadWeapon, this, &AFournoidWeapon::OnReloadFinished, ReloadDuration, false);
+		}
 	}
 }
 

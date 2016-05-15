@@ -11,14 +11,17 @@ class FOURNOID_API APlayerCharacter : public AFournoidCharacter
 	GENERATED_BODY()
 	
 public:
-	// Sets default values for this character's properties
 	APlayerCharacter(const FObjectInitializer& ObjectInitializer);
 	
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
+	
+	void PlayHitSound();
+	
+	/** Plays when a damage caused by this player is confirmed */
+	UFUNCTION(Reliable, Client)
+	void ClientPlayHitSound();
 	
 	/////////////////////////////////////////////////
 	// Controll
@@ -76,8 +79,12 @@ protected:
 protected:
 	
 	/** First person camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowProtectedAccess = "true"))
+	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class UCameraComponent* FirstPersonCameraComponent;
+	
+	/** Plays a hit sound when this pawn's weapon hit a pawn. */
+	UPROPERTY(EditAnyWhere, Category=Audio)
+	USoundBase* HitSound;
 	
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }

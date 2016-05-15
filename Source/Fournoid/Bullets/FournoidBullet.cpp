@@ -2,6 +2,7 @@
 
 #include "Fournoid.h"
 #include "FournoidBullet.h"
+#include "Characters/PlayerCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 
@@ -75,13 +76,17 @@ void AFournoidBullet::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
     		OtherComp->AddImpulseAtLocation(GetVelocity() * BulletImpulseStrength, GetActorLocation());
 		}
 		
-    	FPointDamageEvent PointDmg;
-    	PointDmg.DamageTypeClass = UDamageType::StaticClass();
-    	PointDmg.HitInfo = Hit;
-		PointDmg.ShotDirection = FVector::ZeroVector;
-		PointDmg.Damage = BulletDamage;
-		
-		auto ActualTaken = OtherActor->TakeDamage(PointDmg.Damage, PointDmg, GetInstigatorController(), this);
+		// Only cause damage when not hitting the instigator
+		if ( Instigator && (OtherActor != Instigator) )
+		{
+			FPointDamageEvent PointDmg;
+			PointDmg.DamageTypeClass = UDamageType::StaticClass();
+			PointDmg.HitInfo = Hit;
+			PointDmg.ShotDirection = FVector::ZeroVector;
+			PointDmg.Damage = BulletDamage;
+    		
+    		OtherActor->TakeDamage(PointDmg.Damage, PointDmg, GetInstigatorController(), this);
+		}
 		
 		Destroy();
 	}

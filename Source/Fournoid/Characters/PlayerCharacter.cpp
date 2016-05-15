@@ -7,6 +7,28 @@
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
 
+APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
+: Super(ObjectInitializer)
+{
+	// Set size for collision capsule
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	
+	// Create a CameraComponent	
+	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
+	FirstPersonCameraComponent->AttachParent = GetCapsuleComponent();
+	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 64.f); // Position the camera
+	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+	
+	Mesh1P->AttachParent = FirstPersonCameraComponent;
+	
+	// Setup default values
+	BaseTurnRate = 45.f;
+	BaseLookUpRate = 45.f;
+	
+//	PrimaryActorTick.bCanEverTick = true;
+	
+}
+
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
@@ -17,27 +39,6 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-}
-
-APlayerCharacter::APlayerCharacter(const FObjectInitializer& ObjectInitializer)
-: Super(ObjectInitializer)
-{
-	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-	
-	// set our turn rates for input
-	BaseTurnRate = 45.f;
-	BaseLookUpRate = 45.f;
-	
-	// Create a CameraComponent	
-	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
-	FirstPersonCameraComponent->AttachParent = GetCapsuleComponent();
-	FirstPersonCameraComponent->RelativeLocation = FVector(0, 0, 64.f); // Position the camera
-	FirstPersonCameraComponent->bUsePawnControlRotation = true;
-	
-	Mesh1P->AttachParent = FirstPersonCameraComponent;
-	
-	PrimaryActorTick.bCanEverTick = true;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -124,4 +125,23 @@ void APlayerCharacter::SpawnKeeper()
 			SpawnedKeeper->SetKeeperMaster(this);
 		}
 	}
+}
+
+void APlayerCharacter::PlayHitSound()
+{
+//	if ( Role == ROLE_Authority )
+//	{
+//		ClientPlayHitSound();
+//		return;
+//	}
+	
+	if ( HitSound )
+	{
+		UGameplayStatics::SpawnSoundAttached(HitSound, Mesh1P);
+	}
+}
+
+void APlayerCharacter::ClientPlayHitSound_Implementation()
+{
+	PlayHitSound();
 }

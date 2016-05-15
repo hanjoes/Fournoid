@@ -2,6 +2,7 @@
 
 #include "Fournoid.h"
 #include "FournoidCharacter.h"
+#include "PlayerCharacter.h"
 #include "FournoidMovementComponent.h"
 #include "Bullets/FournoidBullet.h"
 #include "Weapons/FournoidWeapon.h"
@@ -337,5 +338,16 @@ float AFournoidCharacter::TakeDamage(float Damage, struct FDamageEvent const& Da
 	{
 		Die();
 	}
+	
+	if ( EventInstigator )
+	{
+    	auto InstigatorPlayer = Cast<APlayerCharacter>(EventInstigator->GetPawn());
+		if ( InstigatorPlayer )
+		{
+        	InstigatorPlayer->PlayHitSound();
+		}
+	}
+	
 	return Damage;
 }
+

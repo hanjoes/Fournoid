@@ -94,6 +94,14 @@ public:
 	void PlayShootingFX();
 	
 	void NofityHit();
+
+	FORCEINLINE int32 GetCurrentClipSize() const{
+		return CurrentClipSize;
+	}
+
+	FORCEINLINE int32 GetCurrentStoreSize() const{
+		return CurrentStoreSize;
+	}
 	
 protected:
 	

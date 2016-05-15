@@ -121,6 +121,10 @@ public:
 	FName GetWeaponAttachPoint() const;
 	
 	void ReloadCurrentWeapon();
+
+	FORCEINLINE AFournoidWeapon* GetWeaponActor() const{
+		return CurrentWeapon;
+	}
 	
 protected:
 	void SpawnInventory();

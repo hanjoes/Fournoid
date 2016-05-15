@@ -5,6 +5,7 @@
 #include "Engine/Canvas.h"
 #include "TextureResource.h"
 #include "CanvasItem.h"
+#include "Weapons/FournoidWeapon.h"
 
 #define BUTTONTYPE_MAIN_RESTART 	1
 #define BUTTONTYPE_MAIN_EXIT 		2
@@ -76,6 +77,8 @@ void AFournoidHUD::DrawHUD()
 	DrawInGameMenu();
 
 	DrawHealthBar();
+
+	DrawAmmoBar();
 
 	//================
 	//Get New Mouse Position
@@ -188,6 +191,12 @@ void AFournoidHUD::DrawHealthBar() {
 }
 
 void AFournoidHUD::DrawAmmoBar() {
+	auto Character = Cast<AFournoidCharacter>(ThePC->GetPawn());
+	if (!Character || Character->IsDead())
+	{
+		return;
+	}
+
 	//Background
 	DrawMaterialSimple(
 		AmmoBarBackground,
@@ -195,6 +204,21 @@ void AFournoidHUD::DrawAmmoBar() {
 		AmmoBarWidth,
 		AmmoBarHeight,
 		AmmoBarScale
+		);
+
+	// Icon
+	FCanvasIcon ammoIcon = UCanvas::MakeIcon(AmmoIcon, 20, 20);
+	float iconX = Canvas->ClipX * AmmoIconXOffset;
+	float iconY = Canvas->ClipY * AmmoIconYOffset;
+	Canvas->DrawIcon(ammoIcon, iconX, iconY, AmmoIconScale);
+
+	AFournoidWeapon *weapon = Character->GetWeaponActor();
+	int32 currentClipSize = weapon->GetCurrentClipSize();
+	int32 storeSize = weapon->GetCurrentStoreSize();
+	FDrawText(
+		VerdanaFont, FString::FromInt(currentClipSize) + "/" + FString::FromInt(storeSize), iconX + AmmoIndicatorOffset, iconY,
+		LC_Black, AmmoIndicatorScale,
+		true, LC_Yellow
 		);
 }
 

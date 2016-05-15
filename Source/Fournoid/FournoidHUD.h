@@ -168,6 +168,24 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
 		float AmmoBarScale;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
+	class UTexture2D* AmmoIcon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
+		float AmmoIconScale;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
+		float AmmoIconXOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
+		float AmmoIconYOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
+		float AmmoIndicatorOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
+		float AmmoIndicatorScale;
+
 //Buttons
 public:
 	TArray<FButtonStruct> ButtonsMain;

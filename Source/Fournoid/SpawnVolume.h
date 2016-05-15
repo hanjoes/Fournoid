@@ -57,5 +57,5 @@ private:
 	
 	FTimerHandle SpawnTimer;
 	
-	unsigned EnemySpawned;
+	int EnemySpawned;
 };

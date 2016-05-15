@@ -120,6 +120,8 @@ public:
 	
 	FName GetWeaponAttachPoint() const;
 	
+	void ReloadCurrentWeapon();
+	
 protected:
 	void SpawnInventory();
 	

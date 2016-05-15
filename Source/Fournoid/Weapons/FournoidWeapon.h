@@ -52,6 +52,13 @@ public:
 	/** Remove the weapon from the attached character */
 	void DetachWeaponFromPawn();
 	
+	/** Called by the owner to reload the weapon */
+	void Reload();
+	
+	/** Sound to play when the weapon is empty and we try to fire it */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Ammo)
+	class USoundBase* EmptySound;
+	
 	/** The Pawn that's wielding the weapon */
 	UPROPERTY(Transient, ReplicatedUsing=OnRep_MyPawn)
 	class AFournoidCharacter* MyPawn;
@@ -96,8 +103,8 @@ protected:
 	/** Plays the fire montage */
 	void PlayFireAnimation();
 	
-	/** Plays the fire sound */
-	void PlayFireSound();
+	/** Plays a specific weapon sound */
+	void PlayWeaponSound(USoundBase* Sound);
 	
 	/** Sound to play each time we fire */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Fire)
@@ -128,10 +135,45 @@ protected:
 	/** Called when the weapon stops firing */
 	virtual void OnFireStopped();
 	
+	/** Whether there are still bullets left in clip */
+	bool IsClipEmpty();
+	
+	/** Whether the clip is full */
+	bool IsClipFull();
+	
+	/** Whether there is still any bullet left in store */
+	bool IsStoreEmpty();
+	
+	/** Start reloading the weapon */
+	virtual void StartReloading();
+	
+	/** Called when reloading finishes */
+	virtual void OnReloadFinished();
+	
 	/** Update weapon state */
 	void SetWeaponState( WeaponState NewState );
 	
-	UPROPERTY()
+	/** The time takes to finish reloading */
+	UPROPERTY(EditDefaultsOnly, Category=Ammo)
+	float ReloadDuration;
+	
+	/** Total bullet in store (not including bullet in clip) */
+	UPROPERTY(EditDefaultsOnly, Category=Ammo)
+	int32 InitialBulletStore;
+	
+	/** Clip capacity, also the initial clip bullet count */
+	UPROPERTY(EditDefaultsOnly, Category=Ammo)
+	int32 ClipCapacity;
+	
+	/** Bullet left in current clip */
+	UPROPERTY(Transient, Replicated, VisibleAnywhere, Category=Ammo)
+	int32 CurrentClipSize;
+	
+	/** Bullet left in store */
+	UPROPERTY(Transient, Replicated, VisibleAnywhere, Category=Ammo)
+	int32 CurrentStoreSize;
+	
+	UPROPERTY(Transient, Replicated)
 	WeaponState CurrentState;
 	
 	//////////////////////////////////////////////////////////////////////////
@@ -139,6 +181,9 @@ protected:
 	
 	/** Keep track of the timer set for FireBullet */
 	FTimerHandle TimerHandle_HandleFireBullet;
+	
+	/** Keep track of the timer set for FireBullet */
+	FTimerHandle TimerHandle_HandleReloadWeapon;
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Replicate

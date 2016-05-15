@@ -351,3 +351,11 @@ float AFournoidCharacter::TakeDamage(float Damage, struct FDamageEvent const& Da
 	return Damage;
 }
 
+void AFournoidCharacter::ReloadCurrentWeapon()
+{
+	if ( CurrentWeapon )
+	{
+		CurrentWeapon->Reload();
+	}
+}
+

@@ -134,6 +134,7 @@ void AFournoidCharacter::GetLifetimeReplicatedProps( TArray< FLifetimeProperty >
 	
 	// everyone
 	DOREPLIFETIME( AFournoidCharacter, CurrentWeapon );
+	DOREPLIFETIME( AFournoidCharacter, bIsDead );
 }
 
 void AFournoidCharacter::SpawnInventory()
@@ -269,23 +270,33 @@ bool AFournoidCharacter::IsFirstPerson() const
 	return IsLocallyControlled() && IsAlive();
 }
 
-void AFournoidCharacter::Die()
+void AFournoidCharacter::Die(AController* InstigatorController)
 {
-	if (Role == ROLE_Authority)
+	if (Role < ROLE_Authority)
 	{
-		ServerDie();
+		ServerDie(InstigatorController);
+		return;
 	}
+	
+	// Update game mode happens on server
+	auto World = GetWorld();
+	if ( World )
+	{
+		auto GameMode = World->GetAuthGameMode<AFournoidGameMode>();
+		GameMode->Killed(InstigatorController, Controller);
+	}
+	
 	OnDeath();
 }
 
-bool AFournoidCharacter::ServerDie_Validate()
+bool AFournoidCharacter::ServerDie_Validate(AController* InstigatorController)
 {
 	return true;
 }
 
-void AFournoidCharacter::ServerDie_Implementation()
+void AFournoidCharacter::ServerDie_Implementation(AController* InstigatorController)
 {
-	OnDeath();
+	Die(InstigatorController);
 }
 
 void AFournoidCharacter::OnDeath()
@@ -299,7 +310,7 @@ void AFournoidCharacter::OnDeath()
 
 void AFournoidCharacter::OnRep_bIsDead()
 {
-	Die();
+	OnDeath();
 }
 
 void AFournoidCharacter::DestroyInventory()
@@ -336,7 +347,7 @@ float AFournoidCharacter::TakeDamage(float Damage, struct FDamageEvent const& Da
 	Health -= Damage;
 	if (Health <= 0.0f)
 	{
-		Die();
+		Die(EventInstigator);
 	}
 	
 	if ( EventInstigator )

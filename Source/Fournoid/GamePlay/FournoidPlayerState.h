@@ -13,7 +13,28 @@ class FOURNOID_API AFournoidPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	
+public:
+	
+	AFournoidPlayerState();
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Scoring
+	
+public:
+	
+	/** Add one to NumKills */
+	void ScoreKill();
+	
+	/** Add one to NumDeath */
+	void ScoreDeath();
 	
 	
+protected:
+	
+	UPROPERTY(Replicated)
+	int32 NumDeath;
+	
+	UPROPERTY(Replicated)
+	int32 NumKills;
 	
 };

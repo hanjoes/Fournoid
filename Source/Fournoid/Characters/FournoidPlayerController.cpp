@@ -9,7 +9,7 @@ void AFournoidPlayerController::Suicide()
 	auto Character = Cast<AFournoidCharacter>(GetPawn());
 	if ( Character )
 	{
-		Character->Die();
+		Character->Die(this);
 	}
 }
 

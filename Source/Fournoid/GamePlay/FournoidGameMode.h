@@ -9,7 +9,10 @@ class AFournoidGameMode : public AGameMode
 	GENERATED_BODY()
 
 public:
+	
 	AFournoidGameMode();
+	
+	void Killed(AController* Killer, AController* Killed);
 };
 
 

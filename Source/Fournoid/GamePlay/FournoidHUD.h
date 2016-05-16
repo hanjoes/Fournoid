@@ -120,95 +120,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Materials)
 		UMaterialInterface* MaterialBackground;
 
-	/* Health Bar Properties*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		UMaterialInterface* HealthBarBackground;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthBarStartX;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthBarStartY;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthBarWidth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthBarHeight;
-
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		class UTexture2D* HealthIcon;*/
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthIconScale;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthIconStartX;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthIconStartY;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthIndicatorOffset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthIndicatorScale;
-
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-	class UTexture2D* StaminaIcon;*/
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float StaminaIconScale;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float StaminaIconStartX;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float StaminaIconStartY;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float StaminaIndicatorOffset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float StaminaIndicatorScale;
-	
-	/* Ammo Bar Properties*/
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		UMaterialInterface* AmmoBarBackground;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoBarStartX;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoBarStartY;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoBarWidth;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoBarHeight;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoBarScale;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-	class UTexture2D* AmmoIcon;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoIconScale;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoIconStartX;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoIconStartY;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoIndicatorOffset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoIndicatorScale;
-
 //Buttons
 public:
 	TArray<FMyHUDButtonStruct> ButtonsMain;
@@ -275,7 +186,7 @@ public:
 
 	void DrawHealthBar();
 
-	void DrawAmmoBar();
+	void DrawWeaponHUD();
 
 	void PlayerInputCheckes();
 
@@ -447,6 +358,14 @@ private:
 	/** On crosshair indicator that we hit someone. */
 	UPROPERTY()
 	FCanvasIcon HitNotifyCrosshair;
+
+	/** Primary weapon background icon. */
+	UPROPERTY()
+	FCanvasIcon PrimaryWeapBg;
+
+	/** Primary weapon icon. */
+	UPROPERTY()
+	FCanvasIcon PrimaryClipIcon;
 
 	/** General offset for HUD elements. */
 	float Offset;

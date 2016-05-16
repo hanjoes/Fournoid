@@ -82,7 +82,8 @@ AFournoidHUD::AFournoidHUD()
 
 	//KillsBg = UCanvas::MakeIcon(HUDMainTexture, 15, 16, 235, 62);
 	//TimePlaceBg = UCanvas::MakeIcon(HUDMainTexture, 262, 16, 255, 62);
-	//PrimaryWeapBg = UCanvas::MakeIcon(HUDMainTexture, 543, 17, 441, 81);
+	PrimaryWeapBg = UCanvas::MakeIcon(HUDMainTexture, 543, 17, 441, 81);
+	PrimaryClipIcon = UCanvas::MakeIcon(HUDMainTexture, 76, 279, 51, 55);
 	//SecondaryWeapBg = UCanvas::MakeIcon(HUDMainTexture, 676, 111, 293, 50);
 
 	//DeathMessagesBg = UCanvas::MakeIcon(HUDMainTexture, 502, 177, 342, 187);
@@ -128,7 +129,6 @@ void AFournoidHUD::DrawHUD()
 {
 	ScaleUI = Canvas->ClipY / 1080.0f;
 
-
 	XScale = Canvas->ClipX;
 	YScale = Canvas->ClipY;
 	if (!ThePC)
@@ -154,7 +154,7 @@ void AFournoidHUD::DrawHUD()
 
 	DrawHealthBar();
 
-	DrawAmmoBar();
+	DrawWeaponHUD();
 
 	//================
 	//Get New Mouse Position
@@ -170,6 +170,78 @@ void AFournoidHUD::PostInitializeComponents() {
 
 	//Establish the PC
 	ThePC = GetOwningPlayerController();
+}
+
+void AFournoidHUD::DrawWeaponHUD()
+{
+	auto MyPawn = Cast<AFournoidCharacter>(ThePC->GetPawn());
+	if (!MyPawn || MyPawn->IsDead())
+	{
+		return;
+	}
+	auto MyWeapon = MyPawn->GetWeaponActor();
+	if (MyWeapon)
+	{
+		FCanvasTextItem TextItem(FVector2D::ZeroVector, FText::GetEmpty(), BigFont, HUDDark);
+		TextItem.EnableShadow(FLinearColor::Black);
+
+		// Drawing clip icons
+		Canvas->SetDrawColor(FColor::White);
+
+		int32 ammoIconsCount = 10;
+		const float AmmoPerIcon = MyWeapon->GetClipCapacity() / ammoIconsCount;
+		float AmmoIconStartX = Canvas->ClipX * 0.88;
+		float AmmoIconStartY = Canvas->ClipY * 0.9;
+		float AmmoIconEndX = AmmoIconStartX;
+		for (int32 i = 0; i < ammoIconsCount; i++)
+		{
+			if ((i + 1) * AmmoPerIcon > MyWeapon->GetCurrentClipSize())
+			{
+				const float UsedPerIcon = (i + 1) * AmmoPerIcon - MyWeapon->GetCurrentClipSize();
+				float PercentLeftInIcon = 0;
+				if (UsedPerIcon < AmmoPerIcon)
+				{
+					PercentLeftInIcon = (AmmoPerIcon - UsedPerIcon) / AmmoPerIcon;
+				}
+				const int32 Color = 128 + 128 * PercentLeftInIcon;
+				Canvas->SetDrawColor(Color, Color, Color, Color);
+			}
+
+			const float ClipOffset = 12 * ScaleUI * i;
+			Canvas->DrawIcon(PrimaryClipIcon, AmmoIconStartX + ClipOffset , AmmoIconStartY, ScaleUI);
+			AmmoIconEndX += 12 * ScaleUI;
+		}
+		Canvas->SetDrawColor(HUDDark);
+
+		//PRIMARY WEAPON
+		{
+			const float TextOffset = 12;
+			float SizeX, SizeY;
+			float TopTextHeight;
+			FString Text = FString::FromInt(MyWeapon->GetCurrentClipSize());
+
+			Canvas->StrLen(BigFont, Text, SizeX, SizeY);
+
+			const float TopTextScale = 0.73f; // of 51pt font
+			const float TopTextPosX = AmmoIconEndX + SizeX * TopTextScale / 2.0f;
+			const float TopTextPosY = AmmoIconStartY;
+			TextItem.Text = FText::FromString(Text);
+			TextItem.Scale = FVector2D(TopTextScale * ScaleUI, TopTextScale * ScaleUI);
+			TextItem.FontRenderInfo = ShadowedFont;
+			Canvas->DrawItem(TextItem, TopTextPosX, TopTextPosY);
+			TopTextHeight = SizeY * TopTextScale;
+			Text = FString::FromInt(MyWeapon->GetCurrentStoreSize());
+			Canvas->StrLen(BigFont, Text, SizeX, SizeY);
+
+			const float BottomTextScale = 0.49f; // of 51pt font
+			const float BottomTextPosX = TopTextPosX;
+			const float BottomTextPosY = TopTextPosY + (TopTextHeight - 0.8f * TextOffset) * ScaleUI;
+			TextItem.Text = FText::FromString(Text);
+			TextItem.Scale = FVector2D(BottomTextScale*ScaleUI, BottomTextScale * ScaleUI);
+			TextItem.FontRenderInfo = ShadowedFont;
+			Canvas->DrawItem(TextItem, BottomTextPosX, BottomTextPosY);
+		}
+	}
 }
 
 void AFournoidHUD::DrawCrossHair() {
@@ -227,20 +299,6 @@ void AFournoidHUD::DrawHealthBar() {
 		return;
 	}
 
-	////Stamina Icon
-	//FCanvasIcon staminaIcon = UCanvas::MakeIcon(StaminaIcon, 20, 20);
-	//iconX = XScale * StaminaIconStartX;
-	//iconY = YScale * StaminaIconStartY;
-	//Canvas->DrawIcon(staminaIcon, iconX, iconY, XScale * StaminaIconScale);
-
-	//int stamina = Character->GetCharacterStamina();
-	//FDrawText(
-	//	VerdanaFont, FString::FromInt(stamina), iconX + XScale * StaminaIndicatorOffset, iconY,
-	//	LC_Black, XScale * StaminaIndicatorScale,
-	//	true, LC_Yellow
-	//	);
-
-
 	Canvas->SetDrawColor(FColor::White);
 	const float HealthPosX = Canvas->OrgX;
 	const float HealthPosY = Canvas->ClipY - (Offset + HealthBarBg.VL) * ScaleUI;
@@ -269,38 +327,6 @@ void AFournoidHUD::DrawHealthBar() {
 	Canvas->DrawItem(TileItem2);
 
 	Canvas->DrawIcon(StaminaIcon, StaminaPosX + Offset * ScaleUI, StaminaPosY + (StaminaBar.VL - StaminaIcon.VL) / 2.0f * ScaleUI, ScaleUI);
-}
-
-void AFournoidHUD::DrawAmmoBar() {
-	auto Character = Cast<AFournoidCharacter>(ThePC->GetPawn());
-	if (!Character || Character->IsDead())
-	{
-		return;
-	}
-
-	//Background
-	DrawMaterialSimple(
-		AmmoBarBackground,
-		XScale * AmmoBarStartX, YScale * AmmoBarStartY,
-		XScale * AmmoBarWidth,
-		YScale * AmmoBarHeight,
-		1
-		);
-
-	// Icon
-	FCanvasIcon ammoIcon = UCanvas::MakeIcon(AmmoIcon, 20, 20);
-	float iconX = XScale * AmmoIconStartX;
-	float iconY = YScale * AmmoIconStartY;
-	Canvas->DrawIcon(ammoIcon, iconX, iconY, XScale * AmmoIconScale);
-
-	AFournoidWeapon *weapon = Character->GetWeaponActor();
-	int32 currentClipSize = weapon->GetCurrentClipSize();
-	int32 storeSize = weapon->GetCurrentStoreSize();
-	FDrawText(
-		VerdanaFont, FString::FromInt(currentClipSize) + "/" + FString::FromInt(storeSize), iconX + XScale * AmmoIndicatorOffset, iconY,
-		LC_Black, XScale * AmmoIndicatorScale,
-		true, LC_Yellow
-		);
 }
 
 //Buttons

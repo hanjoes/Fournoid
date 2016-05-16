@@ -102,6 +102,10 @@ public:
 	FORCEINLINE int32 GetCurrentStoreSize() const{
 		return CurrentStoreSize;
 	}
+
+	FORCEINLINE int32 GetClipCapacity() const {
+		return ClipCapacity;
+	}
 	
 protected:
 	

@@ -33,6 +33,18 @@ public:
 	void ClientSetSpectatorCamera(FVector CameraLocation, FRotator CameraRotation);
 	
 	//////////////////////////////////////////////////////////////////////////
+	// Controll
+	
+	/** Displays the scoreboard */
+	void ShowScoreboard();
+	
+	/** Hides the scoreboard */
+	void HideScoreboard();
+
+	/** sets up input */
+	virtual void SetupInputComponent() override;
+	
+	//////////////////////////////////////////////////////////////////////////
 	// Spawn
 	
 	virtual void UnFreeze() override;

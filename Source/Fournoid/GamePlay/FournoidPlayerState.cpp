@@ -6,7 +6,7 @@
 AFournoidPlayerState::AFournoidPlayerState()
 {
 	// Default values
-	NumDeath = 0;
+	NumDeaths = 0;
 	NumKills = 0;
 }
 
@@ -14,7 +14,7 @@ void AFournoidPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty 
 {
 	Super::GetLifetimeReplicatedProps( OutLifetimeProps );
 
-	DOREPLIFETIME(AFournoidPlayerState, NumDeath);
+	DOREPLIFETIME(AFournoidPlayerState, NumDeaths);
 	DOREPLIFETIME(AFournoidPlayerState, NumKills);
 }
 
@@ -25,6 +25,17 @@ void AFournoidPlayerState::ScoreKill()
 
 void AFournoidPlayerState::ScoreDeath()
 {
-	NumDeath += 1;
+	NumDeaths += 1;
 }
+
+int32 AFournoidPlayerState::GetNumKills() const
+{
+	return NumKills;
+}
+
+int32 AFournoidPlayerState::GetNumDeaths() const
+{
+	return NumDeaths;
+}
+
 

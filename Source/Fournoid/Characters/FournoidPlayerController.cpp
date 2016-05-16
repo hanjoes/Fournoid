@@ -13,6 +13,15 @@ void AFournoidPlayerController::Suicide()
 	}
 }
 
+void AFournoidPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	
+	// UI input
+	InputComponent->BindAction("Scoreboard", IE_Pressed, this, &AFournoidPlayerController::ShowScoreboard);
+	InputComponent->BindAction("Scoreboard", IE_Released, this, &AFournoidPlayerController::HideScoreboard);
+}
+
 void AFournoidPlayerController::PawnPendingDestroy(APawn* P)
 {
 	auto DeathLocation = P->GetActorLocation();
@@ -33,4 +42,19 @@ void AFournoidPlayerController::ClientSetSpectatorCamera_Implementation(FVector 
 void AFournoidPlayerController::UnFreeze()
 {
 	ServerRestartPlayer();
+}
+
+void AFournoidPlayerController::ShowScoreboard()
+{
+	auto World = GetWorld();
+	if ( World )
+	{
+		auto GameState = World->GetGameState<AFournoidGameState>();
+		GameState->LogCurrentGameScore();
+	}
+}
+
+void AFournoidPlayerController::HideScoreboard()
+{
+	
 }

@@ -90,10 +90,10 @@ public:
 	
 protected:
 	
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Replicated, Category=Stats)
 	float Health;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Replicated, Category=Stats)
 	float Stamina;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)

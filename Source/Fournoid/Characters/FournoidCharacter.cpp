@@ -51,6 +51,7 @@ AFournoidCharacter::AFournoidCharacter(const FObjectInitializer& ObjectInitializ
 	StaminaConsumeRate = 30.f;
 	SpeedBoostScale = 1.5f;
 	DestroyLifeSpan = 10.f;
+	bIsDead = false;
 	bCharacterIsRunning = false;
 }
 
@@ -272,7 +273,7 @@ bool AFournoidCharacter::IsFirstPerson() const
 
 void AFournoidCharacter::Die(AController* InstigatorController)
 {
-	if (Role < ROLE_Authority)
+	if ( Role < ROLE_Authority )
 	{
 		ServerDie(InstigatorController);
 		return;
@@ -304,7 +305,6 @@ void AFournoidCharacter::OnDeath()
 	bIsDead = true;
 	UpdatePawnMesh();
 	DetachFromControllerPendingDestroy();
-	
 	SetLifeSpan(DestroyLifeSpan);
 }
 
@@ -344,6 +344,11 @@ void AFournoidCharacter::ServerStopRunning_Implementation()
 
 float AFournoidCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
 {
+	if ( Health <= .0f )
+	{
+		return .0f;
+	}
+	
 	Health -= Damage;
 	if (Health <= 0.0f)
 	{

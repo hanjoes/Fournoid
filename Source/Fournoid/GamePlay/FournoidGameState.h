@@ -14,6 +14,9 @@ class FOURNOID_API AFournoidGameState : public AGameState
 	GENERATED_BODY()
 	
 	
+public:
+	
+	void LogCurrentGameScore() const;
 	
 	
 };

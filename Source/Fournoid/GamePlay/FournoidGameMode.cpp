@@ -35,15 +35,14 @@ void AFournoidGameMode::Killed(AController *Killer, AController *Killed)
 	auto KillerPlayerState = Killer ? Cast<AFournoidPlayerState>(Killer->PlayerState) : nullptr;
 	auto KilledPlayerState = Killed ? Cast<AFournoidPlayerState>(Killed->PlayerState) : nullptr;
 	
-	if ( Killer && KillerPlayerState != KilledPlayerState )
+	if ( Killer && KillerPlayerState && KillerPlayerState != KilledPlayerState )
 	{
 		KillerPlayerState->ScoreKill();
 	}
 	
-	if ( Killed && KilledPlayerState != KillerPlayerState )
+	if ( Killed && KilledPlayerState && KilledPlayerState != KillerPlayerState )
 	{
-		KillerPlayerState->ScoreDeath();
+		KilledPlayerState->ScoreDeath();
 	}
 }
-
 

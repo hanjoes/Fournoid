@@ -28,11 +28,17 @@ public:
 	/** Add one to NumDeath */
 	void ScoreDeath();
 	
+	/** Getter for NumKills */
+	int32 GetNumKills() const;
+	
+	/** Getter for NumDeaths */
+	int32 GetNumDeaths() const;
+	
 	
 protected:
 	
 	UPROPERTY(Replicated)
-	int32 NumDeath;
+	int32 NumDeaths;
 	
 	UPROPERTY(Replicated)
 	int32 NumKills;

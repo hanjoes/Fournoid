@@ -5,6 +5,7 @@
 #include "Engine/Canvas.h"
 #include "TextureResource.h"
 #include "CanvasItem.h"
+#include "Internationalization.h"
 #include "Weapons/FournoidWeapon.h"
 
 #define BUTTONTYPE_MAIN_RESTART 	1
@@ -80,7 +81,8 @@ AFournoidHUD::AFournoidHUD()
 	HitNotifyIcon[EShooterHudPosition::Back] = UCanvas::MakeIcon(HitNotifyTexture, 862, 1384, 353, 408);
 	HitNotifyIcon[EShooterHudPosition::BackLeft] = UCanvas::MakeIcon(HitNotifyTexture, 454, 1251, 371, 410);
 
-	//KillsBg = UCanvas::MakeIcon(HUDMainTexture, 15, 16, 235, 62);
+	KillsBg = UCanvas::MakeIcon(HUDMainTexture, 15, 16, 235, 62);
+	KillsIcon = UCanvas::MakeIcon(HUDMainTexture, 318, 93, 24, 24);
 	//TimePlaceBg = UCanvas::MakeIcon(HUDMainTexture, 262, 16, 255, 62);
 	PrimaryWeapBg = UCanvas::MakeIcon(HUDMainTexture, 543, 17, 441, 81);
 	PrimaryClipIcon = UCanvas::MakeIcon(HUDMainTexture, 76, 279, 51, 55);
@@ -94,7 +96,6 @@ AFournoidHUD::AFournoidHUD()
 	StaminaBar = UCanvas::MakeIcon(StaminaTexture, 67, 212, 372, 50);
 	StaminaBarBg = UCanvas::MakeIcon(StaminaTexture, 67, 162, 372, 50);
 	StaminaIcon = UCanvas::MakeIcon(StaminaTexture, 78, 262, 28, 28);
-	//KillsIcon = UCanvas::MakeIcon(HUDMainTexture, 318, 93, 24, 24);
 	//TimerIcon = UCanvas::MakeIcon(HUDMainTexture, 381, 93, 24, 24);
 	//KilledIcon = UCanvas::MakeIcon(HUDMainTexture, 425, 92, 38, 36);
 	//PlaceIcon = UCanvas::MakeIcon(HUDMainTexture, 250, 468, 21, 28);
@@ -156,6 +157,8 @@ void AFournoidHUD::DrawHUD()
 
 	DrawWeaponHUD();
 
+	DrawKills();
+
 	//================
 	//Get New Mouse Position
 	//================
@@ -191,8 +194,8 @@ void AFournoidHUD::DrawWeaponHUD()
 		int32 ammoIconsCount = 10;
 		const float AmmoPerIcon = MyWeapon->GetClipCapacity() / ammoIconsCount;
 		float AmmoIconStartX = Canvas->ClipX * 0.88;
-		float AmmoIconStartY = Canvas->ClipY * 0.9;
-		float AmmoIconEndX = AmmoIconStartX;
+		float AmmoIconStartY = Canvas->OrgY + (Canvas->ClipY - (Offset + PrimaryClipIcon.VL) * ScaleUI);
+		float AmmoIconEndX = AmmoIconStartX + 12 * ScaleUI * ammoIconsCount;
 		for (int32 i = 0; i < ammoIconsCount; i++)
 		{
 			if ((i + 1) * AmmoPerIcon > MyWeapon->GetCurrentClipSize())
@@ -209,7 +212,6 @@ void AFournoidHUD::DrawWeaponHUD()
 
 			const float ClipOffset = 12 * ScaleUI * i;
 			Canvas->DrawIcon(PrimaryClipIcon, AmmoIconStartX + ClipOffset , AmmoIconStartY, ScaleUI);
-			AmmoIconEndX += 12 * ScaleUI;
 		}
 		Canvas->SetDrawColor(HUDDark);
 
@@ -244,6 +246,57 @@ void AFournoidHUD::DrawWeaponHUD()
 	}
 }
 
+void AFournoidHUD::DrawKills()
+{
+	auto MyPawn = Cast<AFournoidCharacter>(ThePC->GetPawn());
+	if (!MyPawn || MyPawn->IsDead())
+	{
+		return;
+	}
+	auto PlayerState = Cast<AFournoidPlayerState>(MyPawn->PlayerState);
+	if (!PlayerState) {
+		return;
+	}
+
+	Canvas->SetDrawColor(FColor::White);
+	float KillsPosX = Canvas->OrgX + (Canvas->ClipX - KillsBg.UL * ScaleUI) / 2.0f;
+	float KillsPosY = Canvas->OrgY + (Canvas->ClipY - (Offset + KillsBg.VL) * ScaleUI);
+	Canvas->DrawIcon(KillsBg, KillsPosX, KillsPosY, ScaleUI);
+
+	Canvas->DrawIcon(KillsIcon, KillsPosX + Offset * ScaleUI, KillsPosY + ((KillsBg.VL - KillsIcon.VL) / 2) * ScaleUI, ScaleUI);
+	float TextScale = 0.57f;
+	FCanvasTextItem TextItem(FVector2D::ZeroVector, FText::GetEmpty(), BigFont, HUDDark);
+	TextItem.EnableShadow(FLinearColor::Black);
+
+	float SizeX, SizeY;
+	FString Text = "KILLS:";
+	Canvas->StrLen(BigFont, Text, SizeX, SizeY);
+
+	TextItem.Text = FText::FromString(Text);
+	TextItem.Scale = FVector2D(TextScale * ScaleUI, TextScale * ScaleUI);
+	TextItem.FontRenderInfo = ShadowedFont;
+	TextItem.SetColor(HUDDark);
+	Canvas->DrawItem(TextItem, KillsPosX + Offset * ScaleUI + KillsIcon.UL * 1.5f * ScaleUI,
+		KillsPosY + (KillsBg.VL * ScaleUI - SizeY * TextScale * ScaleUI) / 2);
+
+	if (PlayerState)
+	{
+		Text = FString::FromInt(PlayerState->GetNumKills());
+	}
+	else
+	{
+		Text = FString("0");
+	}
+	TextScale = 0.88f;
+	float BoxWidth = 135.0f * ScaleUI;
+	Canvas->StrLen(BigFont, Text, SizeX, SizeY);
+	TextItem.Text = FText::FromString(Text);
+	TextItem.Scale = FVector2D(TextScale * ScaleUI, TextScale * ScaleUI);
+	Canvas->DrawItem(TextItem, KillsPosX + KillsBg.UL * ScaleUI - (BoxWidth + SizeX * TextScale * ScaleUI) / 2,
+		KillsPosY + (KillsBg.VL* ScaleUI - SizeY * TextScale * ScaleUI) / 2);
+
+}
+
 void AFournoidHUD::DrawCrossHair() {
 	// Draw very simple crosshair
 
@@ -259,6 +312,8 @@ void AFournoidHUD::DrawCrossHair() {
 	TileItem.BlendMode = SE_BLEND_Translucent;
 	Canvas->DrawItem(TileItem);
 }
+
+
 
 void AFournoidHUD::DrawInGameMenu() {
 	if (!DrawInGameMenuFlag) {

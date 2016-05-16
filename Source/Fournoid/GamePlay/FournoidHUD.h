@@ -188,6 +188,8 @@ public:
 
 	void DrawWeaponHUD();
 
+	void DrawKills();
+
 	void PlayerInputCheckes();
 
 	/** helper for getting uv coords in normalized top,left, bottom, right format */
@@ -366,6 +368,14 @@ private:
 	/** Primary weapon icon. */
 	UPROPERTY()
 	FCanvasIcon PrimaryClipIcon;
+
+	/** Kills icon. */
+	UPROPERTY()
+	FCanvasIcon KillsIcon;
+
+	/** Kills background. */
+	UPROPERTY()
+	FCanvasIcon KillsBg;
 
 	/** General offset for HUD elements. */
 	float Offset;

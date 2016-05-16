@@ -115,6 +115,23 @@ public:
 		float TextScale;
 
 
+	/** Stamina icon on the stamina bar. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stamina)
+		FCanvasIcon StaminaIcon;
+
+	/** Stamina icon additional scale on the stamina bar. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stamina)
+		float StaminaIconAdjustScale;
+
+	/** Stamina icon additional x-axis shift on the stamina bar. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stamina)
+		float StaminaIconAdjustStartX;
+
+	/** Stamina icon additional y-axis shift on the stamina bar. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stamina)
+		float StaminaIconAdjustStartY;
+
+
 	// Materials 
 	/** Events */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Materials)
@@ -346,9 +363,7 @@ private:
 	UPROPERTY()
 	FCanvasIcon StaminaBar;
 
-	/** Stamina icon on the stamina bar. */
-	UPROPERTY()
-	FCanvasIcon StaminaIcon;
+	
 
 	/** Crosshair icons (left, top, right, bottom and center). */
 	UPROPERTY()

@@ -166,6 +166,8 @@ void AFournoidHUD::DrawHUD()
 
 	//Cursor In Buttons
 	DrawHUD_CheckCursorInButtons();
+
+	Canvas->SetDrawColor(FColor::White);
 }
 
 void AFournoidHUD::PostInitializeComponents() {
@@ -381,7 +383,7 @@ void AFournoidHUD::DrawHealthBar() {
 	TileItem2.BlendMode = SE_BLEND_Translucent;
 	Canvas->DrawItem(TileItem2);
 
-	Canvas->DrawIcon(StaminaIcon, StaminaPosX + Offset * ScaleUI, StaminaPosY + (StaminaBar.VL - StaminaIcon.VL) / 2.0f * ScaleUI, ScaleUI);
+	Canvas->DrawIcon(StaminaIcon, StaminaPosX + Offset * ScaleUI + StaminaIconAdjustStartX, StaminaPosY + (StaminaBar.VL - StaminaIcon.VL) / 2.0f * ScaleUI + StaminaIconAdjustStartY, ScaleUI * StaminaIconAdjustScale);
 }
 
 //Buttons

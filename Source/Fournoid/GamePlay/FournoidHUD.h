@@ -4,8 +4,36 @@
 #include "GameFramework/HUD.h"
 #include "FournoidHUD.generated.h"
 
+
+namespace EShooterCrosshairDirection
+{
+	enum Type
+	{
+		Left = 0,
+		Right = 1,
+		Top = 2,
+		Bottom = 3,
+		Center = 4
+	};
+}
+
+namespace EShooterHudPosition
+{
+	enum Type
+	{
+		Left = 0,
+		FrontLeft = 1,
+		Front = 2,
+		FrontRight = 3,
+		Right = 4,
+		BackRight = 5,
+		Back = 6,
+		BackLeft = 7,
+	};
+}
+
 USTRUCT()
-struct FButtonStruct
+struct FMyHUDButtonStruct
 {
 	GENERATED_USTRUCT_BODY()
 
@@ -17,11 +45,9 @@ struct FButtonStruct
 	float 		minY;
 	float 		maxY;
 
-	//~
-
 	//default properties
 
-	FButtonStruct()
+	FMyHUDButtonStruct()
 	{
 		type = -1;
 		toolTip = "";
@@ -50,15 +76,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AFournoidHUD)
 		float DefaultFontScale;
 
-	/** HUD Scaling */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AFournoidHUD)
-		float GlobalHUDMult;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AFournoidHUD)
-		float InGameMenuXOffset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AFournoidHUD)
-		float InGameMenuYOffset;
+	/* In Game Main Menu Properties*/
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MainMenu)
+		float MainMenuStartX;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MainMenu)
+		float MainMenuStartY;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MainMenu)
+		float MainMenuWidth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MainMenu)
+		float MainMenuHeight;
 
 	// T2D 
 	/** Cursor */
@@ -99,31 +125,28 @@ public:
 		UMaterialInterface* HealthBarBackground;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthBarXOffset;
+		float HealthBarStartX;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthBarYOffset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthBarHeight;
+		float HealthBarStartY;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
 		float HealthBarWidth;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthBarScale;
+		float HealthBarHeight;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		class UTexture2D* HealthIcon;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
+		class UTexture2D* HealthIcon;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
 		float HealthIconScale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthIconXOffset;
+		float HealthIconStartX;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float HealthIconYOffset;
+		float HealthIconStartY;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
 		float HealthIndicatorOffset;
@@ -131,17 +154,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
 		float HealthIndicatorScale;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-	class UTexture2D* StaminaIcon;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
+	class UTexture2D* StaminaIcon;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
 		float StaminaIconScale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float StaminaIconXOffset;
+		float StaminaIconStartX;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
-		float StaminaIconYOffset;
+		float StaminaIconStartY;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HealthBar)
 		float StaminaIndicatorOffset;
@@ -154,16 +177,16 @@ public:
 		UMaterialInterface* AmmoBarBackground;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoBarXOffset;
+		float AmmoBarStartX;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoBarYOffset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoBarHeight;
+		float AmmoBarStartY;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
 		float AmmoBarWidth;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
+		float AmmoBarHeight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
 		float AmmoBarScale;
@@ -175,10 +198,10 @@ public:
 		float AmmoIconScale;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoIconXOffset;
+		float AmmoIconStartX;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
-		float AmmoIconYOffset;
+		float AmmoIconStartY;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AmmoBar)
 		float AmmoIndicatorOffset;
@@ -188,8 +211,8 @@ public:
 
 //Buttons
 public:
-	TArray<FButtonStruct> ButtonsMain;
-	TArray<FButtonStruct> ButtonsConfirm;
+	TArray<FMyHUDButtonStruct> ButtonsMain;
+	TArray<FMyHUDButtonStruct> ButtonsConfirm;
 
 	//Cursor In buttons
 	FVector2D MouseLocation;
@@ -199,8 +222,8 @@ public:
 	void CheckCursorInButtonsMain();
 	void CheckCursorInButtonsConfirm();
 
-	const FButtonStruct* CurCheckButton;
-	int32 CheckCursorInButton(const TArray<FButtonStruct>& ButtonArray);
+	const FMyHUDButtonStruct* CurCheckButton;
+	int32 CheckCursorInButton(const TArray<FMyHUDButtonStruct>& ButtonArray);
 	int32 ClickedButtonType;
 	//States
 	bool ConfirmDialogOpen;
@@ -255,6 +278,9 @@ public:
 	void DrawAmmoBar();
 
 	void PlayerInputCheckes();
+
+	/** helper for getting uv coords in normalized top,left, bottom, right format */
+	void MakeUV(FCanvasIcon& Icon, FVector2D& UV0, FVector2D& UV1, uint16 U, uint16 V, uint16 UL, uint16 VL);
 
 	FORCEINLINE void VDrawTile(UTexture2D* tex, float x, float y, float screenX, float screenY, const FColor& TheColor)
 	{
@@ -354,5 +380,87 @@ private:
 	bool ShowCursor;
 	FLinearColor TextColor;
 	FLinearColor TextOuterColor;
+	float XScale;
+	float YScale;
+
+	UPROPERTY()
+	UFont* BigFont;
+
+	UPROPERTY()
+	UFont* NormalFont;
+
+	/** Texture for hit indicator. */
+	UPROPERTY()
+	UTexture2D* HitNotifyTexture;
+
+	/** texture for HUD elements. */
+	UPROPERTY()
+	UTexture2D* HUDMainTexture;
+
+	/** Texture for HUD elements. */
+	UPROPERTY()
+	UTexture2D* HUDAssets02Texture;
+
+	/** Texture for Stamina bar. */
+	UPROPERTY()
+	UTexture2D* StaminaTexture;
+
+	/** Overlay shown when health is low. */
+	UPROPERTY()
+	UTexture2D* LowHealthOverlayTexture;
+
+	/** Icons for hit indicator. */
+	UPROPERTY()
+	FCanvasIcon HitNotifyIcon[8];
+
+	/** Health bar background icon. */
+	UPROPERTY()
+	FCanvasIcon HealthBarBg;
+
+	/** Health bar icon. */
+	UPROPERTY()
+	FCanvasIcon HealthBar;
+
+	/** Health icon on the health bar. */
+	UPROPERTY()
+	FCanvasIcon HealthIcon;
+
+	/** Stamina bar background icon. */
+	UPROPERTY()
+	FCanvasIcon StaminaBarBg;
+
+	/** Stamina bar icon. */
+	UPROPERTY()
+	FCanvasIcon StaminaBar;
+
+	/** Stamina icon on the stamina bar. */
+	UPROPERTY()
+	FCanvasIcon StaminaIcon;
+
+	/** Crosshair icons (left, top, right, bottom and center). */
+	UPROPERTY()
+	FCanvasIcon Crosshair[5];
+
+	/** Offsets to display hit indicator parts. */
+	FVector2D Offsets[8];
+
+	/** On crosshair indicator that we hit someone. */
+	UPROPERTY()
+	FCanvasIcon HitNotifyCrosshair;
+
+	/** General offset for HUD elements. */
+	float Offset;
+
+	/** Lighter HUD color. */
+	FColor HUDLight;
+
+	/** Darker HUD color. */
+	FColor HUDDark;
+
+	/** FontRenderInfo enabling casting shadow.s */
+	FFontRenderInfo ShadowedFont;
+
+	/** UI scaling factor for other resolutions than Full HD. */
+	float ScaleUI;
 };
 

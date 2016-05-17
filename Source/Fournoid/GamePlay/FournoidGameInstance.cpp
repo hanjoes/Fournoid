@@ -15,10 +15,10 @@ namespace FournoidGameInstanceState
 }
 
 
-UShooterGameInstance::UShooterGameInstance(const FObjectInitializer& ObjectInitializer)
+UFournoidGameInstance::UFournoidGameInstance(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	CurrentState = ShooterGameInstanceState::None;
+	CurrentState = FournoidGameInstanceState::None;
 }
 
 void UFournoidGameInstance::Init()
@@ -30,7 +30,6 @@ void UFournoidGameInstance::Init()
 void UFournoidGameInstance::StartGameInstance()
 {
 	Super::StartGameInstance();
-	
 }
 
 void UFournoidGameInstance::Shutdown()
@@ -38,3 +37,11 @@ void UFournoidGameInstance::Shutdown()
 	Super::Shutdown();
 	
 }
+
+bool UFournoidGameInstance::StartPIEGameInstance(ULocalPlayer *LocalPlayer, bool bInSimulateInEditor, bool bAnyBlueprintErrors, bool bStartInSpectatorMode)
+{
+	bool result = Super::StartPIEGameInstance(LocalPlayer, bInSimulateInEditor, bAnyBlueprintErrors, bStartInSpectatorMode);
+	StartGameInstance();
+	return result;
+}
+

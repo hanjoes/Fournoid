@@ -25,11 +25,15 @@ class FOURNOID_API UFournoidGameInstance : public UGameInstance
 	
 public:
 	
+	UFournoidGameInstance(const FObjectInitializer& ObjectInitializer);
+	
 	virtual void Init() override;
 	
 	virtual void Shutdown() override;
 	
 	virtual void StartGameInstance() override;
+	
+	virtual bool StartPIEGameInstance(ULocalPlayer* LocalPlayer, bool bInSimulateInEditor, bool bAnyBlueprintErrors, bool bStartInSpectatorMode) override;
 	
 private:
 	

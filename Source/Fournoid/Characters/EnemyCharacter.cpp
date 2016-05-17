@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Fournoid.h"
+#include "Weapons/FournoidWeapon.h"
 #include "Bullets/FournoidBullet.h"
 #include "EnemyCharacter.h"
 
@@ -13,7 +14,10 @@ AEnemyCharacter::AEnemyCharacter(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = true;
 	
 	SetupCollisionBehavior();
-	PatrolLocation = FVector(-1,-1,-1);
+}
+
+bool AEnemyCharacter::IsFirstPerson() const{
+	return false;
 }
 
 // Called when the game starts or when spawned
@@ -26,7 +30,11 @@ void AEnemyCharacter::BeginPlay()
 void AEnemyCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	
+	if(IsDead()){
+		StopFire();
+	}else{
+		ReloadStore();
+	}
 }
 
 void AEnemyCharacter::SetupCollisionBehavior()
@@ -34,36 +42,24 @@ void AEnemyCharacter::SetupCollisionBehavior()
 }
 
 //This can be a function for the base class, AFounoidCharacter, as well as related variables
-void AEnemyCharacter:: OnFire(){
-	FournoidUtils::RedMessage("Firing");
-	if (BulletClass != NULL)
-	{
-		// Get the actors rotation caused by control in world space.
-		const FRotator SpawnRotation = GetControlRotation();
-		// Tarnsform the SpawnOffset from local space to world space.
-		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(SpawnOffset);
-		
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			// spawn the projectile at the muzzle
-			World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
-		}
+void AEnemyCharacter:: StartFire(){
+	Super::StartFire();
+}
+
+void AEnemyCharacter:: StopFire(){
+	Super::StopFire();
+}
+
+float AEnemyCharacter::GetPatrolRadius(){
+	return PatrolRadius;
+}
+
+int32 AEnemyCharacter::ReloadStore(){
+	AFournoidWeapon* CurrWeapon = GetWeaponActor();
+	int32 CurrStore = CurrWeapon->GetCurrentStoreSize();
+	if(CurrStore <= 0){
+		CurrWeapon->AddCurrentStore(30);
 	}
+	
+	return CurrWeapon->GetCurrentStoreSize();
 }
-
-
-FVector AEnemyCharacter::GetPatrolLoc(){
-	return PatrolLocation;
-}
-
-TQueue<FVector>*
-AEnemyCharacter::GetEnemyLocs(){
-	return &EnemyLocations;
-}
-
-void
-AEnemyCharacter::SetPatrolLoc(FVector Location){
-	PatrolLocation = Location;
-}
-

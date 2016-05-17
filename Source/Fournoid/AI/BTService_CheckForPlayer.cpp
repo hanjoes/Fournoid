@@ -22,30 +22,6 @@ void UBTService_CheckForPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 	if(CharPC){
 		
 		CharPC->FindClosestEnemy();
-		AFournoidCharacter *Enemy =Cast<AFournoidCharacter>( OwnerComp.GetBlackboardComponent()->GetValue<UBlackboardKeyType_Object>(CharPC->EnemyKeyID)) ;
-		
-		if(Enemy){
-
-			FVector AILocation = CharPC->AActor::GetActorLocation();
-			FVector EnemyLocation = Enemy->GetActorLocation();
-			FVector Direction = UKismetMathLibrary::Normal(EnemyLocation-AILocation);
-			FVector CharForward = CharPC->GetActorForwardVector();
-			
-			float Angel = UKismetMathLibrary::DegAcos(UKismetMathLibrary::Dot_VectorVector(Direction, CharForward));
-			
-			float Distance =sqrt( (EnemyLocation-AILocation).SizeSquared());
-			//FournoidUtils::BlueMessage(FString::SanitizeFloat(Angel)+","+FString::SanitizeFloat(Distance));
-			
-			if( Angel<60 && Distance <2000){
-				OwnerComp.GetBlackboardComponent()->SetValueAsEnum("AIState", 1);
-				OwnerComp.GetBlackboardComponent()->SetValueAsObject("Target", Enemy);
-				
-			}else{
-				CharPC->ClearFocus(EAIFocusPriority::Gameplay);
-
-				OwnerComp.GetBlackboardComponent()->SetValueAsEnum("AIState", 0);
-			}
-		}
+		CharPC->ShootEnemy();
 	}
 }
-

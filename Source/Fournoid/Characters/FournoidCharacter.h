@@ -35,7 +35,7 @@ public:
 	UFUNCTION(Reliable, Server, WithValidation)
 	void ServerStopRunning();
 	
-	bool IsFirstPerson() const;
+	virtual bool IsFirstPerson() const;
 	
 	void Die(AController* InstigatorController);
 

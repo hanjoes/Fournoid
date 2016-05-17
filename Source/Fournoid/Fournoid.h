@@ -5,6 +5,9 @@
 
 #include "Engine.h"
 #include "FournoidUtils.h"
+#include "GamePlay/FournoidGameMode.h"
+#include "GamePlay/FournoidGameState.h"
+#include "GamePlay/FournoidPlayerState.h"
 #include "Net/UnrealNetwork.h"
 #include "Characters/FournoidCharacter.h"
 

@@ -37,7 +37,7 @@ public:
 	
 	bool IsFirstPerson() const;
 	
-	void Die();
+	void Die(AController* InstigatorController);
 
 	/** Take damage, handle death */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
@@ -45,7 +45,7 @@ public:
 protected:
 	
 	UFUNCTION(Reliable, Server, WithValidation)
-	void ServerDie();
+	void ServerDie(AController* InstigatorController);
 	
 	void OnDeath();
 	
@@ -90,10 +90,10 @@ public:
 	
 protected:
 	
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Replicated, Category=Stats)
 	float Health;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Replicated, Category=Stats)
 	float Stamina;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
@@ -121,6 +121,10 @@ public:
 	FName GetWeaponAttachPoint() const;
 	
 	void ReloadCurrentWeapon();
+
+	FORCEINLINE AFournoidWeapon* GetWeaponActor() const{
+		return CurrentWeapon;
+	}
 	
 protected:
 	void SpawnInventory();

@@ -9,8 +9,17 @@ void AFournoidPlayerController::Suicide()
 	auto Character = Cast<AFournoidCharacter>(GetPawn());
 	if ( Character )
 	{
-		Character->Die();
+		Character->Die(this);
 	}
+}
+
+void AFournoidPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+	
+	// UI input
+	InputComponent->BindAction("Scoreboard", IE_Pressed, this, &AFournoidPlayerController::ShowScoreboard);
+	InputComponent->BindAction("Scoreboard", IE_Released, this, &AFournoidPlayerController::HideScoreboard);
 }
 
 void AFournoidPlayerController::PawnPendingDestroy(APawn* P)
@@ -33,4 +42,19 @@ void AFournoidPlayerController::ClientSetSpectatorCamera_Implementation(FVector 
 void AFournoidPlayerController::UnFreeze()
 {
 	ServerRestartPlayer();
+}
+
+void AFournoidPlayerController::ShowScoreboard()
+{
+	auto World = GetWorld();
+	if ( World )
+	{
+		auto GameState = World->GetGameState<AFournoidGameState>();
+		GameState->LogCurrentGameScore();
+	}
+}
+
+void AFournoidPlayerController::HideScoreboard()
+{
+	
 }

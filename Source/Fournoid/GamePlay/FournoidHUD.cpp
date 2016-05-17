@@ -8,6 +8,8 @@
 #include "Internationalization.h"
 #include "Weapons/FournoidWeapon.h"
 
+#define LOCTEXT_NAMESPACE "AFournoidShooterGame.HUD.Menu"
+
 #define BUTTONTYPE_MAIN_RESTART 	1
 #define BUTTONTYPE_MAIN_EXIT 		2
 
@@ -271,7 +273,7 @@ void AFournoidHUD::DrawKills()
 	TextItem.EnableShadow(FLinearColor::Black);
 
 	float SizeX, SizeY;
-	FString Text = "KILLS:";
+	FString Text = LOCTEXT("Kills", "KILLS:").ToString();
 	Canvas->StrLen(BigFont, Text, SizeX, SizeY);
 
 	TextItem.Text = FText::FromString(Text);
@@ -618,3 +620,5 @@ void AFournoidHUD::MakeUV(FCanvasIcon& Icon, FVector2D& UV0, FVector2D& UV1, uin
 		UV1 = UV0 + FVector2D(UL / Width, VL / Height);
 	}
 }
+
+#undef LOCTEXT_NAMESPACE

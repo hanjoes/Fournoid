@@ -59,7 +59,7 @@ void AFournoidCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	SpawnKeeper();
+//	SpawnKeeper();
 	SpawnInventory();
 }
 

@@ -169,7 +169,7 @@ void AFournoidHUD::DrawHUD()
 	//Cursor In Buttons
 	DrawHUD_CheckCursorInButtons();
 
-	Canvas->SetDrawColor(FColor::White);
+	Canvas->SetDrawColor(HUDLight);
 }
 
 void AFournoidHUD::PostInitializeComponents() {

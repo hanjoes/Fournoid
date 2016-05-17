@@ -26,8 +26,8 @@ AFournoidKeeper::AFournoidKeeper()
 	StaticMeshComp->bCastDynamicShadow = true;
 	StaticMeshComp->CastShadow = true;
 	
-	KeeperMovement = CreateDefaultSubobject<UMovementComponent>(TEXT("KeeperMovement"));
-	KeeperMovement->UpdatedComponent = KeeperSphereComp;
+//	KeeperMovement = CreateDefaultSubobject<UMovementComponent>(TEXT("KeeperMovement"));
+//	KeeperMovement->UpdatedComponent = KeeperSphereComp;
 	
 	bReplicates = true;
 	bReplicateMovement = true;

@@ -34,36 +34,14 @@ void AEnemyCharacter::SetupCollisionBehavior()
 }
 
 //This can be a function for the base class, AFounoidCharacter, as well as related variables
-void AEnemyCharacter:: OnFire(){
-	FournoidUtils::RedMessage("Firing");
-	if (BulletClass != NULL)
-	{
-		// Get the actors rotation caused by control in world space.
-		const FRotator SpawnRotation = GetControlRotation();
-		// Tarnsform the SpawnOffset from local space to world space.
-		const FVector SpawnLocation = GetActorLocation() + SpawnRotation.RotateVector(SpawnOffset);
-		
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			// spawn the projectile at the muzzle
-			World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
-		}
-	}
+void AEnemyCharacter:: StartFire(){
+	Super::StartFire();
 }
 
-
-FVector AEnemyCharacter::GetPatrolLoc(){
-	return PatrolLocation;
+void AEnemyCharacter:: StopFire(){
+	Super::StopFire();
 }
 
-TQueue<FVector>*
-AEnemyCharacter::GetEnemyLocs(){
-	return &EnemyLocations;
+float AEnemyCharacter::GetPatrolRadius(){
+	return PatrolRadius;
 }
-
-void
-AEnemyCharacter::SetPatrolLoc(FVector Location){
-	PatrolLocation = Location;
-}
-

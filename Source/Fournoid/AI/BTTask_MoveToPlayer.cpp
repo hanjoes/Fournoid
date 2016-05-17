@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Fournoid.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
@@ -12,16 +10,27 @@
 
 EBTNodeResult::Type
 UBTTask_MoveToPlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory){
-	AFournoidAIController *CharPC = Cast<AFournoidAIController>(OwnerComp.GetAIOwner());
+	AFournoidAIController *MyController = Cast<AFournoidAIController>(OwnerComp.GetAIOwner());
+	AEnemyCharacter *Bot = Cast<AEnemyCharacter>(MyController->GetCharacter());
+	AFournoidCharacter *Enemy = MyController->GetEnemy();
 	
-	AFournoidCharacter *Enemy = Cast<AFournoidCharacter>(OwnerComp.GetBlackboardComponent()->GetValue<UBlackboardKeyType_Object>(CharPC->EnemyKeyID));
-	
-	if(Enemy){
-		CharPC->SetFocus(Enemy);
-		Cast<AEnemyCharacter>(CharPC->GetCharacter())->OnFire();
-		return EBTNodeResult::Succeeded;
+	if(Enemy && Bot){
+		Cast<AEnemyCharacter>(MyController->GetCharacter())->GetCharacterMovement()->MaxWalkSpeed = 500;
+		MyController->SetFocus(Enemy);
+		FVector Loc;
+		if(Bot->GetPatrolRadius() > 0.f){
+			const float SearchRadius = 200.f;
+			const FVector SearchOrigin = Enemy->GetActorLocation() + 200.0f * (Bot->GetActorLocation() - Enemy->GetActorLocation()).GetSafeNormal();
+			Loc = UNavigationSystem::GetRandomReachablePointInRadius(MyController, SearchOrigin, SearchRadius);
+		}else{
+			Loc = MyController->AActor::GetActorLocation();
+			
+		}
+		if(Loc != FVector::ZeroVector){
+			OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Vector>(BlackboardKey.GetSelectedKeyID(),Loc);
+			return EBTNodeResult::Succeeded;
+		}
 	}
-	
 	return EBTNodeResult::Failed;
 	
 }

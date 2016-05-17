@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Fournoid.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
@@ -13,7 +11,7 @@
 
 EBTNodeResult::Type
 UBTTask_Patrol::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory){
-
+	
 	AFournoidAIController* MyController = Cast<AFournoidAIController>(OwnerComp.GetAIOwner());
 	if (MyController == nullptr)
 	{
@@ -24,7 +22,7 @@ UBTTask_Patrol::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 	if (MyWaypoint)
 	{
 		/* Find a position that is close to the waypoint. We add a small random to this position to give build predictable patrol patterns  */
-		const float SearchRadius = 800.0f;
+		const float SearchRadius = Cast<AEnemyCharacter>( (MyController->GetCharacter()) )->GetPatrolRadius();
 		const FVector SearchOrigin = MyWaypoint->GetActorLocation();
 		const FVector Loc = UNavigationSystem::GetRandomPointInNavigableRadius(MyController, SearchOrigin, SearchRadius);
 		
@@ -41,4 +39,3 @@ UBTTask_Patrol::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 	
 	return EBTNodeResult::Failed;
 }
-

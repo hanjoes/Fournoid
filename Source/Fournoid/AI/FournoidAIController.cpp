@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Fournoid.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
@@ -31,8 +29,27 @@ void AFournoidAIController::Possess(APawn *InPawn){
 }
 
 void AFournoidAIController::ShootEnemy(){
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, "Shooting!");
-
+	AEnemyCharacter* MyBot = Cast<AEnemyCharacter>(GetPawn());
+	//AShooterWeapon* MyWeapon = MyBot ? MyBot->GetWeapon() : NULL;
+	
+	bool bCanShoot = false;
+	AFournoidCharacter* Enemy = GetEnemy();
+	if ( MyBot->IsAlive() && Enemy && ( Enemy->IsAlive() ))
+	{
+		if (LineOfSightTo(Enemy, MyBot->GetActorLocation()))
+		{
+			bCanShoot = true;
+		}
+	}
+	
+	if (bCanShoot)
+	{
+		MyBot->StartFire();
+	}
+	else
+	{
+		MyBot->StopFire();
+	}
 }
 
 void AFournoidAIController::FindClosestEnemy(){
@@ -49,12 +66,11 @@ void AFournoidAIController::FindClosestEnemy(){
 	for (FConstPawnIterator It = GetWorld()->GetPawnIterator(); It; ++It)
 	{
 		AFournoidCharacter* TestPawn = Cast<AFournoidCharacter>(*It);
-		if (TestPawn && !TestPawn->IsDead() && TestPawn->GetController()->IsA(APlayerController::StaticClass()))
+		if (TestPawn && TestPawn->IsAlive() && TestPawn->GetController()->IsA(APlayerController::StaticClass()))
 		{
 			const float DistSq = (TestPawn->GetActorLocation() - MyLoc).SizeSquared();
-			if (DistSq < BestDistSq)
+			if (DistSq < BestDistSq &&  sqrt(DistSq) < 2500.f )
 			{
-				//FournoidUtils::BlueMessage( FString::SanitizeFloat( sqrt(DistSq) ) );
 				BestDistSq = DistSq;
 				BestPawn = TestPawn;
 			}
@@ -64,12 +80,25 @@ void AFournoidAIController::FindClosestEnemy(){
 	if (BestPawn)
 	{
 		SetEnemy(BestPawn);
+	}else {
+		SetEnemy(NULL);
 	}
 }
 
 void AFournoidAIController::SetEnemy(APawn *InPawn){
 	if(BlackboardComp){
-		BlackboardComp->SetValueAsObject("Target", InPawn);
-		//FournoidUtils::BlueMessage("Set");
+		BlackboardComp->SetValue<UBlackboardKeyType_Object>(EnemyKeyID, InPawn);
+		if(InPawn!=NULL){
+			SetFocus(InPawn);
+		}else{
+			ClearFocus(EAIFocusPriority::Gameplay);
+		}
 	}
+}
+
+class AFournoidCharacter* AFournoidAIController::GetEnemy(){
+	if(BlackboardComp){
+		return Cast<AFournoidCharacter>( BlackboardComp->GetValue<UBlackboardKeyType_Object>(EnemyKeyID));
+	}
+	return NULL;
 }

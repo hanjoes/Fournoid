@@ -19,14 +19,13 @@ UBTTask_MoveToPlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 		MyController->SetFocus(Enemy);
 		FVector Loc;
 		if(Bot->GetPatrolRadius() > 0.f){
-			const float SearchRadius = 200.f;
-			const FVector SearchOrigin = Enemy->GetActorLocation() + 200.0f * (Bot->GetActorLocation() - Enemy->GetActorLocation()).GetSafeNormal();
+			const float SearchRadius = 250.f;
+			const FVector SearchOrigin = Enemy->GetActorLocation() + 1750.0f * (Bot->GetActorLocation() - Enemy->GetActorLocation()).GetSafeNormal();
 			Loc = UNavigationSystem::GetRandomReachablePointInRadius(MyController, SearchOrigin, SearchRadius);
 		}else{
 			Loc = MyController->AActor::GetActorLocation();
-			
 		}
-		if(Loc != FVector::ZeroVector){
+		if(Loc != FVector::ZeroVector ){
 			OwnerComp.GetBlackboardComponent()->SetValue<UBlackboardKeyType_Vector>(BlackboardKey.GetSelectedKeyID(),Loc);
 			return EBTNodeResult::Succeeded;
 		}

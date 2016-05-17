@@ -339,3 +339,6 @@ void AFournoidWeapon::Reload()
 	StartReloading();
 }
 
+void AFournoidWeapon::AddCurrentStore(int32 StoreSize){
+	CurrentStoreSize += StoreSize;
+}

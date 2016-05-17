@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Fournoid.h"
+#include "Weapons/FournoidWeapon.h"
 #include "Bullets/FournoidBullet.h"
 #include "EnemyCharacter.h"
 
@@ -13,7 +14,10 @@ AEnemyCharacter::AEnemyCharacter(const FObjectInitializer& ObjectInitializer)
 	PrimaryActorTick.bCanEverTick = true;
 	
 	SetupCollisionBehavior();
-	PatrolLocation = FVector(-1,-1,-1);
+}
+
+bool AEnemyCharacter::IsFirstPerson() const{
+	return false;
 }
 
 // Called when the game starts or when spawned
@@ -26,7 +30,11 @@ void AEnemyCharacter::BeginPlay()
 void AEnemyCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	
+	if(IsDead()){
+		StopFire();
+	}else{
+		ReloadStore();
+	}
 }
 
 void AEnemyCharacter::SetupCollisionBehavior()
@@ -44,4 +52,14 @@ void AEnemyCharacter:: StopFire(){
 
 float AEnemyCharacter::GetPatrolRadius(){
 	return PatrolRadius;
+}
+
+int32 AEnemyCharacter::ReloadStore(){
+	AFournoidWeapon* CurrWeapon = GetWeaponActor();
+	int32 CurrStore = CurrWeapon->GetCurrentStoreSize();
+	if(CurrStore <= 0){
+		CurrWeapon->AddCurrentStore(30);
+	}
+	
+	return CurrWeapon->GetCurrentStoreSize();
 }

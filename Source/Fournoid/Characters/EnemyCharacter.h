@@ -30,6 +30,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 	float PatrolRadius = 800.f;
 	
+	bool IsFirstPerson() const override;
+	
 public:
 	
 	float GetPatrolRadius();
@@ -38,10 +40,9 @@ public:
 	
 	void StopFire();
 	
+	//Check CurrentStore if less than or equal to 0, reload the storage
+	int32 ReloadStore();
+	
 private:
 	void SetupCollisionBehavior();
-	
-	TQueue<FVector> EnemyLocations;
-	
-	FVector PatrolLocation;
 };

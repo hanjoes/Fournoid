@@ -34,8 +34,12 @@ AFournoidWeapon::AFournoidWeapon()
 	bReplicates = true;
 	bNetUseOwnerRelevancy = true;
 	
+	// Default values
 	CurrentState = WeaponState::WS_Idle;
+	ReloadDuration = 2.f;
 	FiringRate = .3f;
+	InitialBulletStore = 60;
+	ClipCapacity = 30;
 }
 
 // Called when the game starts or when spawned
@@ -43,13 +47,14 @@ void AFournoidWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CurrentClipSize = ClipCapacity;
+	CurrentStoreSize = InitialBulletStore;
 }
 
 // Called every frame
 void AFournoidWeapon::Tick( float DeltaTime )
 {
 	Super::Tick(DeltaTime);
-	
 }
 
 void AFournoidWeapon::SetOwningPawn(AFournoidCharacter* OwningChara)
@@ -122,6 +127,9 @@ void AFournoidWeapon::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & 
 	Super::GetLifetimeReplicatedProps( OutLifetimeProps );
 	
 	DOREPLIFETIME(AFournoidWeapon, MyPawn);
+	
+	DOREPLIFETIME(AFournoidWeapon, CurrentStoreSize);
+	DOREPLIFETIME(AFournoidWeapon, CurrentClipSize);
 }
 
 void AFournoidWeapon::OnRep_MyPawn()
@@ -145,12 +153,22 @@ FVector AFournoidWeapon::GetMuzzleLocation() const
 
 void AFournoidWeapon::StartFire()
 {
+	if ( MyPawn->IsFirstPerson() && (IsClipEmpty() && IsStoreEmpty()) )
+	{
+		PlayWeaponSound(EmptySound);
+		return;
+	}
+	
 	if ( Role < ROLE_Authority )
 	{
 		ServerStartFire();
+		return;
 	}
 	
-	SetWeaponState(WeaponState::WS_Firing);
+	if ( CurrentState == WeaponState::WS_Idle )
+	{
+    	SetWeaponState(WeaponState::WS_Firing);
+	}
 }
 
 void AFournoidWeapon::StopFire()
@@ -160,7 +178,10 @@ void AFournoidWeapon::StopFire()
 		ServerStopFire();
 	}
 	
-	SetWeaponState(WeaponState::WS_Idle);
+	if ( CurrentState == WeaponState::WS_Firing )
+	{
+    	SetWeaponState(WeaponState::WS_Idle);
+	}
 }
 
 void AFournoidWeapon::OnFireStarted()
@@ -207,21 +228,31 @@ void AFournoidWeapon::FireBullet()
 			
 			if ( World )
 			{
-				World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
-				PlayFireSound();
-				PlayFireAnimation();
-				
+				if ( Role == ROLE_Authority )
+				{
+					if ( !IsClipEmpty() )
+					{
+        				auto SpawnedBullet = World->SpawnActor<AFournoidBullet>(BulletClass, SpawnLocation, SpawnRotation);
+        				SpawnedBullet->Instigator = Instigator;
+        				PlayShootingFX();
+    					CurrentClipSize -= 1;
+            			GetWorldTimerManager().SetTimer(TimerHandle_HandleFireBullet, this, &AFournoidWeapon::FireBullet, FiringRate, false);
+					}
+					else
+					{
+						StartReloading();
+					}
+				}
 			}
-			GetWorldTimerManager().SetTimer(TimerHandle_HandleFireBullet, this, &AFournoidWeapon::FireBullet, FiringRate, false);
 		}
 	}
 }
 
-void AFournoidWeapon::PlayFireSound()
+void AFournoidWeapon::PlayWeaponSound(USoundBase* Sound)
 {
-	if ( FireSound )
+	if ( Sound )
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, Sound, GetActorLocation());
 	}
 }
 
@@ -253,3 +284,58 @@ void AFournoidWeapon::SetWeaponState(WeaponState NewState)
 		OnFireStarted();
 	}
 }
+
+void AFournoidWeapon::PlayShootingFX_Implementation()
+{
+	if ( GetNetMode() != NM_DedicatedServer )
+	{
+		PlayWeaponSound(FireSound);
+		PlayFireAnimation();
+	}
+}
+
+bool AFournoidWeapon::IsClipEmpty()
+{
+	return CurrentClipSize == 0;
+}
+
+bool AFournoidWeapon::IsClipFull()
+{
+	return CurrentClipSize == ClipCapacity;
+}
+
+bool AFournoidWeapon::IsStoreEmpty()
+{
+	return CurrentStoreSize == 0;
+}
+
+void AFournoidWeapon::StartReloading()
+{
+	if ( CurrentState == WeaponState::WS_Idle || CurrentState == WeaponState::WS_Firing )
+	{
+		if ( !IsStoreEmpty() )
+		{
+    		SetWeaponState(WeaponState::WS_Reloading);
+    		GetWorldTimerManager().SetTimer(TimerHandle_HandleReloadWeapon, this, &AFournoidWeapon::OnReloadFinished, ReloadDuration, false);
+		}
+	}
+}
+
+void AFournoidWeapon::OnReloadFinished()
+{
+	if ( CurrentState == WeaponState::WS_Idle || CurrentState == WeaponState::WS_Reloading )
+	{
+		FournoidUtils::GreenMessage(TEXT("Reload finished..."));
+		auto RequiredAmmo = FMath::Min(ClipCapacity - CurrentClipSize, CurrentStoreSize);
+		CurrentStoreSize -= RequiredAmmo;
+		CurrentClipSize += RequiredAmmo;
+		
+		SetWeaponState(WeaponState::WS_Idle);
+	}
+}
+
+void AFournoidWeapon::Reload()
+{
+	StartReloading();
+}
+

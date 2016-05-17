@@ -1,24 +1,25 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 #pragma once
 
-#include "Damageable.h"
 #include "GameFramework/Character.h"
 #include "FournoidCharacter.generated.h"
 
 class UInputComponent;
 
 UCLASS(Abstract)
-class AFournoidCharacter : public ACharacter, public IDamageable
+class AFournoidCharacter : public ACharacter
 {
 	GENERATED_BODY()
 	
 	//////////////////////////////////////////////////////////////////////////
-	// Basic Behavior
+	// Basic/Lifecycles
 	
 public:
 	AFournoidCharacter(const FObjectInitializer& ObjectInitializer);
 	
 	virtual void BeginPlay() override;
+	
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
 	virtual void Tick(float DeltaTime) override;
 	
@@ -26,14 +27,27 @@ public:
 	
 	void StartRunning();
 	
+	UFUNCTION(Reliable, Server, WithValidation)
+	void ServerStartRunning();
+	
 	void StopRunning();
 	
-	void Die();
+	UFUNCTION(Reliable, Server, WithValidation)
+	void ServerStopRunning();
 	
 	bool IsFirstPerson() const;
+	
+	void Die();
 
 	/** Take damage, handle death */
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser) override;
+	
+protected:
+	
+	UFUNCTION(Reliable, Server, WithValidation)
+	void ServerDie();
+	
+	void OnDeath();
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Keeper
@@ -70,36 +84,43 @@ public:
 	
 	FORCEINLINE float GetSpeedScale() const { return SpeedBoostScale; }
 	
+	FORCEINLINE float GetDestroyLifeSpan() const { return DestroyLifeSpan; }
+	
 	FORCEINLINE bool CharacterIsRunning() const { return bCharacterIsRunning; }
 	
 protected:
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
 	float Health;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
 	float Stamina;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
 	float StaminaRegenRate;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
 	float StaminaConsumeRate;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
 	float SpeedBoostScale;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadonly, Category=Stats)
+	UPROPERTY(EditAnywhere, BlueprintReadonly, Category=Stats)
+	float DestroyLifeSpan;
+	
 	bool bCharacterIsRunning;
 	
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing=OnRep_bIsDead)
 	bool bIsDead;
+	
 	//////////////////////////////////////////////////////////////////////////
 	// Inventory/Weapon
 	
 public:
 	
 	FName GetWeaponAttachPoint() const;
+	
+	void ReloadCurrentWeapon();
 	
 protected:
 	void SpawnInventory();
@@ -109,6 +130,8 @@ protected:
 	void EquipWeapon(class AFournoidWeapon* Weapon);
 	
 	void SetCurrentWeapon(class AFournoidWeapon* Weapon);
+	
+	void DestroyInventory();
 	
 	UFUNCTION(Reliable, WithValidation, Server)
 	void ServerEquipWeapon(class AFournoidWeapon* Weapon);
@@ -126,13 +149,7 @@ protected:
 	class AFournoidWeapon* CurrentWeapon;
 	
 	//////////////////////////////////////////////////////////////////////////
-	// IDamageable
-	
-public:
-	void ReceiveDamage(float Damage) override;
-	
-	//////////////////////////////////////////////////////////////////////////
-	// Mesh
+	// Components
 	
 public:
 	
@@ -162,5 +179,8 @@ protected:
 	
 	UFUNCTION()
 	void OnRep_CurrentWeapon();
+	
+	UFUNCTION()
+	void OnRep_bIsDead();
 	
 };

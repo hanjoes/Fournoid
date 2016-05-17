@@ -32,4 +32,9 @@ public:
 	UFUNCTION(reliable, client)
 	void ClientSetSpectatorCamera(FVector CameraLocation, FRotator CameraRotation);
 	
+	//////////////////////////////////////////////////////////////////////////
+	// Spawn
+	
+	virtual void UnFreeze() override;
+	
 };

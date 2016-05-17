@@ -2,6 +2,7 @@
 
 #include "Fournoid.h"
 #include "FournoidCharacter.h"
+#include "PlayerCharacter.h"
 #include "FournoidMovementComponent.h"
 #include "Bullets/FournoidBullet.h"
 #include "Weapons/FournoidWeapon.h"
@@ -42,11 +43,14 @@ AFournoidCharacter::AFournoidCharacter(const FObjectInitializer& ObjectInitializ
 	
 	bReplicates = true;
 	
+	// Default values
+	
 	Health = 100.f;
 	Stamina = 100.f;
 	StaminaRegenRate = 15.f;
 	StaminaConsumeRate = 30.f;
 	SpeedBoostScale = 1.5f;
+	DestroyLifeSpan = 10.f;
 	bCharacterIsRunning = false;
 }
 
@@ -58,23 +62,33 @@ void AFournoidCharacter::BeginPlay()
 	SpawnInventory();
 }
 
-void AFournoidCharacter::ReceiveDamage(float Damage)
+void AFournoidCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	Health -= Damage;
-	if (Health <= 0.0f)
-	{
-		Die();
-	}
+	DestroyInventory();
 }
 
 void AFournoidCharacter::StartRunning()
 {
-	bCharacterIsRunning = true;
+	if ( Role < ROLE_Authority )
+	{
+		ServerStartRunning();
+	}
+	else
+	{
+    	bCharacterIsRunning = true;
+	}
 }
 
 void AFournoidCharacter::StopRunning()
 {
-	bCharacterIsRunning = false;
+	if ( Role < ROLE_Authority )
+	{
+		ServerStopRunning();
+	}
+	else
+	{
+    	bCharacterIsRunning = false;
+	}
 }
 
 void AFournoidCharacter::Tick(float DeltaTime)
@@ -234,11 +248,6 @@ void AFournoidCharacter::OnRep_CurrentWeapon()
 	SetCurrentWeapon(CurrentWeapon);
 }
 
-float AFournoidCharacter::TakeDamage(float Damage, const struct FDamageEvent &DamageEvent, class AController *EventInstigator, class AActor *DamageCauser)
-{
-	return .0f;
-}
-
 void AFournoidCharacter::StartFire()
 {
 	if ( CurrentWeapon )
@@ -262,8 +271,91 @@ bool AFournoidCharacter::IsFirstPerson() const
 
 void AFournoidCharacter::Die()
 {
-	UE_LOG(Fournoid, Warning, TEXT("Player %s is dead."), *GetName());
+	if (Role == ROLE_Authority)
+	{
+		ServerDie();
+	}
+	OnDeath();
+}
+
+bool AFournoidCharacter::ServerDie_Validate()
+{
+	return true;
+}
+
+void AFournoidCharacter::ServerDie_Implementation()
+{
+	OnDeath();
+}
+
+void AFournoidCharacter::OnDeath()
+{
 	bIsDead = true;
 	UpdatePawnMesh();
 	DetachFromControllerPendingDestroy();
+	
+	SetLifeSpan(DestroyLifeSpan);
 }
+
+void AFournoidCharacter::OnRep_bIsDead()
+{
+	Die();
+}
+
+void AFournoidCharacter::DestroyInventory()
+{
+	for (int32 i = 0; i < Inventory.Num(); ++i)
+	{
+		Inventory[i]->Destroy();
+	}
+	Inventory.Empty();
+}
+
+bool AFournoidCharacter::ServerStartRunning_Validate()
+{
+	return true;
+}
+
+void AFournoidCharacter::ServerStartRunning_Implementation()
+{
+	StartRunning();
+}
+
+bool AFournoidCharacter::ServerStopRunning_Validate()
+{
+	return true;
+}
+
+void AFournoidCharacter::ServerStopRunning_Implementation()
+{
+	StopRunning();
+}
+
+float AFournoidCharacter::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, class AActor* DamageCauser)
+{
+	Health -= Damage;
+	if (Health <= 0.0f)
+	{
+		Die();
+	}
+	
+	if ( EventInstigator )
+	{
+    	auto InstigatorPlayer = Cast<APlayerCharacter>(EventInstigator->GetPawn());
+		if ( InstigatorPlayer )
+		{
+        	InstigatorPlayer->PlayHitSound();
+		}
+	}
+	
+	return Damage;
+}
+
+void AFournoidCharacter::ReloadCurrentWeapon()
+{
+	if ( CurrentWeapon )
+	{
+		CurrentWeapon->Reload();
+	}
+}
+

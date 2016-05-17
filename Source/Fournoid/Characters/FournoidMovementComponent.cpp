@@ -12,6 +12,7 @@ float UFournoidMovementComponent::GetMaxSpeed() const
 	{
 		if ( Character->CharacterIsRunning() )
 		{
+			auto OldSpeed = Speed;
     		Speed *= Character->GetSpeedScale();
 		}
 	}

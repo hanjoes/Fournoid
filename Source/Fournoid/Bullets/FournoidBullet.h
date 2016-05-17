@@ -11,39 +11,45 @@ class FOURNOID_API AFournoidBullet : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AFournoidBullet();
 	
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 	
-	FORCEINLINE USphereComponent* GetSphereComponent() const { return BulletSphereComp; }
+	//////////////////////////////////////////////////////////////////////////
+	// Damage
 	
 	/** called when projectile hits something */
 	UFUNCTION()
 	void OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	
-protected:
-	UPROPERTY(VisibleAnywhere, Category = "Bullet")
-	USphereComponent* BulletSphereComp;
-	
-	UPROPERTY(VisibleAnywhere, Category = "Bullet")
-	UStaticMeshComponent* BulletMeshComp;
-	
-	UPROPERTY(VisibleAnywhere, Category = "Bullet")
+	/** Impulse applied on hitting any rigid body  */
+	UPROPERTY(EditAnywhere, Category=Damage)
 	float BulletImpulseStrength;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Bullet")
+	/** Damage caused on hit */
+	UPROPERTY(EditAnywhere, Category=Damage)
 	float BulletDamage;
 	
+protected:
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Components
+	
+	/** USphereComponent used for hit detection */
+	UPROPERTY(VisibleDefaultsOnly, Category=Components)
+	USphereComponent* BulletSphereComp;
+	
+	/** The mesh displayed */
+	UPROPERTY(VisibleDefaultsOnly, Category=Components)
+	UStaticMeshComponent* BulletMeshComp;
+	
 	/** Projectile movement component */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category=Components)
 	class UProjectileMovementComponent* BulletMovementComp;
 	
 	/** The pariticle system associated with the bullet */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category=Components)
 	class UParticleSystemComponent* BulletParticleComp;
 };

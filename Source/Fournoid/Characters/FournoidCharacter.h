@@ -124,6 +124,10 @@ public:
 
 	FORCEINLINE AFournoidWeapon* GetWeaponActor() const { return CurrentWeapon; }
 	
+	FORCEINLINE int32 GetGrenadeNum() const { return GrenadeNum; }
+	
+	FORCEINLINE int32 GetGrenadeCapacity() const { return GrenadeCapacity; }
+	
 	void SetHealth(float NewHealth);
 	
 protected:
@@ -179,6 +183,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category=Grenade)
 	void IncrementGrenade(int32 Num);
 	
+	bool IsGrenadeStoreFull() const;
+	
 protected:
 	
 	/** Character starts firing, triggered by AIController or Player */
@@ -205,7 +211,9 @@ protected:
 	/** Current number of grenades held by player */
 	UPROPERTY(EditDefaultsOnly, Replicated, Category=Grenade)
 	int32 GrenadeNum;
-	
+	/** Maximum number of grenades can be held by player*/
+	UPROPERTY(EditDefaultsOnly, Replicated, Category=Grenade)
+	int32 GrenadeCapacity;
 	//////////////////////////////////////////////////////////////////////////
 	// Replicate
 	

@@ -16,8 +16,9 @@ bool AFournoidPickup_Ammo::CanBePickedUp(AFournoidCharacter *TestPawn) const
 	if( TestPawn->IsA<APlayerCharacter>() )
 	{
 		AFournoidWeapon* CurrWeapon = TestPawn->GetWeaponActor();
+		return CurrWeapon && ( !CurrWeapon->IsStoreFull() );
 	}
-	return true;
+	return false;
 }
 
 bool AFournoidPickup_Ammo::IsForWeapon(UClass* WeaponClass)
@@ -32,7 +33,7 @@ void AFournoidPickup_Ammo::GivePickupTo(AFournoidCharacter* Pawn)
 		auto Weapon = Pawn->GetWeaponActor();
 		if( Weapon )
 		{
-			Weapon->AddCurrentStore(AmmoClips*30);
+			Weapon->AddCurrentStore( AmmoClips * Weapon->GetClipCapacity() );
 		}
 	}
 }

@@ -96,6 +96,10 @@ public:
 	void NofityHit();
 	
 	void AddCurrentStore(int32 StoreSize);
+	
+	void SetStoreCapacity(int32 Capacity);
+	
+	void SetClipCapacity(int32 Capacity);
 
 	FORCEINLINE int32 GetCurrentClipSize() const{
 		return CurrentClipSize;
@@ -108,6 +112,15 @@ public:
 	FORCEINLINE int32 GetClipCapacity() const {
 		return ClipCapacity;
 	}
+	
+	FORCEINLINE int32 GetStoreCapacity() const {
+		return StoreCapacity;
+	}
+	
+	/** Whether the store is full*/
+	bool IsStoreFull();
+	
+	void SetCurrentClipSize(int32);
 	
 protected:
 	
@@ -174,6 +187,9 @@ protected:
 	/** Total bullet in store (not including bullet in clip) */
 	UPROPERTY(EditDefaultsOnly, Category=Ammo)
 	int32 InitialBulletStore;
+	
+	UPROPERTY(EditDefaultsOnly, Category=Ammo)
+	int32 StoreCapacity;
 	
 	/** Clip capacity, also the initial clip bullet count */
 	UPROPERTY(EditDefaultsOnly, Category=Ammo)

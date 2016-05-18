@@ -52,6 +52,7 @@ AFournoidCharacter::AFournoidCharacter(const FObjectInitializer& ObjectInitializ
 	StaminaConsumeRate = 30.f;
 	SpeedBoostScale = 1.5f;
 	DestroyLifeSpan = 10.f;
+	GrenadeCapacity = 4;
 	bIsDead = false;
 	bCharacterIsRunning = false;
 }
@@ -428,9 +429,19 @@ bool AFournoidCharacter::ServerToss_Validate()
 void AFournoidCharacter::IncrementGrenade(int32 Num)
 {
 	GrenadeNum += Num;
+	if ( IsGrenadeStoreFull() ){
+		GrenadeNum = GrenadeCapacity;
+	}
 }
 
 bool AFournoidCharacter::IsGrenadeStoreEmpty() const
 {
 	return GrenadeNum <= 0;
 }
+
+bool AFournoidCharacter::IsGrenadeStoreFull() const
+{
+	return GrenadeNum >= GrenadeCapacity;
+}
+
+

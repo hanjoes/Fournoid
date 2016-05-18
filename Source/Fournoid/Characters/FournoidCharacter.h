@@ -122,9 +122,7 @@ public:
 	
 	void ReloadCurrentWeapon();
 
-	FORCEINLINE AFournoidWeapon* GetWeaponActor() const{
-		return CurrentWeapon;
-	}
+	FORCEINLINE AFournoidWeapon* GetWeaponActor() const { return CurrentWeapon; }
 	
 	void SetHealth(float NewHealth);
 	
@@ -170,13 +168,43 @@ protected:
 	class USkeletalMeshComponent* Mesh1P;
 	
 	//////////////////////////////////////////////////////////////////////////
-	// Weapon Fire
+	// Weapon
 	
+public:
+	
+	/** Toss a nade, triggered by AIController or Player */
+	virtual void Toss();
+	
+	/** Increase the number of grenades by a specific num */
+	UFUNCTION(BlueprintCallable, Category=Grenade)
+	void IncrementGrenade(int32 Num);
+	
+protected:
+	
+	/** Character starts firing, triggered by AIController or Player */
 	virtual void StartFire();
 	
+	/** Character stops firing, triggered by AIController or Player */
 	virtual void StopFire();
 	
-	void FireWeapon();
+	/** Returns boolean indicates whether there are still grenades. */
+	bool IsGrenadeStoreEmpty() const;
+	
+	/** [server] Toss grenade */
+	UFUNCTION(Reliable, WithValidation, Server)
+	void ServerToss();
+	
+	/** The grenade class */
+	UPROPERTY(EditDefaultsOnly, Category=Grenade)
+	TSubclassOf<class AFournoidGrenade> GrenadeClass;
+	
+	/** Grenades stored TODO: */
+	UPROPERTY(VisibleAnywhere, Replicated, Category=Grenade)
+	TArray<class AFournoidGrenade *> Grenades;
+	
+	/** Current number of grenades held by player */
+	UPROPERTY(EditDefaultsOnly, Replicated, Category=Grenade)
+	int32 GrenadeNum;
 	
 	//////////////////////////////////////////////////////////////////////////
 	// Replicate

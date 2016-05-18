@@ -10,7 +10,8 @@ class FOURNOID_API AFournoidBullet : public AActor
 {
 	GENERATED_BODY()
 	
-public:	
+public:
+	
 	AFournoidBullet();
 	
 	virtual void BeginPlay() override;
@@ -22,7 +23,7 @@ public:
 	
 	/** called when projectile hits something */
 	UFUNCTION()
-	void OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	virtual void OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	
 	/** Impulse applied on hitting any rigid body  */
 	UPROPERTY(EditAnywhere, Category=Damage)

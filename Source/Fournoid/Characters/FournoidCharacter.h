@@ -126,6 +126,8 @@ public:
 		return CurrentWeapon;
 	}
 	
+	void SetHealth(float NewHealth);
+	
 protected:
 	void SpawnInventory();
 	

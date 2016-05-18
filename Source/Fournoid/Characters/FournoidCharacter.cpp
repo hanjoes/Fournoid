@@ -375,3 +375,6 @@ void AFournoidCharacter::ReloadCurrentWeapon()
 	}
 }
 
+void AFournoidCharacter::SetHealth(float NewHealth){
+	Health = NewHealth;
+}

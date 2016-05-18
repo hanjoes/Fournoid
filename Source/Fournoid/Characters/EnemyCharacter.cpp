@@ -16,7 +16,8 @@ AEnemyCharacter::AEnemyCharacter(const FObjectInitializer& ObjectInitializer)
 	SetupCollisionBehavior();
 }
 
-bool AEnemyCharacter::IsFirstPerson() const{
+bool AEnemyCharacter::IsFirstPerson() const
+{
 	return false;
 }
 
@@ -30,9 +31,12 @@ void AEnemyCharacter::BeginPlay()
 void AEnemyCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-	if(IsDead()){
+	if( IsDead() )
+	{
 		StopFire();
-	}else{
+	}
+	else
+	{
 		ReloadStore();
 	}
 }
@@ -42,24 +46,33 @@ void AEnemyCharacter::SetupCollisionBehavior()
 }
 
 //This can be a function for the base class, AFounoidCharacter, as well as related variables
-void AEnemyCharacter:: StartFire(){
+void AEnemyCharacter:: StartFire()
+{
 	Super::StartFire();
 }
 
-void AEnemyCharacter:: StopFire(){
+void AEnemyCharacter:: StopFire()
+{
 	Super::StopFire();
 }
 
-float AEnemyCharacter::GetPatrolRadius(){
+float AEnemyCharacter::GetPatrolRadius()
+{
 	return PatrolRadius;
 }
 
-int32 AEnemyCharacter::ReloadStore(){
-	AFournoidWeapon* CurrWeapon = GetWeaponActor();
-	int32 CurrStore = CurrWeapon->GetCurrentStoreSize();
-	if(CurrStore <= 0){
-		CurrWeapon->AddCurrentStore(30);
+int32 AEnemyCharacter::ReloadStore()
+{
+	auto CurrWeapon = GetWeaponActor();
+	if ( CurrentWeapon )
+	{
+    	int32 NumStore = CurrWeapon->GetCurrentStoreSize();
+    	if ( NumStore <= 0 )
+		{
+    		CurrWeapon->AddCurrentStore(30);
+    	}
+    	
+    	return CurrWeapon->GetCurrentStoreSize();
 	}
-	
-	return CurrWeapon->GetCurrentStoreSize();
+	return 0;
 }

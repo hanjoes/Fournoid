@@ -380,6 +380,10 @@ void AFournoidCharacter::ReloadCurrentWeapon()
 	}
 }
 
+void AFournoidCharacter::SetHealth(float NewHealth){
+	Health = NewHealth;
+}
+
 void AFournoidCharacter::Toss()
 {
 	if ( Role < ROLE_Authority )

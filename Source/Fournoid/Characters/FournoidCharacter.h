@@ -124,6 +124,8 @@ public:
 
 	FORCEINLINE AFournoidWeapon* GetWeaponActor() const { return CurrentWeapon; }
 	
+	void SetHealth(float NewHealth);
+	
 protected:
 	void SpawnInventory();
 	

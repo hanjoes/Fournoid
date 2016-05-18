@@ -43,14 +43,20 @@ FVector ASpawnVolume::GetRandomPointInVolume() const
 
 void ASpawnVolume::SpawnEnemy()
 {
-	if (EnemyToSpawn) {
-		UWorld* const World = GetWorld();
-		if (World) {
-			if(EnemySpawned < MaxEnenyNum){
-				FVector SpawnLocation = GetRandomPointInVolume();
-				World->SpawnActor<AEnemyCharacter>(EnemyToSpawn, SpawnLocation, FRotator::ZeroRotator);
-				registerTimer();
-				EnemySpawned++;
+	if ( Role == ROLE_Authority )
+	{
+		if ( EnemyToSpawn )
+		{
+			UWorld* const World = GetWorld();
+			if ( World )
+			{
+				if( EnemySpawned < MaxEnenyNum )
+				{
+					FVector SpawnLocation = GetRandomPointInVolume();
+					World->SpawnActor<AEnemyCharacter>(EnemyToSpawn, SpawnLocation, FRotator::ZeroRotator);
+					registerTimer();
+					EnemySpawned++;
+				}
 			}
 		}
 	}

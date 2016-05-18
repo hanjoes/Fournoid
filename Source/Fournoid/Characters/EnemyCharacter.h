@@ -11,13 +11,10 @@ class FOURNOID_API AEnemyCharacter : public AFournoidCharacter
 	GENERATED_BODY()
 	
 public:
-	// Sets default values for this character's properties
 	AEnemyCharacter(const FObjectInitializer& ObjectInitializer);
 	
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	// Called every frame
 	virtual void Tick(float DeltaSeconds) override;
 	
 	//Behavior Tree

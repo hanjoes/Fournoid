@@ -45,21 +45,24 @@ void AFournoidPickup::Tick( float DeltaTime )
 
 }
 
-bool AFournoidPickup::CanBePickedUp(AFournoidCharacter *TestPawn)const
+bool AFournoidPickup::CanBePickedUp(AFournoidCharacter *TestPawn) const
 {
 	return TestPawn && TestPawn->IsAlive();
 }
 
 
-void AFournoidPickup::GivePickupTo(AFournoidCharacter *Pawn){
+void AFournoidPickup::GivePickupTo(AFournoidCharacter *Pawn)
+{
 }
 
-void AFournoidPickup::Respawn(){
+void AFournoidPickup::Respawn()
+{
 	bIsActive = true;
 	OnRespawned();
 }
 
-void AFournoidPickup::OnRespawned(){
+void AFournoidPickup::OnRespawned()
+{
 	if (ActiveFX)
 	{
 		PickupPSC->SetTemplate(ActiveFX);
@@ -71,8 +74,8 @@ void AFournoidPickup::OnRespawned(){
 	}
 }
 
-void AFournoidPickup::PickupOnTouch(class AFournoidCharacter *Pawn){
-	FournoidUtils::GreenMessage("On Touch");
+void AFournoidPickup::PickupOnTouch(class AFournoidCharacter *Pawn)
+{
 	if (bIsActive && Pawn && Pawn->IsAlive() && !IsPendingKill())
 	{
 		if (CanBePickedUp(Pawn))
@@ -92,12 +95,14 @@ void AFournoidPickup::PickupOnTouch(class AFournoidCharacter *Pawn){
 	}
 }
 
-void AFournoidPickup::OnPickedUp(){
+void AFournoidPickup::OnPickedUp()
+{
 	PickupPSC->DeactivateSystem();
 
 }
 
-void AFournoidPickup::NotifyActorBeginOverlap(class AActor* Other){
+void AFournoidPickup::NotifyActorBeginOverlap(class AActor* Other)
+{
 	Super::NotifyActorBeginOverlap(Other);
 	PickupOnTouch(Cast<AFournoidCharacter>(Other));
 }

@@ -5,6 +5,7 @@
 #include "PlayerCharacter.h"
 #include "FournoidMovementComponent.h"
 #include "Bullets/FournoidBullet.h"
+#include "Bullets/FournoidGrenade.h"
 #include "Weapons/FournoidWeapon.h"
 #include "Keepers/FournoidKeeper.h"
 #include "Animation/AnimInstance.h"
@@ -132,6 +133,8 @@ void AFournoidCharacter::GetLifetimeReplicatedProps( TArray< FLifetimeProperty >
 	
 	// only to local owner: weapon change requests are locally instigated, other clients don't need it
 	DOREPLIFETIME_CONDITION( AFournoidCharacter, Inventory, COND_OwnerOnly );
+	DOREPLIFETIME_CONDITION( AFournoidCharacter, Grenades, COND_OwnerOnly );
+	DOREPLIFETIME_CONDITION( AFournoidCharacter, GrenadeNum, COND_OwnerOnly );
 	
 	// everyone
 	DOREPLIFETIME( AFournoidCharacter, CurrentWeapon );
@@ -349,7 +352,9 @@ float AFournoidCharacter::TakeDamage(float Damage, struct FDamageEvent const& Da
 		return .0f;
 	}
 	
-	Health -= Damage;
+	float ActualDamage = Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+	
+	Health -= ActualDamage;
 	if (Health <= 0.0f)
 	{
 		Die(EventInstigator);
@@ -375,3 +380,52 @@ void AFournoidCharacter::ReloadCurrentWeapon()
 	}
 }
 
+void AFournoidCharacter::Toss()
+{
+	if ( Role < ROLE_Authority )
+	{
+		ServerToss();
+		return;
+	}
+	
+	if ( GrenadeClass )
+	{
+		const auto SpawnRotation = GetControlRotation();
+		const auto SpawnLocation = GetActorLocation() + FVector(0.f, -100.f, .0f);
+		
+		const auto World = GetWorld();
+		
+		if ( World )
+		{
+			if ( Role == ROLE_Authority )
+			{
+				if ( !IsGrenadeStoreEmpty() )
+				{
+					auto SpawnedGrenade = World->SpawnActor<AFournoidGrenade>(GrenadeClass, SpawnLocation, SpawnRotation);
+					SpawnedGrenade->Instigator = Instigator;
+					GrenadeNum -= 1;
+				}
+			}
+		}
+	}
+}
+
+void AFournoidCharacter::ServerToss_Implementation()
+{
+	Toss();
+}
+
+bool AFournoidCharacter::ServerToss_Validate()
+{
+	return true;
+}
+
+void AFournoidCharacter::IncrementGrenade(int32 Num)
+{
+	GrenadeNum += Num;
+}
+
+bool AFournoidCharacter::IsGrenadeStoreEmpty() const
+{
+	return GrenadeNum <= 0;
+}

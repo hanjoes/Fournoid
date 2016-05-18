@@ -61,6 +61,8 @@ void APlayerCharacter::SetupPlayerInputComponent(class UInputComponent* InputCom
 	InputComponent->BindAction("Fire", IE_Pressed, this, &APlayerCharacter::StartFire);
 	InputComponent->BindAction("Fire", IE_Released, this, &APlayerCharacter::StopFire);
 	
+	InputComponent->BindAction("TossGrenade", IE_Released, this, &AFournoidCharacter::Toss);
+	
 	InputComponent->BindAction("Reload", IE_Pressed, this, &AFournoidCharacter::ReloadCurrentWeapon);
 	
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently

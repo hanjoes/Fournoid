@@ -40,9 +40,6 @@ public:
 	
 	void StopFire();
 	
-	//Check CurrentStore if less than or equal to 0, reload the storage
+	/** Check CurrentStore if less than or equal to 0, reload the storage */
 	int32 ReloadStore();
-	
-private:
-	void SetupCollisionBehavior();
 };

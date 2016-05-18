@@ -12,8 +12,6 @@ AEnemyCharacter::AEnemyCharacter(const FObjectInitializer& ObjectInitializer)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-	SetupCollisionBehavior();
 }
 
 bool AEnemyCharacter::IsFirstPerson() const
@@ -39,10 +37,6 @@ void AEnemyCharacter::Tick( float DeltaTime )
 	{
 		ReloadStore();
 	}
-}
-
-void AEnemyCharacter::SetupCollisionBehavior()
-{
 }
 
 //This can be a function for the base class, AFounoidCharacter, as well as related variables

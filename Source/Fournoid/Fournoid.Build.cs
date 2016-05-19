@@ -14,10 +14,7 @@ public class Fournoid : ModuleRules
         {
             DynamicallyLoadedModuleNames.Add("OnlineSubsystemNull");
         }
-        else
-        {
-            PrivateDependencyModuleNames.Add("OnlineSubsystemNull");
-        }
+        PrivateDependencyModuleNames.Add("OnlineSubsystemNull");
     }
 
 }

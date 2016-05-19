@@ -29,6 +29,8 @@ public:
 	
 	bool IsFirstPerson() const override;
 	
+	void SetupWeapon();
+	
 public:
 	
 	float GetPatrolRadius();

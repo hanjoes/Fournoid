@@ -23,6 +23,7 @@ bool AEnemyCharacter::IsFirstPerson() const
 void AEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	SetupWeapon();
 }
 
 // Called every frame
@@ -60,13 +61,23 @@ int32 AEnemyCharacter::ReloadStore()
 	auto CurrWeapon = GetWeaponActor();
 	if ( CurrentWeapon )
 	{
-    	int32 NumStore = CurrWeapon->GetCurrentStoreSize();
-    	if ( NumStore <= 0 )
+		int32 NumStore = CurrWeapon->GetCurrentStoreSize();
+		if ( NumStore <= 0 )
 		{
-    		CurrWeapon->AddCurrentStore(30);
-    	}
-    	
-    	return CurrWeapon->GetCurrentStoreSize();
+			CurrWeapon->AddCurrentStore(30);
+		}
+		
+		return CurrWeapon->GetCurrentStoreSize();
 	}
 	return 0;
+}
+
+void AEnemyCharacter::SetupWeapon()
+{
+	auto CurrWeapon = GetWeaponActor();
+	if ( CurrWeapon )
+	{
+		CurrWeapon->SetClipCapacity(3);
+		CurrWeapon->SetCurrentClipSize(3);
+	}
 }

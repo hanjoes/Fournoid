@@ -40,6 +40,7 @@ AFournoidWeapon::AFournoidWeapon()
 	FiringRate = .3f;
 	InitialBulletStore = 60;
 	ClipCapacity = 30;
+	StoreCapacity = 5*ClipCapacity;
 }
 
 // Called when the game starts or when spawned
@@ -309,6 +310,11 @@ bool AFournoidWeapon::IsStoreEmpty()
 	return CurrentStoreSize == 0;
 }
 
+bool AFournoidWeapon::IsStoreFull()
+{
+	return CurrentStoreSize >= StoreCapacity;
+}
+
 void AFournoidWeapon::StartReloading()
 {
 	if ( CurrentState == WeaponState::WS_Idle || CurrentState == WeaponState::WS_Firing )
@@ -325,7 +331,7 @@ void AFournoidWeapon::OnReloadFinished()
 {
 	if ( CurrentState == WeaponState::WS_Idle || CurrentState == WeaponState::WS_Reloading )
 	{
-		FournoidUtils::GreenMessage(TEXT("Reload finished..."));
+		//FournoidUtils::GreenMessage(TEXT("Reload finished..."));
 		auto RequiredAmmo = FMath::Min(ClipCapacity - CurrentClipSize, CurrentStoreSize);
 		CurrentStoreSize -= RequiredAmmo;
 		CurrentClipSize += RequiredAmmo;
@@ -339,6 +345,26 @@ void AFournoidWeapon::Reload()
 	StartReloading();
 }
 
-void AFournoidWeapon::AddCurrentStore(int32 StoreSize){
+void AFournoidWeapon::AddCurrentStore(int32 StoreSize)
+{
 	CurrentStoreSize += StoreSize;
+	if ( IsStoreFull() )
+	{
+		CurrentStoreSize = StoreCapacity;
+	}
+}
+
+void AFournoidWeapon::SetStoreCapacity(int32 Capacity)
+{
+	StoreCapacity = Capacity;
+}
+
+void AFournoidWeapon::SetClipCapacity(int32 Capacity)
+{
+	ClipCapacity = Capacity;
+}
+
+void AFournoidWeapon::SetCurrentClipSize(int32 ClipSize)
+{
+	CurrentClipSize = ClipSize;
 }

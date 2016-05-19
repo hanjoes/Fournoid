@@ -267,6 +267,11 @@ void AFournoidWeapon::PlayFireAnimation()
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
+	
+	if ( FireEmitter )
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, FireEmitter, GetMuzzleLocation());
+	}
 }
 
 void AFournoidWeapon::SetWeaponState(WeaponState NewState)

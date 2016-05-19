@@ -53,4 +53,11 @@ protected:
 	/** The pariticle system associated with the bullet */
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category=Components)
 	class UParticleSystemComponent* BulletParticleComp;
+	
+	//////////////////////////////////////////////////////////////////////////
+	// Components
+	
+	/** Particle system played at the location of hit */
+	UPROPERTY(EditDefaultsOnly, Category=FX)
+	UParticleSystem* HitEmitter;
 };

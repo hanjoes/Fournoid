@@ -398,7 +398,7 @@ void AFournoidCharacter::Toss()
 	if ( GrenadeClass )
 	{
 		const auto SpawnRotation = GetControlRotation();
-		const auto SpawnLocation = GetActorLocation() + FVector(0.f, -100.f, .0f);
+		const auto SpawnLocation = GetActorLocation() + FVector(0.f, -100.f, 100.f);
 		
 		const auto World = GetWorld();
 		

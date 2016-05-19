@@ -52,3 +52,41 @@ void AFournoidGameMode::Killed(AController *Killer, AController *Killed)
 	}
 }
 
+AActor* AFournoidGameMode::ChoosePlayerStart_Implementation(AController *Player)
+{
+	UE_LOG(Fournoid, Warning, TEXT("Choosing player start..."));
+	TArray<APlayerStart*> ReasonablePlayerStarts;
+	
+	for (TActorIterator<APlayerStart> It(GetWorld()); It; ++It)
+	{
+		auto TestSpawn = *It;
+		
+		if ( IsPlayerStartReasonable(TestSpawn ))
+		{
+			ReasonablePlayerStarts.Add(TestSpawn);
+		}
+	}
+	
+	int32 ResultNum = ReasonablePlayerStarts.Num();
+	if ( ResultNum > 0 )
+	{
+		return ReasonablePlayerStarts[FMath::RandHelper(ResultNum)];
+	}
+	
+	// Regress to parent class implementation
+	return Super::ChoosePlayerStart_Implementation(Player);
+}
+
+bool AFournoidGameMode::IsPlayerStartReasonable(APlayerStart *TestSpawn)
+{
+	for (TActorIterator<AFournoidCharacter> It(GetWorld()); It; ++It)
+	{
+		auto CurrentPawn = *It;
+		
+		if ( CurrentPawn->GetDistanceTo(TestSpawn) < GameModeConstants::REASONABLE_DISTANCE )
+		{
+			return false;
+		}
+	}
+	return true;
+}

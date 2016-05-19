@@ -55,6 +55,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category=Pickup)
 	float RespawnTime;
 	
+	/** sound played when player picks it up */
+	UPROPERTY(EditDefaultsOnly, Category=Effects)
+	USoundCue* PickupSound;
+	
+	/** sound played on respawn */
+	UPROPERTY(EditDefaultsOnly, Category=Effects)
+	USoundCue* RespawnSound;
+	
+	/* The character who has picked up this pickup */
+	UPROPERTY(Transient)
+	AFournoidCharacter* PickedUpBy;
+	
 	/** is it ready for interactions? */
 	//UPROPERTY(Transient, ReplicatedUsing=OnRep_IsActive)
 	UPROPERTY(transient)

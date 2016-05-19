@@ -7,7 +7,7 @@
 // Sets default values
 AFournoidPickup::AFournoidPickup(const FObjectInitializer& ObjectInitializer):Super(ObjectInitializer)
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 	
 	UCapsuleComponent* CollisionComp = ObjectInitializer.CreateDefaultSubobject<UCapsuleComponent>(this, TEXT("CollisionComp"));
@@ -24,10 +24,11 @@ AFournoidPickup::AFournoidPickup(const FObjectInitializer& ObjectInitializer):Su
 	PickupPSC->AttachParent = RootComponent;
 	
 	bIsActive = false;
+	PickedUpBy = NULL;
 	RespawnTime = 5.f;
 	
 	//SetRemoteRoleForBackwardsCompat(ROLE_SimulatedProxy);
-
+	
 }
 
 // Called when the game starts or when spawned
@@ -42,7 +43,7 @@ void AFournoidPickup::BeginPlay()
 void AFournoidPickup::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
+	
 }
 
 bool AFournoidPickup::CanBePickedUp(AFournoidCharacter *TestPawn) const
@@ -58,6 +59,7 @@ void AFournoidPickup::GivePickupTo(AFournoidCharacter *Pawn)
 void AFournoidPickup::Respawn()
 {
 	bIsActive = true;
+	PickedUpBy = NULL;
 	OnRespawned();
 }
 
@@ -72,6 +74,11 @@ void AFournoidPickup::OnRespawned()
 	{
 		PickupPSC->DeactivateSystem();
 	}
+	const bool bJustSpawned = CreationTime <= (GetWorld()->GetTimeSeconds() + 5.0f);
+	if (RespawnSound && !bJustSpawned)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, RespawnSound, GetActorLocation());
+	}
 }
 
 void AFournoidPickup::PickupOnTouch(class AFournoidCharacter *Pawn)
@@ -81,6 +88,7 @@ void AFournoidPickup::PickupOnTouch(class AFournoidCharacter *Pawn)
 		if (CanBePickedUp(Pawn))
 		{
 			GivePickupTo(Pawn);
+			PickedUpBy = Pawn;
 			if (!IsPendingKill())
 			{
 				bIsActive = false;
@@ -98,7 +106,11 @@ void AFournoidPickup::PickupOnTouch(class AFournoidCharacter *Pawn)
 void AFournoidPickup::OnPickedUp()
 {
 	PickupPSC->DeactivateSystem();
-
+	if (PickupSound && PickedUpBy)
+	{
+		UGameplayStatics::SpawnSoundAttached(PickupSound, PickedUpBy->GetRootComponent());
+	}
+	
 }
 
 void AFournoidPickup::NotifyActorBeginOverlap(class AActor* Other)

@@ -140,6 +140,7 @@ void AFournoidCharacter::GetLifetimeReplicatedProps( TArray< FLifetimeProperty >
 	// everyone
 	DOREPLIFETIME( AFournoidCharacter, CurrentWeapon );
 	DOREPLIFETIME( AFournoidCharacter, Health );
+	DOREPLIFETIME( AFournoidCharacter, Stamina );
 	DOREPLIFETIME( AFournoidCharacter, bIsDead );
 }
 

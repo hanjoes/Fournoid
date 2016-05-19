@@ -140,6 +140,7 @@ void AFournoidCharacter::GetLifetimeReplicatedProps( TArray< FLifetimeProperty >
 	// everyone
 	DOREPLIFETIME( AFournoidCharacter, CurrentWeapon );
 	DOREPLIFETIME( AFournoidCharacter, Health );
+	DOREPLIFETIME( AFournoidCharacter, Stamina );
 	DOREPLIFETIME( AFournoidCharacter, bIsDead );
 }
 
@@ -292,6 +293,10 @@ void AFournoidCharacter::Die(AController* InstigatorController)
 		GameMode->Killed(InstigatorController, Controller);
 	}
 	
+	// Make sure client sees the latest update.
+	NetUpdateFrequency = GetDefault<AFournoidCharacter>()->NetUpdateFrequency;
+	GetCharacterMovement()->ForceReplicationUpdate();
+	
 	OnDeath();
 }
 
@@ -310,7 +315,13 @@ void AFournoidCharacter::OnDeath()
 	bIsDead = true;
 	UpdatePawnMesh();
 	DetachFromControllerPendingDestroy();
+	StopFire();
+	// mark pending for destroy
 	SetLifeSpan(DestroyLifeSpan);
+	
+	// disable collisions on capsule
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 }
 
 void AFournoidCharacter::OnRep_bIsDead()
@@ -397,7 +408,7 @@ void AFournoidCharacter::Toss()
 	if ( GrenadeClass )
 	{
 		const auto SpawnRotation = GetControlRotation();
-		const auto SpawnLocation = GetActorLocation() + FVector(0.f, -100.f, .0f);
+		const auto SpawnLocation = GetActorLocation() + FVector(0.f, -100.f, 100.f);
 		
 		const auto World = GetWorld();
 		

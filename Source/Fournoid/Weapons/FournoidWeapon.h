@@ -101,21 +101,13 @@ public:
 	
 	void SetClipCapacity(int32 Capacity);
 
-	FORCEINLINE int32 GetCurrentClipSize() const{
-		return CurrentClipSize;
-	}
+	FORCEINLINE int32 GetCurrentClipSize() const {return CurrentClipSize; }
 
-	FORCEINLINE int32 GetCurrentStoreSize() const{
-		return CurrentStoreSize;
-	}
+	FORCEINLINE int32 GetCurrentStoreSize() const { return CurrentStoreSize; }
 
-	FORCEINLINE int32 GetClipCapacity() const {
-		return ClipCapacity;
-	}
+	FORCEINLINE int32 GetClipCapacity() const { return ClipCapacity; }
 	
-	FORCEINLINE int32 GetStoreCapacity() const {
-		return StoreCapacity;
-	}
+	FORCEINLINE int32 GetStoreCapacity() const { return StoreCapacity; }
 	
 	/** Whether the store is full*/
 	bool IsStoreFull();
@@ -140,6 +132,10 @@ protected:
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Fire)
 	class UAnimMontage* FireAnimation;
+	
+	/** ParticleSystem to spawn when firing the weapon */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category=Fire)
+	UParticleSystem* FireEmitter;
 	
 	/** Muzzle socket name */
 	UPROPERTY(EditDefaultsOnly, Category=Fire)

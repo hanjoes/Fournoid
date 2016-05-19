@@ -68,10 +68,10 @@ void AFournoidBullet::Tick(float DeltaTime)
 void AFournoidBullet::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	// Only add impulse and destroy projectile if we hit a physics
-	if ( OtherActor && (OtherActor != this) && OtherComp )
+	if ( OtherActor && (OtherActor != this) )
 	{
 		// Check for Simulating Physics or there will be warning
-		if ( OtherComp->IsSimulatingPhysics() )
+		if ( OtherComp && OtherComp->IsSimulatingPhysics() )
 		{
     		OtherComp->AddImpulseAtLocation(GetVelocity() * BulletImpulseStrength, GetActorLocation());
 		}
@@ -86,7 +86,14 @@ void AFournoidBullet::OnHit(AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 			PointDmg.Damage = BulletDamage;
     		
     		OtherActor->TakeDamage(PointDmg.Damage, PointDmg, GetInstigatorController(), this);
+    		if ( HitEmitter )
+    		{
+    			UE_LOG(Fournoid, Warning, TEXT("Spawning Emitter"));
+				UGameplayStatics::SpawnEmitterAtLocation(this, HitEmitter, GetActorLocation());
+    		}
 		}
+		
+		
 		
 		Destroy();
 	}
